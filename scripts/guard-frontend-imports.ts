@@ -6,7 +6,6 @@ const FRONTEND_ROOTS = ["apps/web"];
 const SOURCE_EXT = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".json"]);
 const FORBIDDEN = [
   "firebase-admin",
-  "firebase/firestore",
   "firebase/storage",
   "@raas/store",
   "@raas/auth",

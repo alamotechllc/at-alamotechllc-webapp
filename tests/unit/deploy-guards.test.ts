@@ -24,7 +24,6 @@ const webEnv = {
   VITE_FIREBASE_PROJECT_ID: FIREBASE_PROJECT_ID,
   VITE_FIREBASE_API_KEY: "AIzaSyPublicExampleKey0123456789",
   VITE_FIREBASE_AUTH_DOMAIN: `${FIREBASE_PROJECT_ID}.firebaseapp.com`,
-  VITE_API_BASE_URL: "https://api.example.com",
 };
 
 describe("deploy guards", () => {
@@ -43,7 +42,6 @@ describe("deploy guards", () => {
     expect(webConfigFailure(webEnv)).toBeNull();
     expect(webConfigFailure({ ...webEnv, VITE_USE_FIREBASE_EMULATORS: "true" })?.stage).toBe("web-config");
     expect(webConfigFailure({ ...webEnv, VITE_FIREBASE_PROJECT_ID: "demo-raas-cp" })?.stage).toBe("web-config");
-    expect(webConfigFailure({ ...webEnv, VITE_API_BASE_URL: "http://127.0.0.1:8091" })?.message).toMatch(/HTTPS/);
     expect(webConfigFailure({ ...webEnv, VITE_FIREBASE_API_KEY: "not-a-web-key" })?.message).toMatch(/apiKey/);
     expect(webConfigFailure({ ...webEnv, VITE_FIREBASE_AUTH_DOMAIN: `https://${FIREBASE_PROJECT_ID}.firebaseapp.com` })?.message).toMatch(/host/);
   });

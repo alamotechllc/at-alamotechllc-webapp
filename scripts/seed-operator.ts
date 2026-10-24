@@ -41,7 +41,12 @@ async function main(): Promise<void> {
     await auth().updateUser(uid, { email, password, emailVerified: true });
   }
   await auth().setCustomUserClaims(uid, { raasRole: "operator" });
-  await db.doc(`operators/${uid}`).set({ platformRole: "operator", status: "active", hostedDomain: "alamotechllc.com" });
+  await db.doc(`operators/${uid}`).set({
+    platformRole: "operator",
+    status: "active",
+    email,
+    hostedDomain: "alamotechllc.com",
+  });
   await db.doc(`operators/${uid}/assignments/${TENANT_ZERO.tenantId}`).set({
     tenantId: TENANT_ZERO.tenantId,
     grantedByUid: "seed",

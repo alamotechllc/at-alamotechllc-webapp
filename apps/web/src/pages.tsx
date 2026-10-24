@@ -76,11 +76,9 @@ export function OverviewPage() {
   const base = tenantId ? `/v1/tenants/${tenantId}` : null;
   const tenant = useApi<Tenant>(base);
   const instances = useApi<{ items: Instance[] }>(base ? `${base}/service-instances` : null);
-  const bindings = useApi<{ items: Binding[] }>(base ? `${base}/provider-bindings` : null);
-  const events = useApi<{ items: BusinessEvent[] }>(base ? `${base}/events` : null);
   const instanceId = leadInstanceId(tenantId, instances.status === "ready" ? instances.data.items : undefined);
   const results = useApi<Results>(tenantId && instanceId ? resultsQuery(tenantId, instanceId) : undefined);
-  const states = [tenant, instances, bindings, events, results];
+  const states = [tenant, instances, results];
   const outage = sharedFailure(states);
   const leadCapture = instances.status === "ready"
     ? instances.data.items.find((item) => item.productCode === "lead-capture")
@@ -126,41 +124,20 @@ export function OverviewPage() {
             </Region>
           </StatusCard>
           <StatusCard label="Provider status">
-            <Region state={bindings} loading="Loading providers" suppressed={Boolean(outage)}>
-              {(data) => data.items.length === 0
-                ? <p>Not configured</p>
-                : <StatusBadge tone={data.items.every((item) => item.status === "active") ? "success" : statusTone(data.items[0]?.status ?? "")}>{data.items[0]?.status}</StatusBadge>}
-            </Region>
+            <p>Not shown here</p>
           </StatusCard>
           <StatusCard label="Last event">
-            <Region state={events} loading="Loading events" suppressed={Boolean(outage)}>
-              {(data) => {
-                const latest = [...data.items].sort((a, b) => b.occurredAt.localeCompare(a.occurredAt))[0];
-                return latest ? <p>{latest.eventType}<span className="mt-1 block text-foreground-muted">{formatWhen(latest.occurredAt)}</span></p> : <p>Empty</p>;
-              }}
-            </Region>
+            <p>Not shown here</p>
           </StatusCard>
           <StatusCard label="Last successful ingest">
-            <Region state={events} loading="Loading events" suppressed={Boolean(outage)}>
-              {(data) => {
-                const latest = [...data.items].sort((a, b) => b.recordedAt.localeCompare(a.recordedAt))[0];
-                return <p>{latest?.recordedAt ? formatWhen(latest.recordedAt) : "Not configured"}</p>;
-              }}
-            </Region>
+            <p>Not shown here</p>
           </StatusCard>
         </div>
       </section>
       <section aria-labelledby="recent-activity" className="space-y-3">
         <h2 id="recent-activity" className="text-sm font-semibold text-foreground-muted">Recent activity</h2>
         <AppCard className="p-4">
-          <Region state={events} loading="Loading events" suppressed={Boolean(outage)} empty={{ when: (data) => data.items.length === 0, title: "No events", detail: "An ingested business event has not been recorded." }}>
-            {(data) => {
-              const latest = [...data.items].sort((a, b) => b.recordedAt.localeCompare(a.recordedAt))[0];
-              return latest
-                ? <p className="text-sm">{latest.eventType} <span className="text-foreground-muted">ingested {formatWhen(latest.recordedAt)}</span></p>
-                : null;
-            }}
-          </Region>
+          <p className="text-sm">Provider receipts stay on the server.</p>
         </AppCard>
       </section>
     </div>
@@ -273,7 +250,7 @@ export function ClientPage() {
       <AppCard className="p-6">
         <h2 className="text-base font-semibold">Provider bindings</h2>
         <div className="mt-4">
-          <Region state={bindings} loading="Loading bindings" suppressed={Boolean(outage)} empty={{ when: (list) => list.items.length === 0, title: "No provider", detail: "A calendar provider is not bound." }}>
+          <Region state={bindings} loading="Loading bindings" suppressed={Boolean(outage)} empty={{ when: (list) => list.items.length === 0, title: "Not shown here", detail: "Provider accounts stay on the server." }}>
             {(list) => (
               <DataTable headers={["Provider", "Account", "Channel", "Status"]}>
                 {list.items.map((item) => (
@@ -379,7 +356,7 @@ export function OperationsPage() {
       <AppCard className="p-6">
         <h2 className="text-base font-semibold">Provider bindings</h2>
         <div className="mt-4">
-          <Region state={bindings} loading="Loading bindings" suppressed={Boolean(outage)} empty={{ when: (list) => list.items.length === 0, title: "No binding", detail: "No provider account is bound." }}>
+          <Region state={bindings} loading="Loading bindings" suppressed={Boolean(outage)} empty={{ when: (list) => list.items.length === 0, title: "Not shown here", detail: "Provider accounts stay on the server." }}>
             {(list) => (
               <DataTable headers={["Provider", "Account", "Status", "Reconciliation"]}>
                 {list.items.map((item) => (
@@ -398,7 +375,7 @@ export function OperationsPage() {
       <AppCard className="p-6">
         <h2 className="text-base font-semibold">Recent events</h2>
         <div className="mt-4">
-          <Region state={events} loading="Loading events" suppressed={Boolean(outage)} empty={{ when: (list) => list.items.length === 0, title: "No events", detail: "An ingested business event has not been recorded." }}>
+          <Region state={events} loading="Loading events" suppressed={Boolean(outage)} empty={{ when: (list) => list.items.length === 0, title: "Not shown here", detail: "Provider receipts stay on the server." }}>
             {(list) => (
               <DataTable headers={["Event", "Occurred", "Ingested"]}>
                 {list.items.map((item) => (

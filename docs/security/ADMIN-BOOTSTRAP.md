@@ -16,7 +16,7 @@ npm run bootstrap:platform-admin -- --email=person@alamotechllc.com
 3. The command looks up the existing Firebase user by email. It does not create a Google user.
 4. It refuses the email unless it is staff-eligible: Google sign-in and the domain `alamotechllc.com` (`OPERATOR_HOSTED_DOMAIN` when that is set).
 5. It writes `platformAdmins/{uid}` with `status: active`, sets the `raasRole` claim to `platform_admin`, revokes refresh tokens, and writes `user.role_changed` to `platformAudit`.
-6. The person signs in again. `GET /v1/session` returns `platform_admin` only because the server record exists.
+6. The person signs in again. The app opens as `platform_admin` only because the Firestore record exists.
 
 The phrase must match exactly. A missing user stops the command. The command prints the uid. It does not print a token.
 

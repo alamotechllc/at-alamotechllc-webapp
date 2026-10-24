@@ -1,6 +1,123 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function authEmail() {
+      return request.auth.token.email;
+    }
+
+    function staffEmail() {
+      return signedIn()
+        && authEmail() is string
+        && (
+          (
+            authEmail().matches('^[^@]+@alamotechllc[.]com$')
+            && request.auth.token.firebase.sign_in_provider == 'google.com'
+          )
+          || authEmail().matches('^[^@]+@alamotechllc[.]test$')
+        );
+    }
+
+    function adminPath() {
+      return /databases/$(database)/documents/platformAdmins/$(request.auth.uid);
+    }
+
+    function operatorPath() {
+      return /databases/$(database)/documents/operators/$(request.auth.uid);
+    }
+
+    function memberPath(tenantId) {
+      return /databases/$(database)/documents/tenants/$(tenantId)/members/$(request.auth.uid);
+    }
+
+    function isPlatformAdmin() {
+      return staffEmail()
+        && exists(adminPath())
+        && get(adminPath()).data.status == 'active'
+        && get(adminPath()).data.email == authEmail();
+    }
+
+    function isOperator() {
+      return staffEmail()
+        && exists(operatorPath())
+        && get(operatorPath()).data.status == 'active'
+        && get(operatorPath()).data.email == authEmail();
+    }
+
+    function assignedOperator(tenantId) {
+      return isOperator()
+        && exists(/databases/$(database)/documents/operators/$(request.auth.uid)/assignments/$(tenantId));
+    }
+
+    function memberRole(tenantId, role) {
+      return exists(memberPath(tenantId))
+        && get(memberPath(tenantId)).data.status == 'active'
+        && get(memberPath(tenantId)).data.role == role;
+    }
+
+    function isTenantAdmin(tenantId) {
+      return memberRole(tenantId, 'tenant_admin');
+    }
+
+    function isTenantViewer(tenantId) {
+      return memberRole(tenantId, 'tenant_viewer');
+    }
+
+    function canReadTenant(tenantId) {
+      return isPlatformAdmin()
+        || assignedOperator(tenantId)
+        || isTenantAdmin(tenantId)
+        || isTenantViewer(tenantId);
+    }
+
+    match /platformAdmins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /operators/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+
+      match /assignments/{tenantId} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow write: if false;
+      }
+    }
+
+    match /tenants/{tenantId} {
+      allow read: if canReadTenant(tenantId);
+      allow write: if false;
+
+      match /members/{uid} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow write: if false;
+      }
+
+      match /serviceInstances/{instanceId} {
+        allow read: if canReadTenant(tenantId);
+        allow write: if false;
+      }
+
+      match /campaigns/{campaignId} {
+        allow read: if canReadTenant(tenantId);
+        allow write: if false;
+      }
+
+      match /leads/{leadId} {
+        allow read: if canReadTenant(tenantId);
+        allow write: if false;
+      }
+
+      match /appointments/{appointmentId} {
+        allow read: if canReadTenant(tenantId);
+        allow write: if false;
+      }
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

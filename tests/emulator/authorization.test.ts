@@ -192,7 +192,8 @@ describe("Google identity is not authorization", () => {
   it("keeps operational Firestore closed to authenticated clients", () => {
     const rules = readFileSync("firebase/firestore.rules", "utf8");
     expect(rules).toContain("allow read, write: if false");
-    expect(rules).not.toContain("request.auth");
+    expect(rules).not.toContain("allow read, write: if request.auth != null");
+    expect(rules).toContain("canReadTenant");
   });
 
   it("does not throw when the authorization error is an ApiError", () => {

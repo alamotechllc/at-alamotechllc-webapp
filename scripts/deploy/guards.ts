@@ -59,10 +59,6 @@ export function webConfigFailure(env: Record<string, string | undefined>): Stop 
   if (!authDomain || authDomain.includes("://") || authDomain.includes("/")) {
     return { stage: "web-config", message: "VITE_FIREBASE_AUTH_DOMAIN must be the Firebase auth host, without https://." };
   }
-  const api = env.VITE_API_BASE_URL ?? "";
-  if (!api.startsWith("https://")) {
-    return { stage: "web-config", message: "VITE_API_BASE_URL must be the HTTPS origin of raas-api." };
-  }
   return null;
 }
 

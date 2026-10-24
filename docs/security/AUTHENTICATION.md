@@ -6,10 +6,9 @@ Google sign-in proves who a person is. It does not grant access to the applicati
 
 1. The browser signs in with Google through Firebase Authentication.
 2. Firebase returns an ID token.
-3. The browser sends that token to `raas-api` as `Authorization: Bearer`.
-4. The API verifies the token with the Firebase Admin SDK.
-5. The API resolves an application principal from server records. The token claim is not the grant.
-6. The API allows or denies the requested action.
+3. The browser reads the caller's own authorization record in Firestore.
+4. Firestore Security Rules allow or deny that read from the stored role, status, and tenant assignment.
+5. Later reads of tenant data use the same rules. The token claim is not the grant.
 
 A verified token with no application record returns `403 ACCESS_NOT_AUTHORIZED`. The screen says:
 
@@ -21,7 +20,7 @@ That response does not include tenant names, roles, or internal identifiers.
 
 ## What the browser holds
 
-The web app uses the Firebase web configuration (`apiKey`, `authDomain`, `projectId`). That configuration identifies the Firebase project. It is not an authorization secret and it is not an Admin credential. The Admin SDK stays on `raas-api`, `raas-ingress`, and the bootstrap command.
+The web app uses the Firebase web configuration (`apiKey`, `authDomain`, `projectId`). That configuration identifies the Firebase project. It is not an authorization secret and it is not an Admin credential. The Admin SDK stays on trusted server jobs and the bootstrap command.
 
 Local development connects to the Auth emulator when `VITE_USE_FIREBASE_EMULATORS` is not `false`. The emulator form accepts the seeded password account. A release build hides that form and requires the web configuration. Google is the primary action: **Continue with Google**. The `hd=alamotechllc.com` parameter only asks Google's account picker to prefer the Workspace domain. The API still checks the domain before any staff role is accepted.
 
@@ -35,11 +34,9 @@ Local development connects to the Auth emulator when `VITE_USE_FIREBASE_EMULATOR
 | Token verified, no grant | "Access not authorized" |
 | Server record disabled | "Account disabled" |
 | Token refresh still rejected | "Session expired" |
-| API did not respond | "We couldn't confirm access". This is not treated as a denial |
+| Firestore did not respond | "We couldn't confirm access". This is not treated as a denial |
 
-After sign-in, the browser calls `GET /v1/session`. The response is `{ authorized: true, role, tenantId? }` for a principal the server accepted. The UI does not read `raasRole` from the ID token to decide access. Sign-out clears the Firebase session. Restoring the page asks Firebase for the current user and then asks `/v1/session` again.
-
-`GET /v1/session` returns `401` when the bearer is missing or is not a Firebase ID token. One forced refresh is attempted. A second `401` is a session expiry.
+After sign-in, the browser reads the caller's authorization document. An active matching record opens the app. The UI does not read `raasRole` from the ID token to decide access. Sign-out clears the Firebase session. Restoring the page asks Firebase for the current user and then reads the authorization document again.
 
 ## Staff domain
 

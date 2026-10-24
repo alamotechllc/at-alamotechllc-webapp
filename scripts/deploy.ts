@@ -129,7 +129,6 @@ const PUBLIC_WEB_KEYS = [
   "VITE_FIREBASE_PROJECT_ID",
   "VITE_FIREBASE_API_KEY",
   "VITE_FIREBASE_AUTH_DOMAIN",
-  "VITE_API_BASE_URL",
 ] as const;
 
 function readPublicWebFile(): Record<string, string> {

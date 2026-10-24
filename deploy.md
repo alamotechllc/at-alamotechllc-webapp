@@ -61,22 +61,21 @@ There is no `PRODUCTION_APPROVED` flag in source control. Do not add one.
 
 A Hosting preview channel is another URL for the same Firebase project as production Hosting.
 
-Until Cloud Run exists, that URL has no `raas-api`, `raas-ingress`, or `ghl-adapter`. The release build refuses to embed the Auth emulator or `demo-raas-cp`. It requires:
+The release build refuses to embed the Auth emulator or `demo-raas-cp`. It requires:
 
 - `VITE_FIREBASE_PROJECT_ID=at-alamotechllc-webapp`
 - `VITE_FIREBASE_API_KEY`
 - `VITE_FIREBASE_AUTH_DOMAIN`
-- `VITE_API_BASE_URL` starting with `https://`
 
-Those values are public web config plus the API origin. They are not service-account keys. Do not commit them. Do not prefix a server secret with `VITE_`.
+Those values are public web config. They are not service-account keys. Do not commit them. Do not prefix a server secret with `VITE_`. Ordinary signed-in reads use Firestore. Hosting does not require `VITE_API_BASE_URL` or a Cloud Run service.
 
-`npm run deploy:dev` deploys Hosting only. It does not deploy Firestore rules, Storage rules, or Cloud Run. Rules are project-wide: deploying them changes every environment that shares the project, so they have their own production gate.
+`npm run deploy:dev` deploys Hosting only. It does not deploy Firestore rules, Storage rules, or Cloud Run. Rules are project-wide: deploying them changes every environment that shares the project.
 
 Local destructive tests stay on the emulators (`npm run test:emulators`, Auth `9198`, Firestore `8280`, Storage `9399`).
 
 ## What this repository cannot deploy yet
 
-`npm run deploy:dev` stops before Firebase when any stop condition below is true. `origin` is `https://github.com/alamotechllc/at-alamotechllc-webapp.git`. The script reads only `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, and `VITE_API_BASE_URL` from the environment or from gitignored `.env`. It does not read the GoHighLevel token. `VITE_API_BASE_URL` is still unset because `raas-api` has no HTTPS origin. There is no hosted smoke suite. The script records a DEV stamp only after Firebase returns a preview URL, and it marks smoke `not-automated`. Production refuses that stamp.
+`npm run deploy:dev` stops before Firebase when any stop condition below is true. `origin` is `https://github.com/alamotechllc/at-alamotechllc-webapp.git`. The script reads only `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_API_KEY`, and `VITE_FIREBASE_AUTH_DOMAIN` from the environment or from gitignored `.env`. It does not read the GoHighLevel token. There is no hosted smoke suite. The script records a DEV stamp only after Firebase returns a preview URL, and it marks smoke `not-automated`. Production refuses that stamp.
 
 Do not paper over those stops by calling `firebase deploy` directly.
 

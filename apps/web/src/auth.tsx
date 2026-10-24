@@ -12,8 +12,8 @@ import {
   signOut,
   type User,
 } from "firebase/auth";
+import { connectFirestoreEmulator, doc, getDoc, getFirestore, type Firestore } from "firebase/firestore";
 import { isRaasRole, type RaasRole } from "../../../packages/domain/src/rbac";
-import { apiGet, ApiRequestError } from "./api";
 
 export const authUsesEmulator =
   import.meta.env.VITE_USE_FIREBASE_EMULATORS === "true" ||
@@ -28,6 +28,14 @@ const auth = app ? getAuth(app) : null;
 if (auth && authUsesEmulator && !auth.emulatorConfig) {
   const emulatorHost = import.meta.env.VITE_FIREBASE_AUTH_EMULATOR_HOST || "127.0.0.1:9198";
   connectAuthEmulator(auth, `http://${emulatorHost}`, { disableWarnings: true });
+}
+export const clientDb: Firestore | null = app ? getFirestore(app) : null;
+const emulatorFlag = globalThis as { __raasFirestoreEmulator?: boolean };
+if (clientDb && authUsesEmulator && !emulatorFlag.__raasFirestoreEmulator) {
+  const host = import.meta.env.VITE_FIRESTORE_EMULATOR_HOST || "127.0.0.1:8280";
+  const [hostname, port] = host.split(":");
+  connectFirestoreEmulator(clientDb, hostname ?? "127.0.0.1", Number(port || "8280"));
+  emulatorFlag.__raasFirestoreEmulator = true;
 }
 
 export type Access = "loading" | "anonymous" | "authorized" | "denied" | "disabled" | "expired" | "unavailable";
@@ -53,17 +61,60 @@ interface Session {
 
 const SessionContext = createContext<Session | null>(null);
 
-async function loadProfile(user: User): Promise<SessionProfile> {
-  const token = await user.getIdToken();
-  try {
-    return await apiGet<SessionProfile>("/v1/session", token);
-  } catch (error) {
-    if (error instanceof ApiRequestError && error.status === 401) {
-      const refreshed = await user.getIdToken(true);
-      return apiGet<SessionProfile>("/v1/session", refreshed);
-    }
-    throw error;
+class AccessError extends Error {
+  constructor(readonly kind: "denied" | "disabled" | "unavailable") {
+    super(kind);
   }
+}
+
+function staffDomain(email: string | null): boolean {
+  const domain = email?.split("@")[1]?.toLowerCase() ?? "";
+  if (domain === "alamotechllc.com") return true;
+  return authUsesEmulator && domain === "alamotechllc.test";
+}
+
+function field(data: Record<string, unknown>, key: string): string {
+  const value = data[key];
+  return typeof value === "string" ? value : "";
+}
+
+async function loadProfile(user: User): Promise<SessionProfile> {
+  if (!clientDb) throw new AccessError("unavailable");
+  const email = user.email ?? "";
+  const admin = await getDoc(doc(clientDb, "platformAdmins", user.uid));
+  if (admin.exists()) {
+    const data = admin.data();
+    const status = field(data, "status");
+    if (status === "disabled") throw new AccessError("disabled");
+    if (status === "active" && staffDomain(email) && field(data, "email").toLowerCase() === email.toLowerCase()) {
+      return { role: "platform_admin" };
+    }
+    throw new AccessError("denied");
+  }
+
+  const operator = await getDoc(doc(clientDb, "operators", user.uid));
+  if (operator.exists()) {
+    const data = operator.data();
+    const status = field(data, "status");
+    if (status === "disabled") throw new AccessError("disabled");
+    if (status === "active" && staffDomain(email) && field(data, "email").toLowerCase() === email.toLowerCase()) {
+      return { role: "operator" };
+    }
+    throw new AccessError("denied");
+  }
+
+  const token = await user.getIdTokenResult();
+  const tenantId = typeof token.claims.tenantId === "string" ? token.claims.tenantId : "";
+  if (/^ten_[A-Za-z0-9]+$/.test(tenantId)) {
+    const member = await getDoc(doc(clientDb, "tenants", tenantId, "members", user.uid));
+    if (member.exists()) {
+      const data = member.data();
+      if (field(data, "status") !== "active") throw new AccessError("disabled");
+      const role = field(data, "role");
+      if (role === "tenant_admin" || role === "tenant_viewer") return { role, tenantId };
+    }
+  }
+  throw new AccessError("denied");
 }
 
 export function SessionProvider({ children }: { children: ReactNode }) {
@@ -104,16 +155,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       })
       .catch((error: unknown) => {
         if (cancelled) return;
-        if (error instanceof ApiRequestError && error.status === 403 && error.code === "ACCOUNT_DISABLED") {
+        if (error instanceof AccessError && error.kind === "disabled") {
           setAccess("disabled");
           return;
         }
-        if (error instanceof ApiRequestError && error.status === 403) {
+        if (error instanceof AccessError && error.kind === "denied") {
           setAccess("denied");
           return;
         }
-        if (error instanceof ApiRequestError && error.status === 401) {
-          setAccess("expired");
+        const code = error && typeof error === "object" && "code" in error ? String(error.code) : "";
+        if (code.includes("permission-denied") || code.includes("unauthenticated")) {
+          setAccess("denied");
           return;
         }
         setAccess("unavailable");

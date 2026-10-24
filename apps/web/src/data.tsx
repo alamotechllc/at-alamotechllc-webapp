@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { apiGet, ApiRequestError } from "./api";
 import { useSession } from "./auth";
 import type { ViewFailure } from "./metrics";
+import { readApplicationPath, ReadFailure } from "./reads";
 
 type Payload<T> =
   | { status: "loading" }
@@ -20,18 +20,17 @@ export function useApi<T>(path: string | null | undefined): LoadState<T> {
     if (!session.ready || session.access !== "authorized" || !session.user || !path) return;
     let cancelled = false;
     setState({ status: "loading" });
-    session.token()
-      .then((token) => apiGet<T>(path, token))
+    readApplicationPath(path)
       .then((data) => {
-        if (!cancelled) setState({ status: "ready", data });
+        if (!cancelled) setState({ status: "ready", data: data as T });
       })
       .catch((error: unknown) => {
         if (cancelled) return;
-        if (error instanceof ApiRequestError) {
+        if (error instanceof ReadFailure) {
           setState({ status: "failed", failure: error.failure, message: error.message });
           return;
         }
-        setState({ status: "failed", failure: "unavailable", message: "The API is unavailable." });
+        setState({ status: "failed", failure: "unavailable", message: "The data service did not respond." });
       });
     return () => {
       cancelled = true;

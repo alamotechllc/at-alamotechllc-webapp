@@ -22,7 +22,7 @@ An operator signs in with the Auth emulator, opens RaaS, and sees Alamo Tech LLC
 | Ingress | `services/raas-ingress` authenticates the service identity, authorizes the provider, resolves the binding, derives `tenantId` and `serviceInstanceId`, validates the contract, writes the event and projections in one transaction, and returns `{ eventId, leadId, replayed, receiptId }`. `GET /v1/ingress/bindings:resolve` is the adapter lookup |
 | GoHighLevel adapter | `services/ghl-adapter` accepts `POST /webhooks/gohighlevel/{externalAccountId}`, verifies the local HMAC, and maps only `AppointmentCreate` to `AppointmentBooked`. Vendor JSON stays in that service |
 | Secrets | `@raas/secrets` is the Secret Manager boundary. `raas-api` calls `addVersion` and does not read. The adapter calls `access`. Local stores are memory and `.local/secrets`. No Google Secret Manager client is called |
-| Rules | `firebase/firestore.rules` and `firebase/storage.rules` are deny-all |
+| Rules | Firestore rules authorize tenant reads from an active role record. Provider bindings, events, audit, and secrets stay closed. Storage rules are deny-all. The browser does not call `raas-api` for ordinary reads |
 | Frontend boundary | `apps/web` has no operational data client. `npm run guard:frontend` fails if that tree imports `firebase-admin`, the Firestore or Storage client, or the backend packages |
 | Operator UI | `apps/web` reuses the Alamo Tech shell. Google is the sign-in action. The UI calls `GET /v1/session` and shows Overview, Clients, Appointments, Results, and Operations only after the API authorizes the principal. Appointments Booked is the only measured Lead Capture number. Other catalog metrics say `Not configured`. Leads, Campaigns, Integrations, and Administration are not routed |
 | CI | `.github/workflows/ci.yml` runs typecheck, lint, the import guard, unit tests, and emulator tests. There is no deploy job. Operator deploy gates are in `deploy.md` at the repository root and stay off CI |
@@ -70,10 +70,10 @@ Covered:
 - An adapter bearer on a human route is `401`. Malformed JSON is `400`. An operator replay of an admin binding create does not receive `secretResource`
 - GoHighLevel fixtures: valid booking, replay, malformed booking, missing fields, unknown location, and a conflicting appointment id
 - The valid fixture produces `appointmentsBooked=1`, replay keeps that count, and the conflict fixture leaves the original event in place
-- Firestore deny-all for anonymous and signed-in clients, including a platform-admin claim
+- Firestore denies anonymous clients, signed-in users with no grant, and a platform-admin claim that has no active record
 - Storage deny-all for an unauthenticated upload
 - Metric presentation: a measured `appointmentsBooked` of `0` stays `0`, and an unconfigured metric returned as `0` stays `Not configured`
-- Browser check on the local stack: operator sign-in, Alamo Tech LLC, Lead Capture, Appointments Booked `1` from `raas-api`, replay left the count at `1`, and the page load recorded no Firestore request
+- Browser reads authorized tenant data from Firestore. Appointments Booked is counted from appointments the caller is allowed to read
 
 `./scripts/build.sh` runs typecheck and the frontend guard. `./scripts/test.sh` runs unit tests and the emulator suite.
 

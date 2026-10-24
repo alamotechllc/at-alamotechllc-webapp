@@ -52,7 +52,16 @@ Disabling `platformAdmins/{uid}`, `operators/{uid}`, or `tenants/{tenantId}/memb
 
 ## Firestore
 
-`firebase/firestore.rules` is `allow read, write: if false` for every document. A signed-in client, including one with a `platform_admin` claim, cannot read operational collections. The browser calls the API. The API uses the Admin SDK, which does not evaluate those rules, so these API tests are the enforcement.
+Ordinary application reads are decided by `firebase/firestore.rules`. A signed-in Google user is not enough. The rules re-read `platformAdmins/{uid}`, `operators/{uid}` plus `assignments/{tenantId}`, or `tenants/{tenantId}/members/{uid}`. The record must be `active`. Staff roles also require an `@alamotechllc.com` address that matches the stored email. An `@alamotechllc.test` address is accepted only as the local emulator stand-in.
+
+| Client access | Paths |
+| --- | --- |
+| Read when the caller can read that tenant | Tenant profile, `serviceInstances`, `campaigns`, `leads`, `appointments` |
+| Read of the caller's own record | `platformAdmins/{uid}`, `operators/{uid}`, assignments, `members/{uid}` |
+| No client read or write | `providerBindings`, `businessEvents`, `auditEvents`, `idempotency`, `deadLetters`, `platformAudit`, `appointmentIndex`, and every other path |
+| No client write | Every path, including the readable ones |
+
+`request.auth != null` does not grant a collection. A role claim without the matching record does not grant it. Provider secrets and raw receipts stay closed. Privileged writes stay on the Admin SDK, a future function, or the existing server packages.
 
 ## Audit
 
@@ -66,4 +75,4 @@ There is no Administration → Users API in this phase. The next phase can list 
 
 ## Frontend
 
-`GET /v1/session` is the only role the UI uses. Navigation shows Overview, Clients, Appointments, Results, and Operations when the server role has the matching read permission. Integrations and Administration are not pages. Hidden links are not a control. Tenant roles request `session.tenantId`. Staff routes in the current UI still open Tenant Zero, because there is no tenant-list API. A pasted tenant id is still decided by the API.
+The UI resolves the role from those same Firestore records. It does not treat `raasRole` on the ID token as the grant. Navigation shows Overview, Clients, Appointments, Results, and Operations when that role has the matching read permission. Integrations and Administration are not pages. Hidden links are not a control. Tenant roles use the membership tenant. Staff routes in the current UI still open Tenant Zero, because there is no tenant list. A pasted tenant id is still decided by the rules.
