@@ -8,6 +8,7 @@ node_modules/
 !.env.example
 .local/
 .deploy/
+.firebase/
 dist/
 firebase-debug.log
 firestore-debug.log
