@@ -17,6 +17,10 @@ function text(data: DocumentData, key: string): string {
   return "";
 }
 
+function optionalText(data: DocumentData, key: string): string | null {
+  return text(data, key) || null;
+}
+
 async function readPath(path: string): Promise<unknown> {
   if (!clientDb) throw new ReadFailure("error", "Firebase web configuration is missing.");
   const url = new URL(path, "https://local.invalid");
@@ -52,6 +56,31 @@ async function readPath(path: string): Promise<unknown> {
     };
   }
 
+  if (resource === "campaigns") {
+    const snap = await getDocs(collection(clientDb, "tenants", tenantId, "campaigns"));
+    return {
+      items: snap.docs.map((item) => ({
+        campaignId: item.id,
+        name: text(item.data(), "name"),
+        channel: text(item.data(), "channel"),
+        status: text(item.data(), "status"),
+        serviceInstanceId: text(item.data(), "serviceInstanceId"),
+      })),
+    };
+  }
+
+  if (resource === "leads") {
+    const snap = await getDocs(collection(clientDb, "tenants", tenantId, "leads"));
+    return {
+      items: snap.docs.map((item) => ({
+        leadId: item.id,
+        status: text(item.data(), "status"),
+        campaignId: optionalText(item.data(), "campaignId"),
+        createdAt: text(item.data(), "createdAt"),
+      })),
+    };
+  }
+
   if (resource === "appointments") {
     const snap = await getDocs(collection(clientDb, "tenants", tenantId, "appointments"));
     return {
@@ -63,6 +92,7 @@ async function readPath(path: string): Promise<unknown> {
         startAt: text(item.data(), "startAt"),
         endAt: text(item.data(), "endAt"),
         timezone: text(item.data(), "timezone"),
+        campaignId: optionalText(item.data(), "campaignId"),
       })),
     };
   }

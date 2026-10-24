@@ -6,6 +6,7 @@ export const ANALYTICS_EVENTS = {
   commandCenterViewed: "command_center_viewed",
   raasOverviewViewed: "raas_overview_viewed",
   clientsViewed: "clients_viewed",
+  campaignsViewed: "campaigns_viewed",
   appointmentsViewed: "appointments_viewed",
   resultsViewed: "results_viewed",
   operationsViewed: "operations_viewed",
@@ -54,6 +55,9 @@ export function screenForPath(pathname: string): AnalyticsScreen | null {
   }
   if (/^\/clients\/[^/]+$/.test(path)) {
     return { pagePath: "/clients/detail", title: "Client", event: ANALYTICS_EVENTS.clientsViewed };
+  }
+  if (path === "/campaigns") {
+    return { pagePath: "/campaigns", title: "Campaigns", event: ANALYTICS_EVENTS.campaignsViewed };
   }
   if (path === "/appointments") {
     return { pagePath: "/appointments", title: "Appointments", event: ANALYTICS_EVENTS.appointmentsViewed };

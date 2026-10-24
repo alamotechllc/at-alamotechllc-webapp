@@ -39,6 +39,7 @@ A React rerender of the same screen does not send another page view. Restoring a
 | `/` | `/` | `raas_overview_viewed` |
 | `/clients` | `/clients` | `clients_viewed` |
 | `/clients/{id}` | `/clients/detail` | `clients_viewed` |
+| `/campaigns` | `/campaigns` | `campaigns_viewed` |
 | `/appointments` | `/appointments` | `appointments_viewed` |
 | `/results` | `/results` | `results_viewed` |
 | `/operations` | `/operations` | `operations_viewed` |
@@ -58,6 +59,7 @@ The client route drops the tenant id before anything is sent.
 | `command_center_viewed` | The authorized shell is shown, once per page load |
 | `raas_overview_viewed` | `/` |
 | `clients_viewed` | Clients list or a client screen |
+| `campaigns_viewed` | Campaigns |
 | `appointments_viewed` | Appointments |
 | `results_viewed` | Results |
 | `operations_viewed` | Operations |

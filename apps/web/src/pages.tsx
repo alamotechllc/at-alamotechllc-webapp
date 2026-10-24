@@ -8,6 +8,7 @@ import { DataTable, EmptyState, ErrorState, LoadingState, SectionHeader, Unavail
 import { useSession } from "./auth";
 import { useApi, type LoadState } from "./data";
 import { formatWhen } from "./format";
+import { campaignHealth, type CampaignVerdictLabel } from "./campaign-health";
 import { metricWindow, presentMetrics } from "./metrics";
 import { retryAll, sharedFailure, unavailableLabel } from "./view-state";
 
@@ -22,6 +23,13 @@ interface Appointment {
   startAt: string;
   endAt: string;
   timezone: string;
+  campaignId: string | null;
+}
+interface Campaign {
+  campaignId: string;
+  name: string;
+  channel: string;
+  status: string;
 }
 interface BusinessEvent { eventId: string; eventType: string; occurredAt: string; recordedAt: string }
 interface Results { metrics: Record<string, { value: number | null; unit: string }> }
@@ -274,6 +282,70 @@ export function ClientPage() {
           </Region>
         </div>
       </AppCard>
+    </div>
+  );
+}
+
+function verdictTone(verdict: CampaignVerdictLabel): "success" | "warning" | "muted" {
+  if (verdict === "Working") return "success";
+  if (verdict === "No bookings this period") return "warning";
+  return "muted";
+}
+
+export function CampaignsPage() {
+  const tenantId = useWorkspaceTenantId();
+  const base = tenantId ? `/v1/tenants/${tenantId}` : null;
+  const campaigns = useApi<{ items: Campaign[] }>(base ? `${base}/campaigns` : null);
+  const appointments = useApi<{ items: Appointment[] }>(base ? `${base}/appointments` : null);
+  const states = [campaigns, appointments];
+  const outage = sharedFailure(states);
+  const health = campaigns.status === "ready" && appointments.status === "ready"
+    ? campaignHealth(campaigns.data.items, appointments.data.items, window)
+    : null;
+  return (
+    <div className="mx-auto flex max-w-6xl flex-col gap-6">
+      <SectionHeader title="Campaigns" detail={`Bookings tied to each campaign · ${window.label}`} />
+      {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
+      {!outage && campaigns.status === "failed" ? <ErrorState failure={campaigns.failure} message={campaigns.message} onRetry={campaigns.retry} /> : null}
+      {!outage && appointments.status === "failed" ? <ErrorState failure={appointments.failure} message={appointments.message} onRetry={appointments.retry} /> : null}
+      {!health && campaigns.status !== "failed" && appointments.status !== "failed" ? <LoadingState label="Loading campaigns" /> : null}
+      {health && health.campaigns.length === 0 ? (
+        <AppCard className="p-6">
+          <EmptyState title="No campaigns yet." detail="A campaign appears here after it is recorded for this client." />
+        </AppCard>
+      ) : null}
+      {health && health.campaigns.length > 0 ? (
+        <AppCard className="p-6">
+          <DataTable headers={["Campaign", "Channel", "Status", "Bookings", "Latest booking", "Verdict"]}>
+            {health.campaigns.map((item) => (
+              <tr key={item.campaignId}>
+                <td>{item.name || item.campaignId}</td>
+                <td>{item.channel}</td>
+                <td><StatusBadge tone={statusTone(item.status)}>{item.status}</StatusBadge></td>
+                <td>{item.bookings}</td>
+                <td>{item.latestBookingAt ? formatWhen(item.latestBookingAt) : "None"}</td>
+                <td><StatusBadge tone={verdictTone(item.verdict)}>{item.verdict}</StatusBadge></td>
+              </tr>
+            ))}
+            <tr>
+              <td>Not tied to a campaign</td>
+              <td />
+              <td />
+              <td>{health.unattributedBookings}</td>
+              <td>{health.unattributedLatestBookingAt ? formatWhen(health.unattributedLatestBookingAt) : "None"}</td>
+              <td />
+            </tr>
+          </DataTable>
+        </AppCard>
+      ) : null}
+      {health && health.campaigns.length === 0 && health.unattributedBookings > 0 ? (
+        <AppCard className="p-6">
+          <h2 className="text-base font-semibold">Not tied to a campaign</h2>
+          <p className="mt-2 text-sm text-foreground-muted">
+            {health.unattributedBookings} bookings in {window.label} have no campaign.
+          </p>
+        </AppCard>
+      ) : null}
     </div>
   );
 }
