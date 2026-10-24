@@ -29,16 +29,18 @@ describe("analytics collection gate", () => {
 describe("analytics screens", () => {
   it("maps command-center routes and strips record ids", () => {
     expect(screenForPath("/sign-in")?.event).toBe("login_viewed");
-    expect(screenForPath("/raas")?.title).toBe("RaaS Overview");
-    expect(screenForPath("/raas/clients")?.event).toBe("clients_viewed");
-    expect(screenForPath("/raas/clients/ten_01ARZ3NDEKTSV4RRFFQ69G5FAV")).toEqual({
-      pagePath: "/raas/clients/detail",
+    expect(screenForPath("/")?.title).toBe("RaaS Overview");
+    expect(screenForPath("/raas")?.pagePath).toBe("/");
+    expect(screenForPath("/clients")?.event).toBe("clients_viewed");
+    expect(screenForPath("/clients/ten_01ARZ3NDEKTSV4RRFFQ69G5FAV")).toEqual({
+      pagePath: "/clients/detail",
       title: "Client",
       event: "clients_viewed",
     });
-    expect(screenForPath("/raas/appointments")?.event).toBe("appointments_viewed");
-    expect(screenForPath("/raas/results")?.event).toBe("results_viewed");
-    expect(screenForPath("/raas/operations")?.event).toBe("operations_viewed");
+    expect(screenForPath("/raas/clients/ten_01ARZ3NDEKTSV4RRFFQ69G5FAV")?.pagePath).toBe("/clients/detail");
+    expect(screenForPath("/appointments")?.event).toBe("appointments_viewed");
+    expect(screenForPath("/results")?.event).toBe("results_viewed");
+    expect(screenForPath("/operations")?.event).toBe("operations_viewed");
     expect(screenForPath("/unknown")).toBeNull();
   });
 });

@@ -21,6 +21,7 @@ import {
   type Stop,
 } from "./deploy/guards.js";
 import { scannable, scanText } from "./deploy/scan.js";
+import { previewAssetPaths, previewSmokeFailure } from "./deploy/smoke.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -183,7 +184,38 @@ function deployDevChannel(): string {
   return url;
 }
 
-function commandDev(): void {
+async function smokePreview(url: string, sha: string, channel = "dev"): Promise<Stop | null> {
+  let status: number;
+  let html: string;
+  try {
+    const response = await fetch(url, { redirect: "follow" });
+    status = response.status;
+    html = await response.text();
+  } catch {
+    return { stage: "smoke", message: "Preview URL did not respond." };
+  }
+  const page = previewSmokeFailure({ status, html, sha, channel });
+  if (page) return page;
+  for (const asset of previewAssetPaths(html)) {
+    try {
+      const response = await fetch(new URL(asset, url), { redirect: "follow" });
+      await response.arrayBuffer();
+      if (!response.ok) {
+        return { stage: "smoke", message: `Preview asset ${asset} returned HTTP ${response.status}.` };
+      }
+    } catch {
+      return { stage: "smoke", message: `Preview asset ${asset} did not respond.` };
+    }
+  }
+  return null;
+}
+
+function writeStamp(stamp: DevStamp): void {
+  mkdirSync(path.join(root, ".deploy"), { recursive: true });
+  writeFileSync(path.join(root, ".deploy", "last-dev.json"), `${JSON.stringify(stamp, null, 2)}\n`);
+}
+
+async function commandDev(): Promise<void> {
   const hosting = hostingTargetFailure(readHostingPublic());
   if (hosting) stop(hosting);
   const project = projectTargetFailure(FIREBASE_PROJECT_ID);
@@ -197,18 +229,30 @@ function commandDev(): void {
   qualityGate(env);
   run("git", ["push", "origin", "HEAD:dev"]);
   const url = deployDevChannel();
-  mkdirSync(path.join(root, ".deploy"), { recursive: true });
+  const failure = await smokePreview(url, snapshot.sha!);
   const stamp: DevStamp = {
     sha: snapshot.sha!,
     url,
-    smoke: "not-automated",
+    smoke: failure ? "fail" : "pass",
     projectId: FIREBASE_PROJECT_ID,
   };
-  writeFileSync(path.join(root, ".deploy", "last-dev.json"), `${JSON.stringify(stamp, null, 2)}\n`);
-  stop({
-    stage: "smoke",
-    message: "Hosting may have been deployed. This repository has no hosted smoke suite, so the DEV stamp is not a pass and production stays closed.",
-  });
+  writeStamp(stamp);
+  if (failure) stop(failure);
+  console.log("smoke: pass");
+  console.log(`preview: ${url}`);
+}
+
+async function commandSmoke(): Promise<void> {
+  const stamp = readStamp();
+  const snapshot = gitSnapshot();
+  if (!stamp || !snapshot.sha || stamp.sha !== snapshot.sha || stamp.projectId !== FIREBASE_PROJECT_ID) {
+    stop({ stage: "dev-stamp", message: "A DEV deploy stamp for this commit is missing." });
+  }
+  const failure = await smokePreview(stamp.url, stamp.sha);
+  writeStamp({ ...stamp, smoke: failure ? "fail" : "pass" });
+  if (failure) stop(failure);
+  console.log("smoke: pass");
+  console.log(`preview: ${stamp.url}`);
 }
 
 function commandProd(authorize: string | undefined, sha: string | undefined): void {
@@ -232,6 +276,7 @@ function commandProd(authorize: string | undefined, sha: string | undefined): vo
     stamp: readStamp(),
   });
   if (plan) stop(plan, { branch: snapshot.branch, sha: snapshot.sha ?? "" });
+  if (git(["branch", "--list", "main"]).length === 0) git(["branch", "main", sha!]);
   git(["checkout", "main"]);
   git(["merge", "--ff-only", sha!]);
   const mainSha = git(["rev-parse", "HEAD"]);
@@ -287,11 +332,12 @@ function commandCloudRun(service: string, authorize: string | undefined, sha: st
   stop(cloudRunFailure(service));
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const [command = "", service = ""] = process.argv.slice(2).filter((arg) => !arg.startsWith("--"));
   const authorize = readFlag("--authorize");
   const sha = readFlag("--sha");
-  if (command === "dev") commandDev();
+  if (command === "dev") await commandDev();
+  else if (command === "smoke") await commandSmoke();
   else if (command === "prod") commandProd(authorize, sha);
   else if (command === "rules") commandRules(authorize, sha);
   else if (command === "scan") commandScan();
@@ -308,5 +354,8 @@ function readFlag(name: string): string | undefined {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  main();
+  main().catch((error: unknown) => {
+    const message = error instanceof Error ? error.message : "Deploy failed.";
+    stop({ stage: "deploy", message });
+  });
 }

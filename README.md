@@ -15,7 +15,7 @@ This repository is the customer application. It is not the public marketing site
 
 - Marketing site: `at-alamotechllc-website` at https://alamotechllc.com and https://dev.alamotechllc.com
 - Public RaaS (sell / explain): https://alamotechllc.com/raas
-- Customer RaaS (operate / report / deliver): https://app.alamotechllc.com/raas when this application is deployed
+- Customer RaaS (operate / report / deliver): https://app.alamotechllc.com/
 - RaaS in this repository: Firebase Hosting, Google sign-in, and Firestore for the command center. `raas-ingress` and the GoHighLevel adapter remain local processes for provider webhooks. A general-purpose `raas-api` service is not required.
 - MailGuard: `at-domainmail-webapp`
 

@@ -31,6 +31,7 @@
     "validate:release": "npm run validate && npm run test:emulators && npm run scan:secrets",
     "scan:secrets": "tsx scripts/deploy.ts scan",
     "deploy:dev": "tsx scripts/deploy.ts dev",
+    "deploy:smoke": "tsx scripts/deploy.ts smoke",
     "deploy:prod": "tsx scripts/deploy.ts prod",
     "deploy:rules": "tsx scripts/deploy.ts rules"
   },

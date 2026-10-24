@@ -36,14 +36,14 @@ A React rerender of the same screen does not send another page view. Restoring a
 | --- | --- | --- |
 | `/sign-in` | `/sign-in` | `login_viewed` |
 | Authorized shell, once per page load | `command_center` | `command_center_viewed` |
-| `/raas` | `/raas` | `raas_overview_viewed` |
-| `/raas/clients` | `/raas/clients` | `clients_viewed` |
-| `/raas/clients/{id}` | `/raas/clients/detail` | `clients_viewed` |
-| `/raas/appointments` | `/raas/appointments` | `appointments_viewed` |
-| `/raas/results` | `/raas/results` | `results_viewed` |
-| `/raas/operations` | `/raas/operations` | `operations_viewed` |
+| `/` | `/` | `raas_overview_viewed` |
+| `/clients` | `/clients` | `clients_viewed` |
+| `/clients/{id}` | `/clients/detail` | `clients_viewed` |
+| `/appointments` | `/appointments` | `appointments_viewed` |
+| `/results` | `/results` | `results_viewed` |
+| `/operations` | `/operations` | `operations_viewed` |
 
-There is no separate Command Center overview route. The shell is the command center, and `/raas` is the RaaS overview.
+There is no separate Command Center overview route. The shell is the command center, and `/` is the overview. A visit to `/raas` is recorded as the same screen after the `/raas` prefix is removed.
 
 The client route drops the tenant id before anything is sent.
 
@@ -56,7 +56,7 @@ The client route drops the tenant id before anything is sent.
 | `login_completed` | That attempt becomes an authorized session |
 | `logout` | Sign out |
 | `command_center_viewed` | The authorized shell is shown, once per page load |
-| `raas_overview_viewed` | `/raas` |
+| `raas_overview_viewed` | `/` |
 | `clients_viewed` | Clients list or a client screen |
 | `appointments_viewed` | Appointments |
 | `results_viewed` | Results |

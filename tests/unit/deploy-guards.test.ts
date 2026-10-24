@@ -10,6 +10,7 @@ import {
   type GitSnapshot,
 } from "../../scripts/deploy/guards.js";
 import { scanText } from "../../scripts/deploy/scan.js";
+import { previewSmokeFailure } from "../../scripts/deploy/smoke.js";
 
 const cleanDev: GitSnapshot = {
   branch: "dev",
@@ -62,6 +63,15 @@ describe("deploy guards", () => {
       branch: "dev",
       stamp: { ...stamp, smoke: "not-automated" },
     })?.stage).toBe("dev-stamp");
+  });
+
+  it("accepts a preview that serves this commit", () => {
+    const sha = "d".repeat(40);
+    const html = `<title>Alamo Tech</title><meta name="raas-channel" content="dev" /><meta name="raas-git-sha" content="${sha}" /><script type="module" src="/assets/index-abc.js"></script>`;
+    expect(previewSmokeFailure({ status: 200, html, sha })).toBeNull();
+    expect(previewSmokeFailure({ status: 404, html, sha })?.message).toMatch(/HTTP 404/);
+    expect(previewSmokeFailure({ status: 200, html: "Site Not Found", sha })?.message).toMatch(/empty site/);
+    expect(previewSmokeFailure({ status: 200, html, sha: "e".repeat(40) })?.message).toMatch(/SHA/);
   });
 
   it("reports secret material without copying the value into the rule id", () => {

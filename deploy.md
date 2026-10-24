@@ -75,7 +75,7 @@ Local destructive tests stay on the emulators (`npm run test:emulators`, Auth `9
 
 ## What this repository cannot deploy yet
 
-`npm run deploy:dev` stops before Firebase when any stop condition below is true. `origin` is `https://github.com/alamotechllc/at-alamotechllc-webapp.git`. The script reads the public `VITE_FIREBASE_*` web config from the environment or from gitignored `.env`. It does not read the GoHighLevel token. There is no hosted smoke suite. The script records a DEV stamp only after Firebase returns a preview URL, and it marks smoke `not-automated`. Production refuses that stamp.
+`npm run deploy:dev` stops before Firebase when any stop condition below is true. `origin` is `https://github.com/alamotechllc/at-alamotechllc-webapp.git`. The script reads the public `VITE_FIREBASE_*` web config from the environment or from gitignored `.env`. It does not read the GoHighLevel token. After Firebase returns a preview URL, the script fetches that page and records smoke `pass` only when it is this commit's application. Production refuses any other stamp.
 
 Do not paper over those stops by calling `firebase deploy` directly.
 
@@ -112,6 +112,9 @@ npm run deploy:dev
 # PROD preparation. Prints the plan and exits. Does not merge or deploy.
 npm run deploy:prod
 
+# Re-check the current preview and update the DEV stamp. Does not deploy.
+npm run deploy:smoke
+
 # PROD, only after the phrase and only for the SHA that passed DEV smoke.
 npm run deploy:prod -- --authorize "AUTHORIZE PRODUCTION DEPLOY" --sha <full-sha>
 
@@ -135,7 +138,7 @@ npm run deploy:rules -- --authorize "AUTHORIZE PRODUCTION DEPLOY" --sha <full-sh
 
 `npm run validate` is typecheck, lint, the frontend guard, and unit tests. `npm run validate:release` adds the emulator suite and the secret scan. Neither command deploys.
 
-There is no Playwright suite in this repository. Do not point the emulator tests at a preview or live URL. A DEV stamp whose smoke is not `pass` cannot be promoted.
+There is no Playwright suite in this repository. Do not point the emulator tests at a preview or live URL. Hosted smoke fetches the preview URL after the channel deploy and checks the application title, `raas-channel`, `raas-git-sha`, and the built assets. A DEV stamp whose smoke is not `pass` cannot be promoted.
 
 ## Release identity
 
@@ -164,9 +167,9 @@ The script then:
 6. Pushes `HEAD` to `origin/dev` without force.
 7. Deploys Hosting preview channel `dev` for 30 days.
 8. Stops if Firebase does not return an `https` URL.
-9. Writes `.deploy/last-dev.json` (gitignored) with smoke `not-automated` and exits non-zero. That stamp does not authorize production.
+9. Fetches the preview and writes `.deploy/last-dev.json` (gitignored). Smoke `pass` means the preview served this commit's application and its assets. Smoke `fail` exits non-zero and leaves production closed.
 
-Report the commit, the preview URL, the time, and the smoke result. Smoke `not-automated` means the preview, if Firebase created one, is not a promotion candidate.
+Report the commit, the preview URL, the time, and the smoke result.
 
 ## PRODUCTION procedure
 
@@ -186,7 +189,7 @@ Authorize that exact commit with:
 npm run deploy:prod -- --authorize "AUTHORIZE PRODUCTION DEPLOY" --sha <full-40-char-sha>
 ```
 
-The script then checks the phrase, the SHA, a `dev` branch, and a DEV stamp whose smoke is `pass`. It fast-forwards `main` to that SHA, pushes `origin/main` without force, rebuilds with channel `production`, and deploys Hosting only.
+The script then checks the phrase, the SHA, a `dev` branch, and a DEV stamp whose smoke is `pass`. It creates `main` at that SHA when the branch does not exist yet, otherwise fast-forwards `main`, pushes `origin/main` without force, rebuilds with channel `production`, and deploys Hosting only.
 
 If `main` cannot fast-forward, it stops and Firebase is not changed. A new commit voids the approval.
 

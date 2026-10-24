@@ -3,11 +3,11 @@ import { hasPermission, type Permission, type RaasRole } from "../../../../../pa
 import { cn } from "../../lib/cn";
 
 const NAV: { to: string; label: string; end: boolean; permission: Permission }[] = [
-  { to: "/raas", label: "Overview", end: true, permission: "tenant.read" },
-  { to: "/raas/clients", label: "Clients", end: false, permission: "tenant.read" },
-  { to: "/raas/appointments", label: "Appointments", end: false, permission: "appointment.read" },
-  { to: "/raas/results", label: "Results", end: false, permission: "result.read" },
-  { to: "/raas/operations", label: "Operations", end: false, permission: "providerBinding.read" },
+  { to: "/", label: "Overview", end: true, permission: "tenant.read" },
+  { to: "/clients", label: "Clients", end: false, permission: "tenant.read" },
+  { to: "/appointments", label: "Appointments", end: false, permission: "appointment.read" },
+  { to: "/results", label: "Results", end: false, permission: "result.read" },
+  { to: "/operations", label: "Operations", end: false, permission: "providerBinding.read" },
 ];
 
 export function SidebarNav({ role, onNavigate }: { role: RaasRole | null; onNavigate?: () => void }) {

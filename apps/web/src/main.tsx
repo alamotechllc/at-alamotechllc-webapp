@@ -80,7 +80,7 @@ function Gate() {
 function SignInPage() {
   const session = useSession();
   const [pending, setPending] = useState(false);
-  if (session.access === "authorized") return <Navigate to="/raas" replace />;
+  if (session.access === "authorized") return <Navigate to="/" replace />;
   if (session.user && (session.access === "denied" || session.access === "disabled" || session.access === "unavailable")) {
     return <AccessCard access={session.access} />;
   }
@@ -137,6 +137,12 @@ function SignInPage() {
   );
 }
 
+function LegacyRaasRedirect() {
+  const location = useLocation();
+  const next = location.pathname.replace(/^\/raas(?=\/|$)/, "") || "/";
+  return <Navigate to={`${next}${location.search}${location.hash}`} replace />;
+}
+
 class AppErrorBoundary extends Component<{ children: ReactNode }, { message: string }> {
   state = { message: "" };
 
@@ -165,15 +171,17 @@ createRoot(document.getElementById("root")!).render(
             <ProductAnalytics />
             <Routes>
               <Route path="/sign-in" element={<SignInPage />} />
+              <Route path="/raas/*" element={<LegacyRaasRedirect />} />
+              <Route path="/raas" element={<LegacyRaasRedirect />} />
               <Route element={<Gate />}>
-                <Route path="/raas" element={<OverviewPage />} />
-                <Route path="/raas/clients" element={<ClientsPage />} />
-                <Route path="/raas/clients/:tenantId" element={<ClientPage />} />
-                <Route path="/raas/appointments" element={<AppointmentsPage />} />
-                <Route path="/raas/results" element={<ResultsPage />} />
-                <Route path="/raas/operations" element={<OperationsPage />} />
+                <Route path="/" element={<OverviewPage />} />
+                <Route path="/clients" element={<ClientsPage />} />
+                <Route path="/clients/:tenantId" element={<ClientPage />} />
+                <Route path="/appointments" element={<AppointmentsPage />} />
+                <Route path="/results" element={<ResultsPage />} />
+                <Route path="/operations" element={<OperationsPage />} />
               </Route>
-              <Route path="*" element={<Navigate to="/raas" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>
         </SessionProvider>

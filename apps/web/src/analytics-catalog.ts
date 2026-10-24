@@ -42,26 +42,27 @@ export function analyticsShouldCollect(gate: AnalyticsGate): boolean {
 
 /** Generic screen paths. Tenant ids and other record identifiers are not analytics properties. */
 export function screenForPath(pathname: string): AnalyticsScreen | null {
-  if (pathname === "/sign-in") {
+  const path = pathname.replace(/^\/raas(?=\/|$)/, "") || "/";
+  if (path === "/sign-in") {
     return { pagePath: "/sign-in", title: "Login", event: ANALYTICS_EVENTS.loginViewed };
   }
-  if (pathname === "/raas") {
-    return { pagePath: "/raas", title: "RaaS Overview", event: ANALYTICS_EVENTS.raasOverviewViewed };
+  if (path === "/") {
+    return { pagePath: "/", title: "RaaS Overview", event: ANALYTICS_EVENTS.raasOverviewViewed };
   }
-  if (pathname === "/raas/clients") {
-    return { pagePath: "/raas/clients", title: "Clients", event: ANALYTICS_EVENTS.clientsViewed };
+  if (path === "/clients") {
+    return { pagePath: "/clients", title: "Clients", event: ANALYTICS_EVENTS.clientsViewed };
   }
-  if (/^\/raas\/clients\/[^/]+$/.test(pathname)) {
-    return { pagePath: "/raas/clients/detail", title: "Client", event: ANALYTICS_EVENTS.clientsViewed };
+  if (/^\/clients\/[^/]+$/.test(path)) {
+    return { pagePath: "/clients/detail", title: "Client", event: ANALYTICS_EVENTS.clientsViewed };
   }
-  if (pathname === "/raas/appointments") {
-    return { pagePath: "/raas/appointments", title: "Appointments", event: ANALYTICS_EVENTS.appointmentsViewed };
+  if (path === "/appointments") {
+    return { pagePath: "/appointments", title: "Appointments", event: ANALYTICS_EVENTS.appointmentsViewed };
   }
-  if (pathname === "/raas/results") {
-    return { pagePath: "/raas/results", title: "Results", event: ANALYTICS_EVENTS.resultsViewed };
+  if (path === "/results") {
+    return { pagePath: "/results", title: "Results", event: ANALYTICS_EVENTS.resultsViewed };
   }
-  if (pathname === "/raas/operations") {
-    return { pagePath: "/raas/operations", title: "Operations", event: ANALYTICS_EVENTS.operationsViewed };
+  if (path === "/operations") {
+    return { pagePath: "/operations", title: "Operations", event: ANALYTICS_EVENTS.operationsViewed };
   }
   return null;
 }

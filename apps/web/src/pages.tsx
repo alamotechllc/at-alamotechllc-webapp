@@ -162,7 +162,7 @@ export function ClientsPage() {
           <>
           <Link
             className="block rounded-lg border border-border bg-card p-6 text-card-foreground shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            to={`/raas/clients/${data.tenantId}`}
+            to={`/clients/${data.tenantId}`}
           >
             <h2 className="text-xl font-semibold">{data.legalName}</h2>
             <p className="mt-1 text-sm text-foreground-muted">Lead Capture</p>
