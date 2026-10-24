@@ -1,0 +1,12 @@
+{
+  "name": "@raas/auth",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "@raas/domain": "*"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

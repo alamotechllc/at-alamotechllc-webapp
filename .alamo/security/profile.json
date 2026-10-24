@@ -1,0 +1,142 @@
+{
+  "schemaVersion": "1.0.0",
+  "project_id": "at-customer-webapp",
+  "evaluated_at": "2026-10-23T21:21:53.498Z",
+  "mode": "QUICK",
+  "applicable": false,
+  "application": {
+    "project_name": "Alamo Tech Customer Application",
+    "client": "UNKNOWN",
+    "application_type": "greenfield-app",
+    "repository": "UNKNOWN",
+    "production_url": "https://app.alamotechllc.com",
+    "staging_url": "UNKNOWN",
+    "development_url": "UNKNOWN",
+    "domains": "UNKNOWN",
+    "exposure": "UNKNOWN",
+    "authentication_required": "UNKNOWN",
+    "data_classification": "UNKNOWN",
+    "compliance_requirements": "UNKNOWN",
+    "business_criticality": "UNKNOWN",
+    "deployment_platform": "UNKNOWN",
+    "last_security_review": "UNKNOWN",
+    "next_security_review": "UNKNOWN"
+  },
+  "stack": {
+    "frontend": [],
+    "backend": [],
+    "frameworks": [],
+    "database": [],
+    "infrastructure": [],
+    "indicators": []
+  },
+  "deployment": {
+    "expected": {},
+    "verified": {},
+    "drift": "NONE",
+    "platform": "UNKNOWN"
+  },
+  "dependencies": {
+    "ecosystems": [],
+    "direct_count": 0,
+    "rows": [],
+    "truncated": false
+  },
+  "runtimes": [],
+  "security": {
+    "status": "NOT_APPLICABLE",
+    "score": null,
+    "dimensions": {
+      "dependencies": null,
+      "authentication": null,
+      "authorization": null,
+      "runtime": null,
+      "deployment": null,
+      "secrets": null,
+      "api": null,
+      "headers": null,
+      "monitoring": null
+    },
+    "findings": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0,
+      "informational": 0
+    },
+    "last_review": "2026-10-23",
+    "review_mode": "QUICK"
+  },
+  "findings": [],
+  "advisories": [
+    {
+      "id": "PHP-2026-10-RCE",
+      "technology": "PHP",
+      "cves": [
+        "CVE-2026-109618",
+        "CVE-2026-109619"
+      ],
+      "verdict": "REQUIRES_VERIFICATION",
+      "version": null
+    }
+  ],
+  "php": {
+    "classification": "NOT APPLICABLE",
+    "expected_version": "UNKNOWN",
+    "verified_version": null,
+    "provenance": "UNKNOWN"
+  },
+  "verification": {
+    "source_code": true,
+    "deployment": false,
+    "runner": false
+  },
+  "audit_history": [
+    {
+      "at": "2026-10-23T21:21:53.498Z",
+      "mode": "QUICK",
+      "status": "NOT_APPLICABLE",
+      "score": null
+    }
+  ],
+  "gate": {
+    "state": "DEVELOPMENT",
+    "blocked": false,
+    "reason": "Security gate stays in development until a pre-deployment review requests DEPLOYMENT_READY."
+  },
+  "risk_acceptances": [],
+  "summary": {
+    "project_id": "at-customer-webapp",
+    "project_name": "Alamo Tech Customer Application",
+    "client": "UNKNOWN",
+    "production_url": "https://app.alamotechllc.com",
+    "status": "NOT_APPLICABLE",
+    "score": null,
+    "stack": [],
+    "runtime": "UNKNOWN",
+    "deployment": "UNKNOWN",
+    "critical": 0,
+    "high": 0,
+    "unknown": 0,
+    "last_verified": "UNKNOWN",
+    "php": "NOT APPLICABLE",
+    "technologies": [],
+    "drift": "NONE",
+    "finding_types": [],
+    "critical_titles": [],
+    "review_mode": "QUICK",
+    "unsupported_runtime": false,
+    "dependency_vulnerabilities": 0,
+    "dimensions": {
+      "dependencies": null,
+      "authentication": null,
+      "authorization": null,
+      "runtime": null,
+      "deployment": null,
+      "secrets": null,
+      "api": null,
+      "headers": null,
+      "monitoring": null
+    }
+  }
+}

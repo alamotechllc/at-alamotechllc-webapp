@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "appId": "6adc03c2da6630d0a9d8a5af",
+  "subscriptionBaseline": {
+    "schemaVersion": 1,
+    "appId": "6adc03c2da6630d0a9d8a5af",
+    "plans": []
+  },
+  "usageBaseline": {
+    "schemaVersion": 1,
+    "appId": "6adc03c2da6630d0a9d8a5af",
+    "meters": []
+  }
+}

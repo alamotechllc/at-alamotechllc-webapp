@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "0.2",
+  "proposalType": "CreateWorkItem",
+  "projectId": "at-customer-webapp",
+  "submitted_by": "agent:security-reviewer",
+  "submitted_role": "security-reviewer",
+  "note": "Proposal only. Do not apply to a client Omnigraph until docs/service-relationship.md is CLASSIFICATION APPROVED or NOT_APPLICABLE. Do not mark the finding resolved when the task is completed.",
+  "operations": []
+}

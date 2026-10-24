@@ -1,0 +1,109 @@
+{
+  "executionId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+  "role": "architect",
+  "capabilities": [
+    "typescript@1.0.0",
+    "architecture@1.0.0"
+  ],
+  "runtimeAdapter": "adapter:bootstrap:1",
+  "workItemId": "TSK-001",
+  "status": "assembled",
+  "executionContext": {
+    "authority": {
+      "allowed_command_verbs": [
+        "memory",
+        "context",
+        "project"
+      ],
+      "allowed_proposal_ops": [
+        "create_node",
+        "update_node",
+        "link"
+      ],
+      "can_approve_human_gates": false
+    },
+    "capability_bindings": [
+      {
+        "binding_id": "BIND-typescript-100",
+        "capability_id": "typescript",
+        "capability_version": "1.0.0",
+        "immutable": true
+      },
+      {
+        "binding_id": "BIND-architecture-100",
+        "capability_id": "architecture",
+        "capability_version": "1.0.0",
+        "immutable": true
+      }
+    ],
+    "context_hash": "sha256:22ab350ca29d716cf27390c2840a7372f4d6a95ec3226d9517ec702cdc8758f9",
+    "correlation_ids": {
+      "correlation_id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc"
+    },
+    "current_work_item": null,
+    "execution_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    "project_id": "at-customer-webapp",
+    "project_memory": {
+      "adrs": [],
+      "decisions": [],
+      "evidence": [],
+      "risks": []
+    },
+    "provenance": {
+      "assembled_at": "2026-10-23T21:18:12.980Z",
+      "assembled_by": "human:mike@alamotechllc.net",
+      "context_hash": "sha256:22ab350ca29d716cf27390c2840a7372f4d6a95ec3226d9517ec702cdc8758f9",
+      "engine_version": "0.1.0"
+    },
+    "required_outputs": [
+      "Architecture decisions",
+      "Component boundaries",
+      "ADR drafts"
+    ],
+    "resolved_capabilities": [
+      {
+        "capability_id": "typescript",
+        "pin": "typescript@1.0.0",
+        "resolution_mode": "exact",
+        "version": "1.0.0"
+      },
+      {
+        "capability_id": "architecture",
+        "pin": "architecture@1.0.0",
+        "resolution_mode": "exact",
+        "version": "1.0.0"
+      }
+    ],
+    "role_id": "architect",
+    "runtime_constraints": {
+      "allowed_proposal_types": [
+        "CreateWorkItem",
+        "RecordDecision",
+        "RecordEvidence"
+      ],
+      "max_memory_references": 100,
+      "requires_validation_before_completion": true
+    },
+    "schemaVersion": "0.1",
+    "validation_requirements": [
+      {
+        "description": "Validator typescript-strict",
+        "rule_id": "typescript-strict",
+        "severity": "required"
+      }
+    ],
+    "workflow_state": {
+      "phase": "plan",
+      "run_id": "WFL-001",
+      "status": "active"
+    }
+  },
+  "startedAt": "2026-07-11T14:00:00.000Z",
+  "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+  "type": "AgentExecution",
+  "revision": 1,
+  "created_at": "2026-07-11T14:00:00.000Z",
+  "updated_at": "2026-07-11T14:00:00.000Z",
+  "created_by": "kernel:core",
+  "updated_by": "kernel:core"
+}

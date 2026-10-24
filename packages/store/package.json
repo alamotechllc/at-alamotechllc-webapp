@@ -1,0 +1,15 @@
+{
+  "name": "@raas/store",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "@raas/auth": "*",
+    "@raas/domain": "*",
+    "firebase-admin": "^13.5.0",
+    "ulid": "^3.0.1"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

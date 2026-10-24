@@ -1,0 +1,13 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "businessEvents",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "serviceInstanceId", "order": "ASCENDING" },
+        { "fieldPath": "occurredAt", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

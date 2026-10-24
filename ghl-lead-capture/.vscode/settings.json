@@ -1,0 +1,40 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "ghl-app.json"
+      ],
+      "url": "./.ghl/schemas/ghl-app.schema.json"
+    },
+    {
+      "fileMatch": [
+        "src/webhooks/ghl-webhooks.json"
+      ],
+      "url": "./.ghl/schemas/ghl-webhooks.schema.json"
+    },
+    {
+      "fileMatch": [
+        "src/modules/workflows/actions/*.json"
+      ],
+      "url": "./.ghl/schemas/ghl-workflow-action.schema.json"
+    },
+    {
+      "fileMatch": [
+        "src/modules/workflows/triggers/*.json"
+      ],
+      "url": "./.ghl/schemas/ghl-workflow-trigger.schema.json"
+    },
+    {
+      "fileMatch": [
+        "src/billing/subscription.json"
+      ],
+      "url": "./.ghl/schemas/ghl-subscription.schema.json"
+    },
+    {
+      "fileMatch": [
+        "src/billing/usage-based.json"
+      ],
+      "url": "./.ghl/schemas/ghl-usage-based.schema.json"
+    }
+  ]
+}

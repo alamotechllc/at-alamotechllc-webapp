@@ -1,0 +1,15 @@
+{
+  "name": "@raas/api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "@hono/node-server": "^1.17.1",
+    "@raas/domain": "*",
+    "@raas/logging": "*",
+    "@raas/secrets": "*",
+    "@raas/store": "*",
+    "firebase-admin": "^13.5.0",
+    "hono": "^4.9.6"
+  }
+}

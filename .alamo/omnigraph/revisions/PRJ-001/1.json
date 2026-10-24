@@ -1,0 +1,13 @@
+{
+  "id": "PRJ-001",
+  "title": "Alamo Tech Customer Application",
+  "manifest_project_id": "at-customer-webapp",
+  "taxonomy": "greenfield-app",
+  "status": "active",
+  "created_at": "2026-10-23T21:18:12.980Z",
+  "created_by": "human:mike@alamotechllc.net",
+  "type": "Project",
+  "revision": 1,
+  "updated_at": "2026-10-23T21:18:12.980Z",
+  "updated_by": "kernel:core"
+}

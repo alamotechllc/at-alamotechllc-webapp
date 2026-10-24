@@ -1,0 +1,13 @@
+{
+  "id": "WFL-001",
+  "workflow_id": "bootstrap",
+  "run_status": "active",
+  "started_at": "2026-10-23T21:18:12.980Z",
+  "status": "active",
+  "created_at": "2026-10-23T21:18:12.980Z",
+  "created_by": "human:mike@alamotechllc.net",
+  "type": "WorkflowRun",
+  "revision": 1,
+  "updated_at": "2026-10-23T21:18:12.980Z",
+  "updated_by": "kernel:core"
+}

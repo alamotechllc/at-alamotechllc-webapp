@@ -1,0 +1,12 @@
+{
+  "id": "CON-BASE-001",
+  "title": "No AlamoOS runtime dependency",
+  "body": "Handed-off projects must not require AlamoOS as a runtime dependency.",
+  "status": "active",
+  "created_at": "2026-10-23T21:18:12.980Z",
+  "created_by": "kernel:core",
+  "type": "Constraint",
+  "revision": 1,
+  "updated_at": "2026-10-23T21:18:12.980Z",
+  "updated_by": "kernel:core"
+}

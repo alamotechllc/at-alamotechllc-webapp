@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@raas/domain": ["packages/domain/src/index.ts"],
+      "@raas/logging": ["packages/logging/src/index.ts"],
+      "@raas/auth": ["packages/auth/src/index.ts"],
+      "@raas/store": ["packages/store/src/index.ts"],
+      "@raas/secrets": ["packages/secrets/src/index.ts"]
+    }
+  },
+  "include": [
+    "packages/**/src/**/*.ts",
+    "services/**/src/**/*.ts",
+    "scripts/**/*.ts",
+    "tests/**/*.ts"
+  ]
+}

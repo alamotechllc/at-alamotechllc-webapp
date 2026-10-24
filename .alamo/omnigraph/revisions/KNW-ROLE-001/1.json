@@ -1,0 +1,13 @@
+{
+  "id": "KNW-ROLE-001",
+  "title": "Initial role: architect",
+  "body": "architect",
+  "knowledge_kind": "reference",
+  "status": "active",
+  "created_at": "2026-10-23T21:18:12.980Z",
+  "created_by": "kernel:core",
+  "type": "Knowledge",
+  "revision": 1,
+  "updated_at": "2026-10-23T21:18:12.980Z",
+  "updated_by": "kernel:core"
+}

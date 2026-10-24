@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "0.2",
+  "project": {
+    "id": "at-customer-webapp",
+    "name": "Alamo Tech Customer Application",
+    "taxonomy": "greenfield-app"
+  },
+  "ownership": {
+    "owner": "human:mike@alamotechllc.net"
+  },
+  "alamo": {
+    "spec_version": "0.2",
+    "omnigraph_schema_version": "0.2"
+  },
+  "lifecycle": {
+    "state": "active",
+    "state_changed_at": "2026-10-23T21:18:12.980Z",
+    "state_changed_by": "human:mike@alamotechllc.net",
+    "history": [
+      {
+        "from": "created",
+        "to": "active",
+        "at": "2026-10-23T21:18:12.980Z",
+        "by": "human:mike@alamotechllc.net",
+        "workflow_run": "WFL-001",
+        "reason": "Bootstrap completed"
+      }
+    ]
+  },
+  "workflow": {
+    "active_workflow_id": "bootstrap",
+    "active_run_id": "WFL-001",
+    "current_phase": "complete"
+  },
+  "capabilities": [
+    {
+      "binding_id": "CAP-001",
+      "capability_id": "typescript",
+      "capability_version": "1.0.0",
+      "status": "active"
+    },
+    {
+      "binding_id": "CAP-002",
+      "capability_id": "architecture",
+      "capability_version": "1.0.0",
+      "status": "active"
+    }
+  ],
+  "build": {
+    "build_command": "./scripts/build.sh",
+    "test_command": "./scripts/test.sh"
+  }
+}

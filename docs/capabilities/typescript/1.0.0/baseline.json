@@ -1,0 +1,9 @@
+{
+  "constraints": [
+    {
+      "id": "CON-TS-001",
+      "title": "Use strict TypeScript",
+      "body": "Projects must enable strict mode in tsconfig.json."
+    }
+  ]
+}

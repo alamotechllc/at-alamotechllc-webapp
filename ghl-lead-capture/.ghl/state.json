@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "appId": "6adc03c2da6630d0a9d8a5af",
+  "versionId": "6adc03c2da6630d0a9d8a5af",
+  "baseline": {
+    "app": {
+      "schemaVersion": 1,
+      "appId": "6adc03c2da6630d0a9d8a5af",
+      "versionId": "6adc03c2da6630d0a9d8a5af",
+      "createdAt": "2026-10-24T01:02:58.631Z",
+      "version": "draft",
+      "status": "draft",
+      "appType": "standard",
+      "basicInfo": {
+        "name": "Alamo Tech Lead Capture",
+        "tagline": "",
+        "companyName": "",
+        "contact": {
+          "name": "",
+          "email": ""
+        },
+        "website": "",
+        "category": "",
+        "subcategory": [],
+        "businessNiche": [],
+        "logoUrl": ""
+      },
+      "listing": {
+        "private": true,
+        "userTypes": [
+          "Location",
+          "Company"
+        ],
+        "isWhiteLabelFriendly": false,
+        "isAgencyBulkInstallEnabled": true,
+        "searchKeywords": []
+      },
+      "profiles": {
+        "agency": {
+          "description": "",
+          "previewImageUrls": [],
+          "previewVideoUrl": ""
+        },
+        "subAccount": {
+          "enabled": false,
+          "description": "",
+          "previewImageUrls": [],
+          "previewVideoUrl": ""
+        }
+      },
+      "oauth": {
+        "allowedScopes": [
+          "calendars/events.readonly"
+        ],
+        "redirectUris": [
+          "http://127.0.0.1:8091/oauth/gohighlevel/callback"
+        ],
+        "defaults": {
+          "clientKey": null,
+          "redirectUrl": null
+        },
+        "clientKeys": []
+      },
+      "supportConfig": {
+        "supportEmail": "",
+        "supportPhone": "",
+        "websiteUrl": "",
+        "documentationUrl": "",
+        "termsAndConditionsUrl": "",
+        "privacyPolicyUrl": "",
+        "supportedServices": []
+      },
+      "billing": {
+        "billingType": "free",
+        "isPaidApp": false,
+        "isFreemium": false,
+        "externalBilling": false,
+        "externalBillingUrl": "",
+        "hasFreeTrial": false,
+        "freeTrialDuration": null,
+        "hasUsageBasedPrice": false,
+        "paymentType": "",
+        "oneTimePrice": null,
+        "additionalInfoForBilling": ""
+      },
+      "review": {
+        "endToEndDemoUrl": "",
+        "scopesDemoUrl": "",
+        "additionalDetails": "",
+        "privateReason": ""
+      }
+    },
+    "webhooks": {
+      "schemaVersion": 1,
+      "appId": "6adc03c2da6630d0a9d8a5af",
+      "versionId": "6adc03c2da6630d0a9d8a5af",
+      "webhookUrl": "",
+      "subscribedEvents": []
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "at-alamotechllc-webapp",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Alamo Tech private customer application. Lead Capture RaaS Milestone 1.",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:api": "tsx services/raas-api/src/main.ts",
+    "dev:ingress": "tsx services/raas-ingress/src/main.ts",
+    "dev:ghl": "tsx services/ghl-adapter/src/main.ts",
+    "dev:web": "npm run dev -w @raas/web",
+    "seed:operator": "tsx scripts/seed-operator.ts",
+    "bootstrap:platform-admin": "tsx scripts/bootstrap-platform-admin.ts",
+    "seed:tenant-zero": "tsx scripts/seed-tenant-zero.ts",
+    "guard:frontend": "tsx scripts/guard-frontend-imports.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit && npm run typecheck -w @raas/web",
+    "lint": "eslint .",
+    "build": "npm run typecheck && npm run guard:frontend",
+    "test:unit": "vitest run --config vitest.unit.config.ts",
+    "test:emulators": "firebase emulators:exec --only auth,firestore,storage --project demo-raas-cp \"vitest run --config vitest.emulator.config.ts\"",
+    "test": "npm run test:unit && npm run test:emulators",
+    "validate": "npm run typecheck && npm run lint && npm run guard:frontend && npm run test:unit",
+    "validate:release": "npm run validate && npm run test:emulators && npm run scan:secrets",
+    "scan:secrets": "tsx scripts/deploy.ts scan",
+    "deploy:dev": "tsx scripts/deploy.ts dev",
+    "deploy:prod": "tsx scripts/deploy.ts prod",
+    "deploy:rules": "tsx scripts/deploy.ts rules"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@firebase/rules-unit-testing": "^4.0.1",
+    "@types/node": "^22.16.5",
+    "eslint": "^9.32.0",
+    "firebase": "^11.10.0",
+    "firebase-tools": "^14.14.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
+    "vitest": "^3.2.4"
+  }
+}

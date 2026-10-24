@@ -1,0 +1,5 @@
+{
+  "type": "AppointmentCreate",
+  "locationId": "loc_tenant_zero_fixture",
+  "appointment": "not-an-object"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@raas/domain",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "ulid": "^3.0.1"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

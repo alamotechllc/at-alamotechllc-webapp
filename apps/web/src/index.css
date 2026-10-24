@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Values copied from at-alamotechllc-website/src/index.css. See docs/design/ALAMO-TECH-DESIGN-SYSTEM.md. */
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 215 28% 17%;
+    --foreground-muted: 215 16% 40%;
+
+    --surface: 0 0% 100%;
+    --surface-muted: 214 32% 91%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 28% 17%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 28% 17%;
+
+    --primary: 210 65% 15%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 210 65% 22%;
+
+    --secondary: 210 10% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 214 32% 91%;
+    --muted-foreground: 215 16% 40%;
+
+    --accent: 205 60% 45%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 205 55% 38%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 205 60% 45%;
+    --success-foreground: 205 55% 28%;
+    --warning: 207 15% 29%;
+    --warning-foreground: 207 15% 24%;
+    --error: 0 84% 60%;
+    --error-foreground: 0 55% 32%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 205 60% 45%;
+
+    --radius: 0.75rem;
+
+    --shadow-card: 0 4px 6px -1px hsl(var(--primary) / 0.1), 0 2px 4px -1px hsl(var(--primary) / 0.06);
+    --shadow-hero: 0 20px 25px -5px hsl(var(--primary) / 0.1), 0 10px 10px -5px hsl(var(--primary) / 0.04);
+    --shadow-button: 0 10px 15px -3px hsl(var(--accent) / 0.2), 0 4px 6px -2px hsl(var(--accent) / 0.1);
+
+    --sidebar-background: 210 40% 98%;
+    --sidebar-foreground: 215 28% 25%;
+    --sidebar-primary: 210 65% 15%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 32% 91%;
+    --sidebar-accent-foreground: 215 28% 17%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 205 60% 45%;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+    --foreground-muted: 215 20% 65%;
+
+    --surface: 222 47% 10%;
+    --surface-muted: 217 33% 17%;
+
+    --card: 222 47% 10%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 65% 25%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 210 65% 32%;
+
+    --secondary: 210 10% 60%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 205 70% 55%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 205 65% 48%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 205 70% 55%;
+    --success-foreground: 210 40% 98%;
+    --warning: 210 10% 60%;
+    --warning-foreground: 0 0% 100%;
+    --error: 0 62.8% 30.6%;
+    --error-foreground: 210 40% 98%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 205 70% 55%;
+
+    --sidebar-background: 222 47% 8%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 205 70% 55%;
+    --sidebar-primary-foreground: 222 47% 6%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 205 70% 55%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

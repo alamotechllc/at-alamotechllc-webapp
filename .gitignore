@@ -1,0 +1,15 @@
+.alamo/secrets/
+.alamo/context/
+.alamo/exports/
+.alamo/logs/
+node_modules/
+.env
+.env.*
+!.env.example
+.local/
+.deploy/
+dist/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+*-debug.log

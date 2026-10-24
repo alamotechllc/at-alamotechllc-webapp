@@ -1,0 +1,15 @@
+{
+  "type": "AppointmentCreate",
+  "locationId": "loc_tenant_zero_fixture",
+  "timestamp": "2026-10-23T18:04:05.000Z",
+  "appointment": {
+    "id": "appt_ghl_fixture_001",
+    "calendarId": "cal_fixture_001",
+    "startTime": "2026-10-24T15:00:00.000Z",
+    "endTime": "2026-10-24T15:30:00.000Z",
+    "selectedTimezone": "America/Chicago",
+    "locationType": "video",
+    "status": "confirmed"
+  },
+  "fixtureMarker": "ghl-fixture-raw-marker"
+}

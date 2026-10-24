@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "0.1",
+  "id": "architecture",
+  "name": "Architecture",
+  "version": "1.0.0",
+  "description": "Architecture documentation and decision-support practices.",
+  "category": "practice",
+  "runtime_impact": "none",
+  "handoff_policy": { "include_knowledge_export": true, "exclude_factory_skills": true },
+  "tags": ["architecture", "role:architect"],
+  "depends_on": [{ "id": "typescript", "version": "1.0.0" }],
+  "provides": { "constraints": true, "skills": ["architecture-review"] }
+}

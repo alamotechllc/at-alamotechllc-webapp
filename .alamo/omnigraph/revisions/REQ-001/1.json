@@ -1,0 +1,12 @@
+{
+  "id": "REQ-001",
+  "title": "Project charter",
+  "body": "Authenticated Alamo Tech customer platform. Canonical future hostname app.alamotechllc.com is not provisioned. Registration and architecture only.",
+  "status": "active",
+  "created_at": "2026-10-23T21:18:12.980Z",
+  "created_by": "human:mike@alamotechllc.net",
+  "type": "Requirement",
+  "revision": 1,
+  "updated_at": "2026-10-23T21:18:12.980Z",
+  "updated_by": "kernel:core"
+}
