@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import type { ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { TENANT_ZERO } from "../../../packages/domain/src/tenantZero.js";
 import { StatusBadge, statusTone } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
@@ -8,7 +8,9 @@ import { DataTable, EmptyState, ErrorState, LoadingState, SectionHeader, Unavail
 import { useSession } from "./auth";
 import { useApi, type LoadState } from "./data";
 import { formatWhen } from "./format";
+import { CommandCenterScore, type ScorePeriod } from "./components/command-center";
 import { campaignHealth, type CampaignVerdictLabel } from "./campaign-health";
+import { leadCapturePicture } from "./lead-capture-score";
 import { metricWindow, presentMetrics } from "./metrics";
 import { retryAll, sharedFailure, unavailableLabel } from "./view-state";
 
@@ -24,6 +26,15 @@ interface Appointment {
   endAt: string;
   timezone: string;
   campaignId: string | null;
+  leadId: string | null;
+  serviceInstanceId: string;
+}
+interface LeadRow {
+  leadId: string;
+  createdAt: string;
+  status: string;
+  hasContact: boolean;
+  serviceInstanceId: string;
 }
 interface Campaign {
   campaignId: string;
@@ -82,26 +93,37 @@ function bookedValue(data: Results): { quiet: boolean; value: string | number; c
 export function OverviewPage() {
   const tenantId = useWorkspaceTenantId();
   const base = tenantId ? `/v1/tenants/${tenantId}` : null;
+  const [days, setDays] = useState<ScorePeriod>(30);
   const tenant = useApi<Tenant>(base);
   const instances = useApi<{ items: Instance[] }>(base ? `${base}/service-instances` : null);
+  const leads = useApi<{ items: LeadRow[] }>(base ? `${base}/leads` : null);
+  const appointments = useApi<{ items: Appointment[] }>(base ? `${base}/appointments` : null);
   const instanceId = leadInstanceId(tenantId, instances.status === "ready" ? instances.data.items : undefined);
-  const results = useApi<Results>(tenantId && instanceId ? resultsQuery(tenantId, instanceId) : undefined);
-  const states = [tenant, instances, results];
+  const states = [tenant, instances, leads, appointments];
   const outage = sharedFailure(states);
   const leadCapture = instances.status === "ready"
     ? instances.data.items.find((item) => item.productCode === "lead-capture")
     : undefined;
-  const period = tenant.status === "ready" ? `${window.label} · ${tenant.data.legalName}` : window.label;
-  const metric = results.status === "ready"
-    ? bookedValue(results.data)
-    : results.status === "failed"
-      ? { quiet: true, value: unavailableLabel(results.failure), context: window.label }
-      : null;
+  const period = tenant.status === "ready" ? `Last ${days} days · ${tenant.data.legalName}` : `Last ${days} days`;
+  const picture = useMemo(() => {
+    if (!tenantId || !instanceId || leads.status !== "ready" || appointments.status !== "ready") return null;
+    return leadCapturePicture({
+      customerId: tenantId,
+      instanceId,
+      now: new Date(),
+      days,
+      leads: leads.data.items,
+      appointments: appointments.data.items,
+    });
+  }, [tenantId, instanceId, leads, appointments, days]);
+  const recent = appointments.status === "ready"
+    ? [...appointments.data.items].sort((a, b) => b.startAt.localeCompare(a.startAt)).slice(0, 5)
+    : [];
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <SectionHeader eyebrow="RaaS" title="Lead Capture" detail={period} />
+        <SectionHeader eyebrow="Command Center" title="Lead Capture" detail={period} />
         {instances.status === "ready" ? (
           <StatusBadge tone={leadCapture ? statusTone(leadCapture.status) : "muted"}>
             {leadCapture ? (leadCapture.status === "active" ? "Service active" : leadCapture.status) : "Not configured"}
@@ -109,18 +131,10 @@ export function OverviewPage() {
         ) : null}
       </div>
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
-      {metric ? (
-        <MetricCard
-          label="Appointments Booked"
-          dominant
-          quiet={metric.quiet}
-          value={metric.value}
-          context={metric.context}
-          onRetry={results.status === "failed" && !outage ? results.retry : undefined}
-        />
-      ) : (
-        <MetricCard label="Appointments Booked" dominant loading context={window.label} />
-      )}
+      {!outage && leads.status === "failed" ? <ErrorState failure={leads.failure} message={leads.message} onRetry={leads.retry} /> : null}
+      {!outage && appointments.status === "failed" ? <ErrorState failure={appointments.failure} message={appointments.message} onRetry={appointments.retry} /> : null}
+      {picture ? <CommandCenterScore picture={picture} days={days} onDays={setDays} /> : null}
+      {!picture && leads.status !== "failed" && appointments.status !== "failed" ? <LoadingState label="Loading the result score" /> : null}
       <section aria-labelledby="operational-status" className="space-y-3">
         <h2 id="operational-status" className="text-sm font-semibold text-foreground-muted">Operational status</h2>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -145,7 +159,11 @@ export function OverviewPage() {
       <section aria-labelledby="recent-activity" className="space-y-3">
         <h2 id="recent-activity" className="text-sm font-semibold text-foreground-muted">Recent activity</h2>
         <AppCard className="p-4">
-          <p className="text-sm">Provider receipts stay on the server.</p>
+          {recent.length === 0 ? (
+            <p className="text-sm text-foreground-muted">No appointments are recorded. Provider receipts stay on the server.</p>
+          ) : (
+            <AppointmentTable items={recent} />
+          )}
         </AppCard>
       </section>
     </div>

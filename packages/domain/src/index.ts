@@ -8,3 +8,4 @@ export * from "./models.js";
 export * from "./tenantZero.js";
 export * from "./rbac.js";
 export * from "./results.js";
+export * from "./scoring.js";

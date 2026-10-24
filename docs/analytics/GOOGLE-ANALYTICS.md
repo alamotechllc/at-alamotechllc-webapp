@@ -63,11 +63,17 @@ The client route drops the tenant id before anything is sent.
 | `appointments_viewed` | Appointments |
 | `results_viewed` | Results |
 | `operations_viewed` | Operations |
+| `result_score_viewed` | The result score is shown. Properties: `availability` `scored` or `insufficient`, and `status`. No customer, lead, or appointment identifiers |
+| `score_component_opened` | A score part is opened. Property: `component` id |
+| `chart_period_changed` | The 30, 60, or 90 day control changes. Property: `period` |
+| `insight_opened` | An insight is opened. Property: `insight` id |
+| `recommendation_opened` | A recommendation is opened. Property: `recommendation` id |
+| `funnel_viewed` | The lead funnel is shown |
 | `retry_requested` | Retry on an access check or a data load. Several retries from one click count once |
 | `reporting_period_changed` | Reserved. The results window is the current month and there is no period control yet |
 | `refresh_requested` | Reserved. The current screens use retry, not a separate refresh control |
 
-Properties are `screen` and, for login, `method`. Events do not include names, email addresses, tenant ids, leads, appointments, messages, or other operational record contents.
+Properties are `screen` and, for login, `method`. Score events add `availability`, `status`, `component`, `period`, `insight`, or `recommendation`. Those values are ids and status words. Events do not include names, email addresses, tenant ids, leads, appointments, messages, or other operational record contents.
 
 ## Configuration
 

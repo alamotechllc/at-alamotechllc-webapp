@@ -119,3 +119,27 @@ export function trackRetryRequested(): void {
     emit(ANALYTICS_EVENTS.retryRequested, { screen: "application" });
   }, 0);
 }
+
+export function trackResultScoreViewed(availability: "scored" | "insufficient", status: string): void {
+  emit(ANALYTICS_EVENTS.resultScoreViewed, { availability, status });
+}
+
+export function trackScoreComponentOpened(component: string): void {
+  emit(ANALYTICS_EVENTS.scoreComponentOpened, { component });
+}
+
+export function trackChartPeriodChanged(period: string): void {
+  emit(ANALYTICS_EVENTS.chartPeriodChanged, { period });
+}
+
+export function trackInsightOpened(insight: string): void {
+  emit(ANALYTICS_EVENTS.insightOpened, { insight });
+}
+
+export function trackRecommendationOpened(recommendation: string): void {
+  emit(ANALYTICS_EVENTS.recommendationOpened, { recommendation });
+}
+
+export function trackFunnelViewed(): void {
+  emit(ANALYTICS_EVENTS.funnelViewed, { screen: "overview" });
+}

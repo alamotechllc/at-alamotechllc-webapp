@@ -21,6 +21,13 @@ function optionalText(data: DocumentData, key: string): string | null {
   return text(data, key) || null;
 }
 
+function contactPresent(data: DocumentData): boolean {
+  return ["emails", "phones"].some((key) => {
+    const value = data[key];
+    return Array.isArray(value) && value.some((item) => typeof item === "string" && item.trim().length > 0);
+  });
+}
+
 async function readPath(path: string): Promise<unknown> {
   if (!clientDb) throw new ReadFailure("error", "Firebase web configuration is missing.");
   const url = new URL(path, "https://local.invalid");
@@ -77,6 +84,8 @@ async function readPath(path: string): Promise<unknown> {
         status: text(item.data(), "status"),
         campaignId: optionalText(item.data(), "campaignId"),
         createdAt: text(item.data(), "createdAt"),
+        serviceInstanceId: text(item.data(), "serviceInstanceId"),
+        hasContact: contactPresent(item.data()),
       })),
     };
   }
@@ -93,6 +102,8 @@ async function readPath(path: string): Promise<unknown> {
         endAt: text(item.data(), "endAt"),
         timezone: text(item.data(), "timezone"),
         campaignId: optionalText(item.data(), "campaignId"),
+        leadId: optionalText(item.data(), "leadId"),
+        serviceInstanceId: text(item.data(), "serviceInstanceId"),
       })),
     };
   }
