@@ -125,9 +125,42 @@ function qualityGate(env: NodeJS.ProcessEnv): void {
   }
 }
 
+const PUBLIC_WEB_KEYS = [
+  "VITE_FIREBASE_PROJECT_ID",
+  "VITE_FIREBASE_API_KEY",
+  "VITE_FIREBASE_AUTH_DOMAIN",
+  "VITE_API_BASE_URL",
+] as const;
+
+function readPublicWebFile(): Record<string, string> {
+  let text = "";
+  try {
+    text = readFileSync(path.join(root, ".env"), "utf8");
+  } catch {
+    return {};
+  }
+  const values: Record<string, string> = {};
+  for (const line of text.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) continue;
+    const splitAt = trimmed.indexOf("=");
+    const key = trimmed.slice(0, splitAt).trim();
+    if (!PUBLIC_WEB_KEYS.includes(key as (typeof PUBLIC_WEB_KEYS)[number])) continue;
+    values[key] = trimmed.slice(splitAt + 1).trim();
+  }
+  return values;
+}
+
 function releaseEnv(channel: "dev" | "production", sha: string): NodeJS.ProcessEnv {
+  const file = readPublicWebFile();
+  const web: Record<string, string> = {};
+  for (const key of PUBLIC_WEB_KEYS) {
+    const value = process.env[key] || file[key];
+    if (value) web[key] = value;
+  }
   return {
     ...process.env,
+    ...web,
     VITE_USE_FIREBASE_EMULATORS: "false",
     VITE_DEPLOY_CHANNEL: channel,
     VITE_GIT_SHA: sha,
@@ -155,9 +188,9 @@ function commandDev(): void {
   const snapshot = gitSnapshot();
   const gitStop = devGitFailure(snapshot);
   if (gitStop) stop(gitStop, { branch: snapshot.branch, sha: snapshot.sha ?? "" });
-  const web = webConfigFailure(process.env);
-  if (web) stop(web);
   const env = releaseEnv("dev", snapshot.sha!);
+  const web = webConfigFailure(env);
+  if (web) stop(web);
   qualityGate(env);
   run("git", ["push", "origin", "HEAD:dev"]);
   const url = deployDevChannel();

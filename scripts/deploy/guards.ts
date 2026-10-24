@@ -52,11 +52,12 @@ export function webConfigFailure(env: Record<string, string | undefined>): Stop 
   if (env.VITE_FIREBASE_PROJECT_ID !== FIREBASE_PROJECT_ID) {
     return { stage: "web-config", message: `VITE_FIREBASE_PROJECT_ID must be ${FIREBASE_PROJECT_ID}.` };
   }
-  if (!env.VITE_FIREBASE_API_KEY) {
-    return { stage: "web-config", message: "VITE_FIREBASE_API_KEY is missing." };
+  if (!env.VITE_FIREBASE_API_KEY?.startsWith("AIza")) {
+    return { stage: "web-config", message: "VITE_FIREBASE_API_KEY must be the Firebase web apiKey." };
   }
-  if (!env.VITE_FIREBASE_AUTH_DOMAIN) {
-    return { stage: "web-config", message: "VITE_FIREBASE_AUTH_DOMAIN is missing." };
+  const authDomain = env.VITE_FIREBASE_AUTH_DOMAIN ?? "";
+  if (!authDomain || authDomain.includes("://") || authDomain.includes("/")) {
+    return { stage: "web-config", message: "VITE_FIREBASE_AUTH_DOMAIN must be the Firebase auth host, without https://." };
   }
   const api = env.VITE_API_BASE_URL ?? "";
   if (!api.startsWith("https://")) {

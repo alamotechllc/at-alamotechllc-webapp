@@ -76,7 +76,7 @@ Local destructive tests stay on the emulators (`npm run test:emulators`, Auth `9
 
 ## What this repository cannot deploy yet
 
-`npm run deploy:dev` stops before Firebase when any stop condition below is true. `origin` is `https://github.com/alamotechllc/at-alamotechllc-webapp.git`. As of this runbook, the repository has no commits, no Firebase web config, and no hosted smoke suite. The GitHub repository is empty until the first push. The script records a DEV stamp only after Firebase returns a preview URL, and it marks smoke `not-automated`. Production refuses that stamp.
+`npm run deploy:dev` stops before Firebase when any stop condition below is true. `origin` is `https://github.com/alamotechllc/at-alamotechllc-webapp.git`. The script reads only `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, and `VITE_API_BASE_URL` from the environment or from gitignored `.env`. It does not read the GoHighLevel token. `VITE_API_BASE_URL` is still unset because `raas-api` has no HTTPS origin. There is no hosted smoke suite. The script records a DEV stamp only after Firebase returns a preview URL, and it marks smoke `not-automated`. Production refuses that stamp.
 
 Do not paper over those stops by calling `firebase deploy` directly.
 
