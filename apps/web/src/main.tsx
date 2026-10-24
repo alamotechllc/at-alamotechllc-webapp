@@ -1,6 +1,7 @@
-import { Component, StrictMode, useState, type FormEvent, type ReactNode } from "react";
+import { Component, StrictMode, useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { trackCommandCenterViewed, trackLoginCompleted, trackNavigation } from "./analytics";
 import { authConfigError, authUsesEmulator, SessionProvider, useSession, type Access } from "./auth";
 import { AlamoLogo } from "./components/layout/logo";
 import { Shell } from "./components/layout/shell";
@@ -46,6 +47,20 @@ function AccessCard({ access }: { access: Exclude<Access, "loading" | "anonymous
       </AppCard>
     </div>
   );
+}
+
+function ProductAnalytics() {
+  const location = useLocation();
+  const session = useSession();
+  useEffect(() => {
+    trackNavigation(location.pathname);
+  }, [location.pathname]);
+  useEffect(() => {
+    if (session.access !== "authorized") return;
+    trackLoginCompleted();
+    trackCommandCenterViewed();
+  }, [session.access]);
+  return null;
 }
 
 function Gate() {
@@ -147,6 +162,7 @@ createRoot(document.getElementById("root")!).render(
       <SystemTheme>
         <SessionProvider>
           <BrowserRouter>
+            <ProductAnalytics />
             <Routes>
               <Route path="/sign-in" element={<SignInPage />} />
               <Route element={<Gate />}>

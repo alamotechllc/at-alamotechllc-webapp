@@ -2,7 +2,7 @@
 
 **Project ID:** `at-customer-webapp`  
 **Date:** 2026-10-23  
-**Status:** Architecture record. No application code.
+**Status:** Platform split remains. The command center runs on Firebase Hosting, Authentication, and Firestore. See [FIREBASE-ARCHITECTURE.md](FIREBASE-ARCHITECTURE.md).
 
 ## Responsibilities
 
@@ -79,7 +79,7 @@ Platform
 
 Every customer-owned object carries an organization id. Authorization is enforced on the server. The server loads membership for the caller and the organization on the request. It does not trust an organization id in a JSON body. A missing object and an object in another organization both respond as not found. UI visibility is not authorization.
 
-The control plane already isolates tenants in the API and denies every Firestore client. This application keeps that rule. The browser does not receive the Firestore client SDK for operational RaaS data.
+Ordinary command-center reads use Cloud Firestore and Firestore Security Rules. The browser does not call a general-purpose API for those reads. Provider secrets, raw receipts, and audit records stay closed to the client. See [FIREBASE-ARCHITECTURE.md](FIREBASE-ARCHITECTURE.md).
 
 ## RBAC
 
@@ -116,13 +116,13 @@ Decision: Firebase Authentication, as specified for RaaS operators and tenant us
 | Identify people | Firebase Authentication. Google for operators. Email link for tenant users who do not have a Google account. Anonymous sign-in disabled. |
 | Organization association | Membership document plus a single `tenantId` custom claim for tenant roles. Operators are not given every tenant id in the token. |
 | RBAC | Role claim plus permission checks on the server. Membership status is read on each request so a revoked member fails closed before the token expires. |
-| Tokens | API verifies ID tokens with the Admin SDK. Access tokens may live up to one hour. Role changes revoke refresh tokens. |
+| Tokens | Firebase Authentication issues the ID token. Firestore rules, and any trusted server job, re-read the role record. The claim is not the grant. Role changes revoke refresh tokens. |
 | Logout | Client signs out and the server treats a revoked session as unauthenticated. |
 | Account lifecycle | Create, disable, and remove membership. Disabled membership fails closed. |
 | Audit | Sign-in, sign-out, denied access, role change, and cross-organization access. |
 | Authorized domains | DEV and MAIN domains are separate and are not configured in this change. |
 | App Check | Required before a production client calls a Firebase-backed API. Not configured now. |
-| Firestore rules | Client SDK cannot read or write operational RaaS data. |
+| Firestore rules | An authorized client may read tenant profile, service, campaign, lead, and appointment records. It cannot read provider secrets or write application data. |
 
 No Firebase project, authorized domain, or App Check app is created by this document.
 
@@ -144,7 +144,7 @@ MAIN
    +-- production backend
 ```
 
-DEV does not use production data, production tokens, or production service accounts. The marketing site's DreamHost vhosts are not the customer application's DEV or MAIN. The hosting platform for this application is not selected. See `docs/deployment/requirements.md`.
+DEV does not use production data, production tokens, or production service accounts. The marketing site's DreamHost vhosts are not the customer application's DEV or MAIN. The command center is hosted on Firebase Hosting. See `deploy.md`.
 
 ## Branding
 

@@ -67,7 +67,7 @@ The release build refuses to embed the Auth emulator or `demo-raas-cp`. It requi
 - `VITE_FIREBASE_API_KEY`
 - `VITE_FIREBASE_AUTH_DOMAIN`
 
-Those values are public web config. They are not service-account keys. Do not commit them. Do not prefix a server secret with `VITE_`. Ordinary signed-in reads use Firestore. Hosting does not require `VITE_API_BASE_URL` or a Cloud Run service.
+Those values are public web config. They are not service-account keys. Do not commit them. Do not prefix a server secret with `VITE_`. Ordinary signed-in reads use Firestore. Hosting does not require `VITE_API_BASE_URL` or a Cloud Run service. The release build may also include `VITE_FIREBASE_APP_ID`, `VITE_FIREBASE_MEASUREMENT_ID`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, and `VITE_FIREBASE_STORAGE_BUCKET`. Analytics collection runs only when the deploy channel is `production`. Preview and local builds do not send events. This repository does not deploy Firebase Functions. The current screens do not need a trusted backend.
 
 `npm run deploy:dev` deploys Hosting only. It does not deploy Firestore rules, Storage rules, or Cloud Run. Rules are project-wide: deploying them changes every environment that shares the project.
 
@@ -75,7 +75,7 @@ Local destructive tests stay on the emulators (`npm run test:emulators`, Auth `9
 
 ## What this repository cannot deploy yet
 
-`npm run deploy:dev` stops before Firebase when any stop condition below is true. `origin` is `https://github.com/alamotechllc/at-alamotechllc-webapp.git`. The script reads only `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_API_KEY`, and `VITE_FIREBASE_AUTH_DOMAIN` from the environment or from gitignored `.env`. It does not read the GoHighLevel token. There is no hosted smoke suite. The script records a DEV stamp only after Firebase returns a preview URL, and it marks smoke `not-automated`. Production refuses that stamp.
+`npm run deploy:dev` stops before Firebase when any stop condition below is true. `origin` is `https://github.com/alamotechllc/at-alamotechllc-webapp.git`. The script reads the public `VITE_FIREBASE_*` web config from the environment or from gitignored `.env`. It does not read the GoHighLevel token. There is no hosted smoke suite. The script records a DEV stamp only after Firebase returns a preview URL, and it marks smoke `not-automated`. Production refuses that stamp.
 
 Do not paper over those stops by calling `firebase deploy` directly.
 

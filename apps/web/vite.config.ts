@@ -1,6 +1,11 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+
 export default defineConfig({
+  envDir: repoRoot,
   plugins: [
     {
       name: "raas-release-meta",
@@ -19,9 +24,5 @@ export default defineConfig({
   server: {
     host: "127.0.0.1",
     port: 5173,
-    proxy: {
-      "/v1": "http://127.0.0.1:8091",
-      "/healthz": "http://127.0.0.1:8091",
-    },
   },
 });

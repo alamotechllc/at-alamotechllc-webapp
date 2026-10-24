@@ -14,16 +14,33 @@ import {
 } from "firebase/auth";
 import { connectFirestoreEmulator, doc, getDoc, getFirestore, type Firestore } from "firebase/firestore";
 import { isRaasRole, type RaasRole } from "../../../packages/domain/src/rbac";
+import { trackLoginStarted, trackLogout, trackRetryRequested } from "./analytics";
 
+const configuredProject = import.meta.env.VITE_FIREBASE_PROJECT_ID || "";
+const emulatorRequested = import.meta.env.VITE_USE_FIREBASE_EMULATORS;
 export const authUsesEmulator =
-  import.meta.env.VITE_USE_FIREBASE_EMULATORS === "true" ||
-  (import.meta.env.DEV && import.meta.env.VITE_USE_FIREBASE_EMULATORS !== "false");
+  emulatorRequested === "true" ||
+  (import.meta.env.DEV && emulatorRequested !== "false" && (configuredProject === "" || configuredProject.startsWith("demo-")));
 
-const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID || (authUsesEmulator ? "demo-raas-cp" : "");
+const projectId = configuredProject || (authUsesEmulator ? "demo-raas-cp" : "");
 const apiKey = import.meta.env.VITE_FIREBASE_API_KEY || (authUsesEmulator ? "demo-key" : "");
 const authDomain = import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || (authUsesEmulator ? "localhost" : "");
+const appId = import.meta.env.VITE_FIREBASE_APP_ID || "";
+const measurementId = import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "";
+const messagingSenderId = import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "";
+const storageBucket = import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "";
 export const authConfigError = projectId && apiKey && authDomain ? "" : "Firebase web configuration is missing.";
-const app = authConfigError ? null : initializeApp({ apiKey, authDomain, projectId });
+const app = authConfigError
+  ? null
+  : initializeApp({
+      apiKey,
+      authDomain,
+      projectId,
+      ...(appId ? { appId } : {}),
+      ...(measurementId ? { measurementId } : {}),
+      ...(messagingSenderId ? { messagingSenderId } : {}),
+      ...(storageBucket ? { storageBucket } : {}),
+    });
 const auth = app ? getAuth(app) : null;
 if (auth && authUsesEmulator && !auth.emulatorConfig) {
   const emulatorHost = import.meta.env.VITE_FIREBASE_AUTH_EMULATOR_HOST || "127.0.0.1:9198";
@@ -185,6 +202,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     async signInWithGoogle() {
       if (!auth) throw new Error(authConfigError);
       setAuthError("");
+      trackLoginStarted("google");
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ hd: "alamotechllc.com", prompt: "select_account" });
       try {
@@ -199,6 +217,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     async signIn(email, password) {
       if (!auth) throw new Error(authConfigError);
       setAuthError("");
+      trackLoginStarted("password");
       try {
         await setPersistence(auth, browserLocalPersistence);
         await signInWithEmailAndPassword(auth, email, password);
@@ -208,6 +227,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     },
     async signOut() {
       if (!auth) return;
+      trackLogout();
       await signOut(auth);
     },
     async token() {
@@ -215,6 +235,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       return auth.currentUser.getIdToken();
     },
     retryAccess() {
+      trackRetryRequested();
       setAttempt((value) => value + 1);
     },
   }), [user, role, tenantId, access, authError]);

@@ -16,14 +16,14 @@ This repository is the customer application. It is not the public marketing site
 - Marketing site: `at-alamotechllc-website` at https://alamotechllc.com and https://dev.alamotechllc.com
 - Public RaaS (sell / explain): https://alamotechllc.com/raas
 - Customer RaaS (operate / report / deliver): https://app.alamotechllc.com/raas when this application is deployed
-- RaaS in this repository: local emulators, `raas-api`, `raas-ingress`, and the GoHighLevel appointment adapter. The earlier slice remains in `raas-control-plane`
+- RaaS in this repository: Firebase Hosting, Google sign-in, and Firestore for the command center. `raas-ingress` and the GoHighLevel adapter remain local processes for provider webhooks. A general-purpose `raas-api` service is not required.
 - MailGuard: `at-domainmail-webapp`
 
 The product name is **Alamo Tech Customer Platform**. RaaS is one module inside that platform.
 
 ## What is here
 
-Registration, the draft PRD, the architecture boundary, and the Milestone 1 Lead Capture stack. Local `raas-api`, `raas-ingress`, the GoHighLevel adapter, and the operator screens in `apps/web` run against Firebase emulators. No cloud project or production deploy is configured.
+Registration, the draft PRD, the architecture boundary, and the Milestone 1 Lead Capture stack. The command center uses Firebase project `at-alamotechllc-webapp`. Ordinary reads go through Firestore. Local emulators remain available for development. Production Hosting is still gated by `deploy.md`.
 
 ```bash
 npm ci
@@ -37,6 +37,8 @@ Emulator ports are Firestore `8280`, Auth `9198`, and Storage `9399`. See `docs/
 
 - `docs/prd/PRD-001.md` — draft PRD
 - `docs/architecture/overview.md` — platform architecture
+- `docs/architecture/FIREBASE-ARCHITECTURE.md` — Hosting, Authentication, Firestore, and Functions
+- `docs/analytics/GOOGLE-ANALYTICS.md` — GA4 events and environments
 - `docs/architecture/customer-platform-migration-manifest.md` — canonical migration manifest
 - `docs/architecture/integrations.md` — MailGuard and AlamoOS contracts
 - `docs/security/requirements.md` — security requirements

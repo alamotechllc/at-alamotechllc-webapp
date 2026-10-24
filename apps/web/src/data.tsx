@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { trackRetryRequested } from "./analytics";
 import { useSession } from "./auth";
 import type { ViewFailure } from "./metrics";
 import { readApplicationPath, ReadFailure } from "./reads";
@@ -14,7 +15,10 @@ export function useApi<T>(path: string | null | undefined): LoadState<T> {
   const session = useSession();
   const [attempt, setAttempt] = useState(0);
   const [state, setState] = useState<Payload<T>>({ status: "loading" });
-  const retry = useCallback(() => setAttempt((value) => value + 1), []);
+  const retry = useCallback(() => {
+    trackRetryRequested();
+    setAttempt((value) => value + 1);
+  }, []);
 
   useEffect(() => {
     if (!session.ready || session.access !== "authorized" || !session.user || !path) return;
