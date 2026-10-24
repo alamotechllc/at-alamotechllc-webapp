@@ -185,10 +185,12 @@ function deployDevChannel(): string {
 }
 
 async function smokePreview(url: string, sha: string, channel = "dev"): Promise<Stop | null> {
+  const smokeUrl = new URL(url);
+  smokeUrl.searchParams.set("raas-smoke", sha);
   let status: number;
   let html: string;
   try {
-    const response = await fetch(url, { redirect: "follow" });
+    const response = await fetch(smokeUrl, { redirect: "follow", cache: "no-store" });
     status = response.status;
     html = await response.text();
   } catch {
