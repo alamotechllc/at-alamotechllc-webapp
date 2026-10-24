@@ -2,7 +2,7 @@
 
 **Project ID:** `at-customer-webapp`  
 **Date:** 2026-10-23  
-**Status:** Requirements. No environment has been created. The deploy procedure is [deploy.md](../../deploy.md) at the repository root.
+**Status:** Firestore `(default)` exists in `at-alamotechllc-webapp` at `us-central1`. Client rules are deny-all. `raas-api` is not deployed. The deploy procedure is [deploy.md](../../deploy.md) at the repository root.
 
 The customer application has its own deployment lifecycle. It does not publish through the marketing site's DreamHost workflow (`.github/workflows/deploy.yml` in `at-alamotechllc-website`).
 
