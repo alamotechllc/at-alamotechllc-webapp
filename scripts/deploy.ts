@@ -175,7 +175,7 @@ function deployDevChannel(): string {
     { cwd: root, encoding: "utf8" },
   );
   process.stdout.write(output);
-  const url = output.match(/https:\/\/\S+/)?.[0];
+  const url = output.match(/https:\/\/[a-z0-9-]+--dev-[a-z0-9]+\.web\.app/i)?.[0];
   if (!url) stop({ stage: "firebase", message: "Firebase did not return a preview URL." });
   return url;
 }
