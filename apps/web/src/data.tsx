@@ -9,16 +9,19 @@ type Payload<T> =
   | { status: "ready"; data: T }
   | { status: "failed"; failure: ViewFailure; message: string };
 
-export type LoadState<T> = Payload<T> & { retry: () => void };
+export type LoadState<T> = Payload<T> & { retry: () => void; reload: () => void };
 
 export function useApi<T>(path: string | null | undefined): LoadState<T> {
   const session = useSession();
   const [attempt, setAttempt] = useState(0);
   const [state, setState] = useState<Payload<T>>({ status: "loading" });
-  const retry = useCallback(() => {
-    trackRetryRequested();
+  const reload = useCallback(() => {
     setAttempt((value) => value + 1);
   }, []);
+  const retry = useCallback(() => {
+    trackRetryRequested();
+    reload();
+  }, [reload]);
 
   useEffect(() => {
     if (!session.ready || session.access !== "authorized" || !session.user || !path) return;
@@ -41,11 +44,11 @@ export function useApi<T>(path: string | null | undefined): LoadState<T> {
     };
   }, [session, path, attempt]);
 
-  if (path === undefined) return { status: "loading", retry };
-  if (path === null) return { status: "failed", failure: "error", message: "This client is not available.", retry };
-  if (!session.ready || (session.access === "authorized" && state.status === "loading")) return { status: "loading", retry };
+  if (path === undefined) return { status: "loading", retry, reload };
+  if (path === null) return { status: "failed", failure: "error", message: "This client is not available.", retry, reload };
+  if (!session.ready || (session.access === "authorized" && state.status === "loading")) return { status: "loading", retry, reload };
   if (session.access !== "authorized" || !session.user) {
-    return { status: "failed", failure: "unauthorized", message: "Sign-in is required.", retry };
+    return { status: "failed", failure: "unauthorized", message: "Sign-in is required.", retry, reload };
   }
-  return { ...state, retry };
+  return { ...state, retry, reload };
 }

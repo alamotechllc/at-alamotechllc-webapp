@@ -37,6 +37,8 @@ Only permissions with a route are defined. `packages/domain/src/rbac.ts` is the 
 | `result.read` | `GET /v1/tenants/:tenantId/results` |
 | `providerBinding.read` | `GET /v1/tenants/:tenantId/provider-bindings` |
 | `providerBinding.manage` | `POST /v1/tenants/:tenantId/provider-bindings` |
+| `task.read` | Command Center `/tasks` |
+| `task.write` | Create a task and mark it open or done. The browser writes `tenants/{tenantId}/tasks/{taskId}` |
 
 `secretResource` on a binding response is still returned only to `platform_admin`.
 
@@ -46,9 +48,9 @@ Leads, campaigns, integrations, user management, and operator-management permiss
 
 | Role | Scope | Permissions | Restrictions |
 | --- | --- | --- | --- |
-| `platform_admin` | All tenants, audited in the request log | All five permissions above. Binding responses may include `secretResource` | Must be an explicit `platformAdmins` record on `@alamotechllc.com` (or the emulator test domain). Not implied by the domain. Cannot be granted to an external Google account |
-| `operator` | Assigned tenants only | All five permissions above. Binding responses omit `secretResource` | Must be an explicit active operator and an assignment for the requested tenant. An Alamo Tech account with no assignment is denied. An external Google account cannot be an operator |
-| `tenant_admin` | One membership tenant | `tenant.read`, `appointment.read`, `result.read`, `providerBinding.read` | No other tenant. No binding create. No platform configuration. No provider secrets. Cannot become staff |
-| `tenant_viewer` | One membership tenant | Same four reads | No privileged writes, including binding create |
+| `platform_admin` | All tenants, audited in the request log | All permissions above. Binding responses may include `secretResource` | Must be an explicit `platformAdmins` record on `@alamotechllc.com` (or the emulator test domain). Not implied by the domain. Cannot be granted to an external Google account |
+| `operator` | Assigned tenants only | All permissions above. Binding responses omit `secretResource` | Must be an explicit active operator and an assignment for the requested tenant. An Alamo Tech account with no assignment is denied. An external Google account cannot be an operator |
+| `tenant_admin` | One membership tenant | `tenant.read`, `appointment.read`, `result.read`, `providerBinding.read`, `task.read`, `task.write` | No other tenant. No binding create. No platform configuration. No provider secrets. Cannot become staff |
+| `tenant_viewer` | One membership tenant | `tenant.read`, `appointment.read`, `result.read`, `providerBinding.read`, `task.read` | No privileged writes, including binding create and task changes |
 
 Empty means denied. A disabled record denies the next request.

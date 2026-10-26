@@ -11,6 +11,7 @@ import { AppCard } from "./components/ui/card";
 import { Input } from "./components/ui/input";
 import { ErrorState, LoadingState } from "./components/ui/states";
 import { AppointmentsPage, CampaignsPage, ClientPage, ClientsPage, OperationsPage, OverviewPage, ResultsPage } from "./pages";
+import { TasksPage } from "./tasks-page";
 import "./index.css";
 
 function AccessCard({ access }: { access: Exclude<Access, "loading" | "anonymous" | "authorized"> }) {
@@ -175,6 +176,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/raas" element={<LegacyRaasRedirect />} />
               <Route element={<Gate />}>
                 <Route path="/" element={<OverviewPage />} />
+                <Route path="/tasks" element={<TasksPage />} />
                 <Route path="/clients" element={<ClientsPage />} />
                 <Route path="/clients/:tenantId" element={<ClientPage />} />
                 <Route path="/campaigns" element={<CampaignsPage />} />

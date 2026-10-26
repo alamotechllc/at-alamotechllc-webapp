@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { afterAll, beforeAll, describe, it } from "vitest";
 import { assertFails, assertSucceeds, initializeTestEnvironment, type RulesTestEnvironment } from "@firebase/rules-unit-testing";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadString } from "firebase/storage";
 
 const TENANT_A = "ten_rulesA";
@@ -110,6 +110,41 @@ describe("client access rules", () => {
   it("does not let a disabled membership read the tenant", async () => {
     const member = client("disabled-member", "member@client.example", { tenantId: TENANT_A });
     await assertFails(getDoc(doc(member, `tenants/${TENANT_A}`)));
+  });
+
+  it("lets a manager create and complete a task, and keeps viewers from writing", async () => {
+    const id = "tsk_0123456789abcdef0123456789abcdef";
+    const path = `tenants/${TENANT_A}/tasks/${id}`;
+    const created = {
+      taskId: id,
+      tenantId: TENANT_A,
+      title: "Call the lead back",
+      detail: "",
+      dueOn: "2026-10-30",
+      status: "open",
+      createdAt: "2026-10-26T15:00:00.000Z",
+      createdByUid: "admin-1",
+      completedAt: null,
+    };
+    const admin = client("admin-1", "admin@alamotechllc.com");
+    const viewer = client("viewer-1", "viewer@client.example");
+    const operator = client("operator-1", "operator@alamotechllc.com");
+    const tenantAdmin = client("admin-tenant", "admin@client.example");
+    await assertFails(getDoc(doc(viewer, `tenants/${TENANT_B}/tasks/${id}`)));
+    await assertSucceeds(setDoc(doc(admin, path), created));
+    await assertSucceeds(getDoc(doc(viewer, path)));
+    await assertFails(setDoc(doc(viewer, `tenants/${TENANT_A}/tasks/tsk_abcdefabcdefabcdefabcdefabcdefab`), { ...created, taskId: "tsk_abcdefabcdefabcdefabcdefabcdefab", createdByUid: "viewer-1" }));
+    await assertFails(updateDoc(doc(admin, path), { title: "Changed" }));
+    await assertSucceeds(updateDoc(doc(admin, path), { status: "done", completedAt: "2026-10-26T16:00:00.000Z" }));
+    await assertFails(deleteDoc(doc(admin, path)));
+    await assertFails(setDoc(doc(operator, `tenants/${TENANT_B}/tasks/${id}`), { ...created, tenantId: TENANT_B, createdByUid: "operator-1" }));
+    const tenantTask = "tsk_fedcba9876543210fedcba9876543210";
+    await assertSucceeds(setDoc(doc(tenantAdmin, `tenants/${TENANT_A}/tasks/${tenantTask}`), {
+      ...created,
+      taskId: tenantTask,
+      createdByUid: "admin-tenant",
+    }));
+    await assertFails(setDoc(doc(admin, `tenants/${TENANT_A}/leads/led_new`), { status: "open" }));
   });
 
   it("does not let one user read another user's authorization record", async () => {

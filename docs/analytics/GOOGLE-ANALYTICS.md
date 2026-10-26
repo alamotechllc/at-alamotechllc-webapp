@@ -40,6 +40,7 @@ A React rerender of the same screen does not send another page view. Restoring a
 | `/clients` | `/clients` | `clients_viewed` |
 | `/clients/{id}` | `/clients/detail` | `clients_viewed` |
 | `/campaigns` | `/campaigns` | `campaigns_viewed` |
+| `/tasks` | `/tasks` | `tasks_viewed` |
 | `/appointments` | `/appointments` | `appointments_viewed` |
 | `/results` | `/results` | `results_viewed` |
 | `/operations` | `/operations` | `operations_viewed` |
@@ -60,6 +61,10 @@ The client route drops the tenant id before anything is sent.
 | `raas_overview_viewed` | `/` |
 | `clients_viewed` | Clients list or a client screen |
 | `campaigns_viewed` | Campaigns |
+| `tasks_viewed` | Tasks |
+| `task_created` | A task is added. No title or note is sent |
+| `task_completed` | A task is marked done |
+| `task_reopened` | A completed task is opened again |
 | `appointments_viewed` | Appointments |
 | `results_viewed` | Results |
 | `operations_viewed` | Operations |
@@ -73,7 +78,7 @@ The client route drops the tenant id before anything is sent.
 | `reporting_period_changed` | Reserved. The results window is the current month and there is no period control yet |
 | `refresh_requested` | Reserved. The current screens use retry, not a separate refresh control |
 
-Properties are `screen` and, for login, `method`. Score events add `availability`, `status`, `component`, `period`, `insight`, or `recommendation`. Those values are ids and status words. Events do not include names, email addresses, tenant ids, leads, appointments, messages, or other operational record contents.
+Properties are `screen` and, for login, `method`. Score events add `availability`, `status`, `component`, `period`, `insight`, or `recommendation`. Task events add only `screen`. Those values are ids and status words. Events do not include names, email addresses, tenant ids, task titles, leads, appointments, messages, or other operational record contents.
 
 ## Configuration
 

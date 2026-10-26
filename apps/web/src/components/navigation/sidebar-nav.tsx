@@ -4,6 +4,7 @@ import { cn } from "../../lib/cn";
 
 const NAV: { to: string; label: string; end: boolean; permission: Permission }[] = [
   { to: "/", label: "Overview", end: true, permission: "tenant.read" },
+  { to: "/tasks", label: "Tasks", end: false, permission: "task.read" },
   { to: "/clients", label: "Clients", end: false, permission: "tenant.read" },
   { to: "/campaigns", label: "Campaigns", end: false, permission: "tenant.read" },
   { to: "/appointments", label: "Appointments", end: false, permission: "appointment.read" },

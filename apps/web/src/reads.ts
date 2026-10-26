@@ -90,6 +90,21 @@ async function readPath(path: string): Promise<unknown> {
     };
   }
 
+  if (resource === "tasks") {
+    const snap = await getDocs(collection(clientDb, "tenants", tenantId, "tasks"));
+    return {
+      items: snap.docs.map((item) => ({
+        taskId: item.id,
+        title: text(item.data(), "title"),
+        detail: text(item.data(), "detail"),
+        status: text(item.data(), "status"),
+        dueOn: optionalText(item.data(), "dueOn"),
+        createdAt: text(item.data(), "createdAt"),
+        completedAt: optionalText(item.data(), "completedAt"),
+      })),
+    };
+  }
+
   if (resource === "appointments") {
     const snap = await getDocs(collection(clientDb, "tenants", tenantId, "appointments"));
     return {

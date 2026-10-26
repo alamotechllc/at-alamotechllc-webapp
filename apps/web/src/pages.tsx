@@ -9,6 +9,7 @@ import { useSession } from "./auth";
 import { useApi, type LoadState } from "./data";
 import { formatWhen } from "./format";
 import { CommandCenterScore, type ScorePeriod } from "./components/command-center";
+import { OpenTasks } from "./tasks-page";
 import { campaignHealth, type CampaignVerdictLabel } from "./campaign-health";
 import { leadCapturePicture } from "./lead-capture-score";
 import { metricWindow, presentMetrics } from "./metrics";
@@ -135,6 +136,7 @@ export function OverviewPage() {
       {!outage && appointments.status === "failed" ? <ErrorState failure={appointments.failure} message={appointments.message} onRetry={appointments.retry} /> : null}
       {picture ? <CommandCenterScore picture={picture} days={days} onDays={setDays} /> : null}
       {!picture && leads.status !== "failed" && appointments.status !== "failed" ? <LoadingState label="Loading the result score" /> : null}
+      {tenantId ? <OpenTasks tenantId={tenantId} /> : null}
       <section aria-labelledby="operational-status" className="space-y-3">
         <h2 id="operational-status" className="text-sm font-semibold text-foreground-muted">Operational status</h2>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

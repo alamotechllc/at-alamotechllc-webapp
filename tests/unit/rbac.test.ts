@@ -6,6 +6,9 @@ describe("RBAC", () => {
   it("gives tenant viewers reads and not binding management", () => {
     expect(hasPermission("tenant_viewer", "result.read")).toBe(true);
     expect(hasPermission("tenant_viewer", "providerBinding.manage")).toBe(false);
+    expect(hasPermission("tenant_viewer", "task.read")).toBe(true);
+    expect(hasPermission("tenant_viewer", "task.write")).toBe(false);
+    expect(hasPermission("tenant_admin", "task.write")).toBe(true);
     expect(hasPermission("tenant_admin", "providerBinding.manage")).toBe(false);
     expect(hasPermission("operator", "providerBinding.manage")).toBe(true);
     expect(hasPermission("platform_admin", "tenant.read")).toBe(true);

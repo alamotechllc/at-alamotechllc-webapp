@@ -9,14 +9,16 @@ export const PERMISSIONS = [
   "result.read",
   "providerBinding.read",
   "providerBinding.manage",
+  "task.read",
+  "task.write",
 ] as const;
 export type Permission = (typeof PERMISSIONS)[number];
 
 const GRANTS: Record<RaasRole, readonly Permission[]> = {
   platform_admin: PERMISSIONS,
   operator: PERMISSIONS,
-  tenant_admin: ["tenant.read", "appointment.read", "result.read", "providerBinding.read"],
-  tenant_viewer: ["tenant.read", "appointment.read", "result.read", "providerBinding.read"],
+  tenant_admin: ["tenant.read", "appointment.read", "result.read", "providerBinding.read", "task.read", "task.write"],
+  tenant_viewer: ["tenant.read", "appointment.read", "result.read", "providerBinding.read", "task.read"],
 };
 
 export function isRaasRole(value: string | undefined): value is RaasRole {

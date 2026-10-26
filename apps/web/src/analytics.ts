@@ -143,3 +143,15 @@ export function trackRecommendationOpened(recommendation: string): void {
 export function trackFunnelViewed(): void {
   emit(ANALYTICS_EVENTS.funnelViewed, { screen: "overview" });
 }
+
+export function trackTaskCreated(): void {
+  emit(ANALYTICS_EVENTS.taskCreated, { screen: "tasks" });
+}
+
+export function trackTaskCompleted(): void {
+  emit(ANALYTICS_EVENTS.taskCompleted, { screen: "tasks" });
+}
+
+export function trackTaskReopened(): void {
+  emit(ANALYTICS_EVENTS.taskReopened, { screen: "tasks" });
+}

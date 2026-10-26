@@ -48,10 +48,10 @@ Rules are in `firebase/firestore.rules`.
 
 | Client access | Paths |
 | --- | --- |
-| Read when the caller can read that tenant | Tenant profile, `serviceInstances`, `campaigns`, `leads`, `appointments` |
+| Read when the caller can read that tenant | Tenant profile, `serviceInstances`, `campaigns`, `leads`, `appointments`, `tasks` |
 | Read of the caller's own record | `platformAdmins/{uid}`, `operators/{uid}`, assignments, `members/{uid}` |
 | No client read or write | `providerBindings`, `businessEvents`, `auditEvents`, `idempotency`, `deadLetters`, `platformAudit`, and every other path |
-| No client write | Every path |
+| Client create and update | `tasks` only, for a platform admin, an assigned operator, or a tenant admin. A tenant viewer can read tasks. Tasks cannot be deleted. Leads, appointments, campaigns, and tenant profiles stay read-only |
 
 `request.auth != null` does not grant a collection. Appointments Booked is counted in the browser from appointments the caller is allowed to read.
 

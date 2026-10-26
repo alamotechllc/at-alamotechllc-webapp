@@ -116,6 +116,62 @@ service cloud.firestore {
         allow read: if canReadTenant(tenantId);
         allow write: if false;
       }
+
+      match /tasks/{taskId} {
+        allow read: if canReadTenant(tenantId);
+        allow create: if canManageTasks(tenantId) && validNewTask(tenantId, taskId);
+        allow update: if canManageTasks(tenantId) && validTaskUpdate();
+        allow delete: if false;
+      }
+    }
+
+    function canManageTasks(tenantId) {
+      return isPlatformAdmin() || assignedOperator(tenantId) || isTenantAdmin(tenantId);
+    }
+
+    function validDue(value) {
+      return value == null || (value is string && value.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$'));
+    }
+
+    function validTaskIdentity(data, tenantId, taskId) {
+      return data.taskId == taskId
+        && taskId.matches('^tsk_[0-9a-f]{32}$')
+        && data.tenantId == tenantId
+        && data.title is string
+        && data.title.size() > 0
+        && data.title.size() <= 200
+        && data.detail is string
+        && data.detail.size() <= 1000
+        && validDue(data.dueOn)
+        && data.createdAt is string
+        && data.createdAt.size() >= 20
+        && data.createdAt.size() <= 40
+        && data.createdByUid == request.auth.uid;
+    }
+
+    function validNewTask(tenantId, taskId) {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['taskId', 'tenantId', 'title', 'detail', 'dueOn', 'status', 'createdAt', 'createdByUid', 'completedAt'])
+        && validTaskIdentity(data, tenantId, taskId)
+        && data.status == 'open'
+        && data.completedAt == null;
+    }
+
+    function validTaskUpdate() {
+      let next = request.resource.data;
+      let current = resource.data;
+      return next.diff(current).affectedKeys().hasOnly(['status', 'completedAt'])
+        && next.taskId == current.taskId
+        && next.tenantId == current.tenantId
+        && next.title == current.title
+        && next.detail == current.detail
+        && next.dueOn == current.dueOn
+        && next.createdAt == current.createdAt
+        && next.createdByUid == current.createdByUid
+        && (
+          (next.status == 'open' && next.completedAt == null)
+          || (next.status == 'done' && next.completedAt is string && next.completedAt.size() >= 20 && next.completedAt.size() <= 40)
+        );
     }
 
     match /{document=**} {

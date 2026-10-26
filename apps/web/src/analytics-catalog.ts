@@ -7,6 +7,10 @@ export const ANALYTICS_EVENTS = {
   raasOverviewViewed: "raas_overview_viewed",
   clientsViewed: "clients_viewed",
   campaignsViewed: "campaigns_viewed",
+  tasksViewed: "tasks_viewed",
+  taskCreated: "task_created",
+  taskCompleted: "task_completed",
+  taskReopened: "task_reopened",
   appointmentsViewed: "appointments_viewed",
   resultsViewed: "results_viewed",
   operationsViewed: "operations_viewed",
@@ -64,6 +68,9 @@ export function screenForPath(pathname: string): AnalyticsScreen | null {
   }
   if (path === "/campaigns") {
     return { pagePath: "/campaigns", title: "Campaigns", event: ANALYTICS_EVENTS.campaignsViewed };
+  }
+  if (path === "/tasks") {
+    return { pagePath: "/tasks", title: "Tasks", event: ANALYTICS_EVENTS.tasksViewed };
   }
   if (path === "/appointments") {
     return { pagePath: "/appointments", title: "Appointments", event: ANALYTICS_EVENTS.appointmentsViewed };

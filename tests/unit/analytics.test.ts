@@ -38,6 +38,8 @@ describe("analytics screens", () => {
       event: "clients_viewed",
     });
     expect(screenForPath("/campaigns")?.event).toBe("campaigns_viewed");
+    expect(screenForPath("/tasks")?.event).toBe("tasks_viewed");
+    expect(screenForPath("/raas/tasks")?.pagePath).toBe("/tasks");
     expect(screenForPath("/raas/clients/ten_01ARZ3NDEKTSV4RRFFQ69G5FAV")?.pagePath).toBe("/clients/detail");
     expect(screenForPath("/appointments")?.event).toBe("appointments_viewed");
     expect(screenForPath("/results")?.event).toBe("results_viewed");
