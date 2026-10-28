@@ -4,7 +4,7 @@ import { expectNoUnauthorized, signInWithEmulatorForm, tenantCredentials } from 
 test.describe("tenant Command Center", () => {
   test.beforeEach(async ({ page }) => {
     await signInWithEmulatorForm(page, tenantCredentials.email, tenantCredentials.password);
-    await expect(page.getByRole("heading", { name: "Here's how things are looking" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Home", level: 1 })).toBeVisible();
   });
 
   test("home loads results and next steps without unauthorized states", async ({ page }) => {

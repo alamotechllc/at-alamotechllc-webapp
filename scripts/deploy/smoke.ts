@@ -24,7 +24,7 @@ export function previewSmokeFailure(input: {
   if (input.html.includes("Site Not Found")) {
     return { stage: "smoke", message: "Preview is the Firebase empty site." };
   }
-  if (!input.html.includes("<title>Alamo Tech</title>")) {
+  if (!/<title>\s*Alamo Tech[^<]*<\/title>/i.test(input.html)) {
     return { stage: "smoke", message: "Preview is missing the application title." };
   }
   const channel = meta(input.html, "raas-channel");

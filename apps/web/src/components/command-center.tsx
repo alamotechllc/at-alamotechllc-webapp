@@ -49,17 +49,21 @@ export function CommandCenterScore({
     <div className="flex flex-col gap-8">
       <section aria-labelledby="kpi-heading" className="space-y-3">
         <h2 id="kpi-heading" className="text-xs font-medium text-foreground-muted">Results</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {picture.kpis.map((kpi) => (
-            <KpiTile
-              key={kpi.id}
-              label={kpi.label}
-              value={kpi.value}
-              hint={`This period · ${trendText(kpi.trend, kpi.change, kpi.changePercent, kpi.previous)}`}
-              href={kpi.href}
-            />
-          ))}
-        </div>
+        <AppCard className="divide-y divide-border p-0">
+          <div className="grid gap-0 sm:grid-cols-2 lg:grid-cols-3 sm:divide-x sm:divide-border">
+            {picture.kpis.map((kpi) => (
+              <div key={kpi.id} className="min-w-0 p-5">
+                <KpiTile
+                  label={kpi.label}
+                  value={kpi.value}
+                  hint={`This period: ${trendText(kpi.trend, kpi.change, kpi.changePercent, kpi.previous)}`}
+                  href={kpi.href}
+                  className="rounded-none border-0 bg-transparent p-0 shadow-none"
+                />
+              </div>
+            ))}
+          </div>
+        </AppCard>
       </section>
 
       <AppCard

@@ -1,3 +1,6 @@
+/* Hallmark · checked: 2026-10-28 · genre: modern-minimal · scope: app
+ * redesign: full · brand: locked (design.md) · built: Alamo Tech design system
+ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,7 +8,14 @@
 /* Values copied from at-alamotechllc-website/src/index.css. See docs/design/ALAMO-TECH-DESIGN-SYSTEM.md. */
 
 @layer base {
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   :root {
+    --dur-micro: 120ms;
+    --dur-short: 200ms;
     --background: 210 40% 98%;
     --foreground: 215 28% 17%;
     --foreground-muted: 215 16% 40%;

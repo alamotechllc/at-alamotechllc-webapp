@@ -138,8 +138,12 @@ export function OverviewPage() {
       {!outage && leads.status === "failed" ? <ErrorState failure={leads.failure} message={leads.message} onRetry={leads.retry} /> : null}
       {!outage && appointments.status === "failed" ? <ErrorState failure={appointments.failure} message={appointments.message} onRetry={appointments.retry} /> : null}
 
-      <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
-        <div className="order-2 flex min-w-0 flex-col gap-8 xl:order-1">
+      <div className="grid gap-8 xl:grid-cols-[minmax(18rem,20rem)_minmax(0,1fr)] xl:items-start">
+        <aside className="flex flex-col gap-6 xl:sticky xl:top-20">
+          {tenantId ? <NextStepsCard /> : null}
+          {tenantId ? <OpenTasks tenantId={tenantId} /> : null}
+        </aside>
+        <div className="flex min-w-0 flex-col gap-8">
           {picture ? <CommandCenterScore picture={picture} days={days} onDays={setDays} detail="home" /> : null}
           {!picture && !metricsLoading && leads.status !== "failed" && appointments.status !== "failed" ? (
             <LoadingState label="Loading your results" />
@@ -154,18 +158,19 @@ export function OverviewPage() {
                 View all
               </Link>
             </div>
-            <AppCard className="p-5">
-              {appointments.status === "loading" ? <LoadingState label="Loading appointments" compact /> : null}
-              {appointments.status === "ready" ? (
-                <AppointmentList items={recent} showProvider={showProvider} />
-              ) : null}
+            <AppCard className="overflow-hidden p-0">
+              <div className="border-b border-border bg-muted/30 px-5 py-3">
+                <p className="text-sm text-foreground-muted">Latest booked meetings from Lead Capture.</p>
+              </div>
+              <div className="p-5">
+                {appointments.status === "loading" ? <LoadingState label="Loading appointments" compact /> : null}
+                {appointments.status === "ready" ? (
+                  <AppointmentList items={recent} showProvider={showProvider} />
+                ) : null}
+              </div>
             </AppCard>
           </section>
         </div>
-        <aside className="order-1 flex flex-col gap-6 xl:order-2 xl:sticky xl:top-20">
-          {tenantId ? <NextStepsCard /> : null}
-          {tenantId ? <OpenTasks tenantId={tenantId} /> : null}
-        </aside>
       </div>
     </PageShell>
   );
@@ -327,7 +332,7 @@ export function CampaignsPage() {
     : null;
   return (
     <PageShell className="flex flex-col gap-6">
-      <SectionHeader title="Campaigns" detail={`Which campaigns are producing bookings · ${window.label}`} />
+      <SectionHeader title="Campaigns" detail={`Which campaigns are producing bookings, ${window.label}.`} />
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
       {!outage && campaigns.status === "failed" ? <ErrorState failure={campaigns.failure} message={campaigns.message} onRetry={campaigns.retry} /> : null}
       {!outage && appointments.status === "failed" ? <ErrorState failure={appointments.failure} message={appointments.message} onRetry={appointments.retry} /> : null}
@@ -349,7 +354,7 @@ export function CampaignsPage() {
                   <StatusBadge tone={verdictTone(item.verdict)}>{item.verdict}</StatusBadge>
                 </div>
                 <p className="mt-3 text-sm text-foreground-muted">
-                  {item.bookings} bookings · {item.latestBookingAt ? formatWhen(item.latestBookingAt) : "No bookings yet"}
+                  {item.bookings} bookings, {item.latestBookingAt ? formatWhen(item.latestBookingAt) : "no bookings yet"}
                 </p>
               </li>
             ))}
@@ -429,7 +434,7 @@ export function ResultsPage() {
   const results = useApi<Results>(tenantId && instanceId ? resultsQuery(tenantId, instanceId) : undefined);
   return (
     <PageShell className="flex flex-col gap-6">
-      <SectionHeader title="Results" detail={`What Lead Capture produced for your business · ${window.label}`} />
+      <SectionHeader title="Results" detail={`What Lead Capture produced for your business, ${window.label}.`} />
       <Region state={results} loading="Loading results" suppressed={false}>
         {(data) => {
           const slots = presentMetrics(data.metrics);

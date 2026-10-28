@@ -61,7 +61,7 @@ export function Shell() {
           {session.access === "authorized" ? <SidebarNav role={session.role} onNavigate={() => setOpen(false)} /> : null}
           <p className="mt-auto px-3 pb-1 text-[0.6875rem] text-foreground-muted">Release {releaseLabel()}</p>
         </aside>
-        <div className="flex min-w-0 flex-col">
+        <div className="flex min-w-0 flex-col bg-surface-muted/40">
           <header className="sticky top-0 z-20 flex h-14 items-center justify-between gap-3 border-b border-border bg-background px-4 sm:h-16 md:px-6">
             <div className="flex min-w-0 items-center gap-3">
               <Button

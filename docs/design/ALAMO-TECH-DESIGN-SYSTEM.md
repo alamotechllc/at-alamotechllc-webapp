@@ -223,7 +223,7 @@ Errors use the site’s destructive alert pattern: a surface with an error borde
 Home (`/`) follows status → results → action:
 
 1. **Next Steps** — customer actions (Action Center), always first when a tenant is loaded.
-2. **Page identity** — eyebrow `Command Center`, title `Home`, detail names the organization and reporting window.
+2. **Page identity** — label `Command Center`, title `Home`, detail names the organization and reporting window.
 3. **At a glance** — countable outcomes (appointments, leads) before the composite performance score.
 4. **Performance score** — composite score and breakdown; engineering placeholders are not shown on Home.
 5. **Open tasks** — operational work, explicitly labeled as distinct from Next Steps.
