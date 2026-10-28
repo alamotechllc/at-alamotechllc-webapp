@@ -1,5 +1,5 @@
 import { TENANT_ZERO, TENANT_ZERO_POC_MEMBER_UID } from "@raas/domain";
-import { auth } from "@raas/store";
+import { auth, firestore, tenantDoc } from "@raas/store";
 
 const email = process.env.LOCAL_TENANT_EMAIL ?? "tenant.admin@client.example";
 const password = process.env.LOCAL_TENANT_PASSWORD ?? "local-dev-only";
@@ -14,4 +14,11 @@ try {
 }
 
 await auth().setCustomUserClaims(uid, { raasRole: "tenant_admin", tenantId: TENANT_ZERO.tenantId });
+
+const db = firestore();
+await tenantDoc(db, TENANT_ZERO.tenantId, "members", uid).set(
+  { role: "tenant_admin", status: "active" },
+  { merge: true },
+);
+
 console.log(JSON.stringify({ tenantAdmin: email, uid, tenantId: TENANT_ZERO.tenantId }));
