@@ -8,17 +8,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "btn-keycap border border-primary/80 bg-primary text-primary-foreground shadow-button hover:bg-primary-hover active:bg-primary-hover",
+          "btn-stock border-0 bg-primary text-primary-foreground shadow-button hover:bg-primary-hover active:bg-primary/90",
         outline:
-          "btn-keycap border border-border bg-background shadow-[var(--shadow-key)] hover:bg-muted hover:text-foreground active:bg-muted/80",
+          "btn-stock border border-border bg-card text-foreground shadow-button hover:bg-muted active:bg-muted/80",
         accent:
-          "btn-keycap border border-primary/80 bg-accent text-accent-foreground shadow-button hover:bg-accent-hover active:bg-accent-hover",
+          "btn-stock border-0 bg-accent text-accent-foreground shadow-button hover:bg-accent-hover active:bg-accent/90",
         ghost: "hover:bg-muted hover:text-foreground active:bg-muted/80",
       },
       size: {
-        default: "h-10 px-4 py-2",
+        default: "h-11 px-4 py-2",
         sm: "h-9 px-3",
-        lg: "h-11 px-8",
+        lg: "h-12 px-8",
       },
     },
     defaultVariants: {

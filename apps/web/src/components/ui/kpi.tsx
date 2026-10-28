@@ -22,14 +22,14 @@ export function KpiTile({
       {loading ? (
         <div className="mt-3 h-10 w-20 animate-pulse rounded-md bg-muted motion-reduce:animate-none" aria-hidden="true" />
       ) : (
-        <p className="mt-2 text-4xl font-bold tabular-nums tracking-tight text-foreground">{value}</p>
+        <p className="tabular-figures mt-2 text-4xl font-semibold tracking-tight text-foreground">{value}</p>
       )}
       {hint ? <p className="mt-2 text-sm text-foreground-muted">{hint}</p> : null}
     </>
   );
 
   const classes = cn(
-    "rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow",
+    "rounded-lg border border-border bg-card p-5 shadow-card transition-shadow",
     href && "hover:border-accent/40 hover:shadow-md active:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
     className,
   );

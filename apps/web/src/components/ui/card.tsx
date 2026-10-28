@@ -5,7 +5,7 @@ import { Button } from "./button";
 export function AppCard({ className, ...props }: HTMLAttributes<HTMLElement>) {
   return (
     <section
-      className={cn("cut-panel border border-border bg-card text-card-foreground shadow-card", className)}
+      className={cn("rounded-lg border border-border bg-card text-card-foreground shadow-card", className)}
       {...props}
     />
   );
@@ -32,7 +32,7 @@ export function MetricCard({
     <article
       aria-busy={loading}
       className={cn(
-        "rounded-lg border border-border bg-card text-card-foreground shadow-sm",
+        "rounded-lg border border-border bg-card text-card-foreground shadow-card",
         dominant ? "p-6 md:p-8" : "p-4",
       )}
     >
@@ -42,7 +42,7 @@ export function MetricCard({
       ) : (
         <p
           className={cn(
-            "mt-2 font-bold tracking-tight",
+            "tabular-figures mt-2 font-semibold tracking-tight",
             quiet ? "text-2xl text-foreground-muted" : "text-foreground",
             !quiet && dominant && "text-5xl",
             !quiet && !dominant && "text-3xl",
@@ -69,7 +69,7 @@ export function StatusCard({
   children: ReactNode;
 }) {
   return (
-    <article className="rounded-lg border border-border bg-surface p-4 shadow-sm">
+    <article className="rounded-lg border border-border bg-surface p-4 shadow-card">
       <h3 className="text-xs font-medium text-foreground-muted">{label}</h3>
       <div className="mt-2 text-sm text-foreground">{children}</div>
     </article>

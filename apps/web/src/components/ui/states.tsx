@@ -19,7 +19,7 @@ export function SectionHeader({
 
 export function LoadingState({ label, compact = false }: { label: string; compact?: boolean }) {
   return (
-    <div className={compact ? "space-y-2" : "space-y-3 rounded-lg border border-border bg-card p-4 shadow-sm"} role="status">
+    <div className={compact ? "space-y-2" : "space-y-3 rounded-lg border border-border bg-card p-4 shadow-card"} role="status">
       <div className="h-3 max-w-[12rem] animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
       <div className="h-3 max-w-[8rem] animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
       <p className="text-sm text-foreground-muted">{label}</p>
@@ -47,7 +47,7 @@ export function ErrorState({
 }) {
   const copy = noticeCopy(failure, message);
   return (
-    <div role="alert" className="rounded-lg border border-border border-l-4 border-l-error bg-card p-4 shadow-sm">
+    <div role="alert" className="rounded-lg border border-border border-l-4 border-l-error bg-card p-4 shadow-card">
       <h2 className="text-sm font-semibold text-foreground">{copy.title}</h2>
       <p className="mt-1 text-sm text-foreground-muted">{copy.detail}</p>
       {onRetry ? (

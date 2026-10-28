@@ -1,6 +1,6 @@
 # Design system (locked)
 
-This application uses the Alamo Tech design system for structure and semantics. **Hallmark Cobalt** (by request) maps the active palette, type, and radius in `apps/web/src/index.css`. Do not add a third token system.
+This application uses the Alamo Tech design system for structure and semantics. **Hallmark Coral** (B2B dashboard material) maps type, radius, and controls in `apps/web/src/index.css`; **Alamo navy and accent blue remain the signal colors** per the design system. Do not add a third token system.
 
 **Source of truth:** [docs/design/ALAMO-TECH-DESIGN-SYSTEM.md](docs/design/ALAMO-TECH-DESIGN-SYSTEM.md)
 

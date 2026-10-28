@@ -11,4 +11,6 @@ Read that file and follow it. Use this project in the fill-in. Default ambiguous
 
 **Brand hints:** `apps/web/public/brand/`, `apps/web/src/index.css`, shared UI under `apps/web/src/components/`.
 
+**Active Hallmark theme:** **Coral** — read `~/.agents/skills/hallmark/references/themes/coral.md`. Tokens and controls live in `apps/web/src/index.css` (stamp `theme: coral`). **Alamo navy and accent blue stay locked** for primary/signal colors; see `design.md`.
+
 Do not write Kernel findings or implement redesigns until `docs/service-relationship.md` is approved or `NOT_APPLICABLE`, except read-only **AUDIT** mode.
