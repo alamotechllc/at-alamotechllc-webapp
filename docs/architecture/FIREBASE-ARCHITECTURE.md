@@ -48,10 +48,13 @@ Rules are in `firebase/firestore.rules`.
 
 | Client access | Paths |
 | --- | --- |
-| Read when the caller can read that tenant | Tenant profile, `serviceInstances`, `campaigns`, `leads`, `appointments`, `tasks` |
+| Read when the caller can read that tenant | Tenant profile, `serviceInstances`, `campaigns`, `leads`, `appointments`, `tasks`, `actions` (only when `assignedTo` is `all` or the caller's uid) |
 | Read of the caller's own record | `platformAdmins/{uid}`, `operators/{uid}`, assignments, `members/{uid}` |
 | No client read or write | `providerBindings`, `businessEvents`, `auditEvents`, `idempotency`, `deadLetters`, `platformAudit`, and every other path |
-| Client create and update | `tasks` only, for a platform admin, an assigned operator, or a tenant admin. A tenant viewer can read tasks. Tasks cannot be deleted. Leads, appointments, campaigns, and tenant profiles stay read-only |
+| Client create | `members/{uid}/actionCompletions/{actionId}` for the signed-in member when the action applies. No client update or delete |
+| Client create and update | `tasks` only, for a platform admin, an assigned operator, or a tenant admin. A tenant viewer can read tasks. Tasks cannot be deleted. Leads, appointments, campaigns, tenant profiles, and action definitions stay read-only |
+
+Action Center behavior is documented in `docs/platform/ACTION-CENTER.md`.
 
 `request.auth != null` does not grant a collection. Appointments Booked is counted in the browser from appointments the caller is allowed to read.
 

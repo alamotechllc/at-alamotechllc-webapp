@@ -1,5 +1,12 @@
 import { FieldValue, Timestamp, type Firestore } from "firebase-admin/firestore";
-import { TENANT_ZERO, DEFAULT_METRIC_POLICY, DEFAULT_RETENTION, METRIC_POLICY_VERSION } from "@raas/domain";
+import {
+  TENANT_ZERO,
+  DEFAULT_METRIC_POLICY,
+  DEFAULT_RETENTION,
+  METRIC_POLICY_VERSION,
+  TENANT_ZERO_POC_MEMBER_UID,
+  tenantZeroCustomerActions,
+} from "@raas/domain";
 import { assertDevelopmentSeedAllowed } from "./seedGuard.js";
 import { tenantDoc, tenantRoot } from "./tenantDb.js";
 
@@ -44,6 +51,31 @@ export async function seedTenantZero(db: Firestore, env: NodeJS.ProcessEnv = pro
     },
     { merge: true },
   );
+
+  await tenantDoc(db, TENANT_ZERO.tenantId, "members", TENANT_ZERO_POC_MEMBER_UID).set(
+    {
+      role: "tenant_admin",
+      status: "active",
+    },
+    { merge: true },
+  );
+
+  for (const action of tenantZeroCustomerActions()) {
+    await tenantDoc(db, TENANT_ZERO.tenantId, "actions", action.id).set(
+      {
+        actionId: action.id,
+        tenantId: action.tenantId,
+        title: action.title,
+        description: action.description ?? null,
+        assignedTo: action.assignedTo,
+        priority: action.priority,
+        actionLabel: action.actionLabel ?? null,
+        actionUrl: action.actionUrl ?? null,
+        createdAt: action.createdAt,
+      },
+      { merge: true },
+    );
+  }
 
   const auditId = `aud_seed_${TENANT_ZERO.tenantId}`;
   await tenantDoc(db, TENANT_ZERO.tenantId, "auditEvents", auditId).set({

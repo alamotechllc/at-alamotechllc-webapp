@@ -5,6 +5,9 @@ import { useSession } from "../../auth";
 import type { RaasRole } from "../../../../../packages/domain/src/rbac";
 import { releaseLabel } from "../../release";
 import { cn } from "../../lib/cn";
+import { ActionCenterProvider } from "../../action-center-context";
+import { ActionCenterDrawer } from "../action-center/action-center-drawer";
+import { NextStepsHeaderControl } from "../action-center/header-control";
 import { SidebarNav } from "../navigation/sidebar-nav";
 import { Button } from "../ui/button";
 import { AlamoLogo } from "./logo";
@@ -31,6 +34,7 @@ export function Shell() {
   }, []);
 
   return (
+    <ActionCenterProvider>
     <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
       {open ? (
         <button
@@ -64,13 +68,18 @@ export function Shell() {
             <Menu aria-hidden="true" className="h-5 w-5" />
           </Button>
           <p className="hidden text-sm font-semibold text-primary lg:block">Command Center</p>
-          <AccountMenu email={session.user?.email ?? "Signed in"} role={roleLabel(session.role)} onSignOut={() => void session.signOut()} />
+          <div className="ml-auto flex min-w-0 items-center gap-2">
+            {session.access === "authorized" ? <NextStepsHeaderControl /> : null}
+            <AccountMenu email={session.user?.email ?? "Signed in"} role={roleLabel(session.role)} onSignOut={() => void session.signOut()} />
+          </div>
         </header>
         <main className="flex-1 px-4 py-6 md:px-6 lg:px-8">
           <Outlet />
         </main>
       </div>
     </div>
+    <ActionCenterDrawer />
+    </ActionCenterProvider>
   );
 }
 
@@ -84,7 +93,7 @@ function AccountMenu({
   onSignOut: () => void;
 }) {
   return (
-    <details className="relative ml-auto">
+    <details className="relative">
       <summary className="flex min-h-11 cursor-pointer list-none items-center rounded-md px-3 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 [&::-webkit-details-marker]:hidden">
         <span className="text-right">
           <span className="block max-w-[14rem] truncate text-sm font-medium text-foreground">{email}</span>

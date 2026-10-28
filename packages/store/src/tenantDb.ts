@@ -12,6 +12,7 @@ const OPERATIONAL_COLLECTIONS = new Set([
   "auditEvents",
   "idempotency",
   "deadLetters",
+  "actions",
 ]);
 
 export function requireTenantId(tenantId: string): string {

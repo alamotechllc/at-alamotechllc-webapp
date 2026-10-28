@@ -73,6 +73,28 @@ service cloud.firestore {
         || isTenantViewer(tenantId);
     }
 
+    function actionPath(tenantId, actionId) {
+      return /databases/$(database)/documents/tenants/$(tenantId)/actions/$(actionId);
+    }
+
+    function actionVisibleToCaller(data) {
+      return data.assignedTo == 'all' || data.assignedTo == request.auth.uid;
+    }
+
+    function validNewActionCompletion(tenantId, actionId) {
+      let data = request.resource.data;
+      return exists(actionPath(tenantId, actionId))
+        && get(actionPath(tenantId, actionId)).data.tenantId == tenantId
+        && actionVisibleToCaller(get(actionPath(tenantId, actionId)).data)
+        && data.keys().hasOnly(['actionId', 'tenantId', 'completedAt'])
+        && data.actionId == actionId
+        && actionId.matches('^act_[a-z0-9_]+$')
+        && data.tenantId == tenantId
+        && data.completedAt is string
+        && data.completedAt.size() >= 20
+        && data.completedAt.size() <= 40;
+    }
+
     match /platformAdmins/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;
       allow write: if false;
@@ -91,11 +113,6 @@ service cloud.firestore {
     match /tenants/{tenantId} {
       allow read: if canReadTenant(tenantId);
       allow write: if false;
-
-      match /members/{uid} {
-        allow read: if signedIn() && request.auth.uid == uid;
-        allow write: if false;
-      }
 
       match /serviceInstances/{instanceId} {
         allow read: if canReadTenant(tenantId);
@@ -122,6 +139,26 @@ service cloud.firestore {
         allow create: if canManageTasks(tenantId) && validNewTask(tenantId, taskId);
         allow update: if canManageTasks(tenantId) && validTaskUpdate();
         allow delete: if false;
+      }
+
+      match /actions/{actionId} {
+        allow read: if canReadTenant(tenantId) && actionVisibleToCaller(resource.data);
+        allow write: if false;
+      }
+
+      match /members/{uid} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow write: if false;
+
+        match /actionCompletions/{actionId} {
+          allow read: if signedIn() && request.auth.uid == uid && canReadTenant(tenantId);
+          allow create: if signedIn()
+            && request.auth.uid == uid
+            && canReadTenant(tenantId)
+            && validNewActionCompletion(tenantId, actionId);
+          allow update: if false;
+          allow delete: if false;
+        }
       }
     }
 

@@ -9,6 +9,7 @@ import { useSession } from "./auth";
 import { useApi, type LoadState } from "./data";
 import { formatWhen } from "./format";
 import { CommandCenterScore, type ScorePeriod } from "./components/command-center";
+import { NextStepsCard } from "./components/action-center/next-steps-card";
 import { OpenTasks } from "./tasks-page";
 import { campaignHealth, type CampaignVerdictLabel } from "./campaign-health";
 import { leadCapturePicture } from "./lead-capture-score";
@@ -123,6 +124,7 @@ export function OverviewPage() {
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8">
+      {tenantId ? <NextStepsCard /> : null}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeader eyebrow="Command Center" title="Lead Capture" detail={period} />
         {instances.status === "ready" ? (

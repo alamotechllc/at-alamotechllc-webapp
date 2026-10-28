@@ -147,6 +147,49 @@ describe("client access rules", () => {
     await assertFails(setDoc(doc(admin, `tenants/${TENANT_A}/leads/led_new`), { status: "open" }));
   });
 
+  it("scopes Action Center actions and member completions", async () => {
+    await env.withSecurityRulesDisabled(async (context) => {
+      const db = context.firestore();
+      const base = {
+        tenantId: TENANT_A,
+        priority: 1,
+        createdAt: "2026-01-01T00:00:00.000Z",
+        description: null,
+        actionLabel: null,
+        actionUrl: null,
+      };
+      await setDoc(doc(db, `tenants/${TENANT_A}/actions/act_all`), {
+        ...base,
+        actionId: "act_all",
+        title: "Shared",
+        assignedTo: "all",
+      });
+      await setDoc(doc(db, `tenants/${TENANT_A}/actions/act_private`), {
+        ...base,
+        actionId: "act_private",
+        title: "Private",
+        assignedTo: "viewer-1",
+      });
+      await setDoc(doc(db, `tenants/${TENANT_A}/members/viewer-2`), { role: "tenant_viewer", status: "active" });
+    });
+    const viewer = client("viewer-1", "viewer@client.example");
+    const other = client("viewer-2", "other@client.example");
+    const anon = env.unauthenticatedContext().firestore();
+    await assertSucceeds(getDoc(doc(viewer, `tenants/${TENANT_A}/actions/act_all`)));
+    await assertSucceeds(getDoc(doc(viewer, `tenants/${TENANT_A}/actions/act_private`)));
+    await assertFails(getDoc(doc(other, `tenants/${TENANT_A}/actions/act_private`)));
+    await assertFails(getDoc(doc(anon, `tenants/${TENANT_A}/actions/act_all`)));
+    await assertFails(setDoc(doc(viewer, `tenants/${TENANT_A}/actions/act_new`), { actionId: "act_new", tenantId: TENANT_A, title: "X", assignedTo: "all", priority: 1, createdAt: "2026-01-01T00:00:00.000Z" }));
+    const completion = {
+      actionId: "act_all",
+      tenantId: TENANT_A,
+      completedAt: "2026-01-02T00:00:00.000Z",
+    };
+    await assertSucceeds(setDoc(doc(viewer, `tenants/${TENANT_A}/members/viewer-1/actionCompletions/act_all`), completion));
+    await assertFails(setDoc(doc(other, `tenants/${TENANT_A}/members/viewer-2/actionCompletions/act_private`), completion));
+    await assertFails(setDoc(doc(other, `tenants/${TENANT_A}/members/viewer-1/actionCompletions/act_all`), completion));
+  });
+
   it("does not let one user read another user's authorization record", async () => {
     const viewer = client("viewer-1", "viewer@client.example");
     await assertFails(getDoc(doc(viewer, "platformAdmins/admin-1")));

@@ -26,6 +26,7 @@ Human status only. The execution cursor is `.alamo/workflows/active.json` (`work
 - Boundary recorded on the marketing site (ADR 14) and noted on `raas-control-plane`
 - Lead Capture RaaS audit and Milestone 1 plan in `docs/raas/`. Approved contracts `06`–`12` copied unchanged
 - Milestone 1 local stack: domain models, Tenant Zero emulator seed, GoHighLevel `AppointmentBooked` adapter, tenant-scoped API and ingress, idempotent ingest, deny-all rules, operator RaaS screens, tests, and CI. Status is `docs/raas/MILESTONE-1-STATUS.md`
+- Action Center MVP (Next Steps): platform domain model, Firestore rules, emulator seed, dashboard card, header indicator, right drawer, unit and rules tests. DEV POC UI verified on emulators 2026-10-27. See `docs/platform/ACTION-CENTER.md`
 
 ## Not done
 
