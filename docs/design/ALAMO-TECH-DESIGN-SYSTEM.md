@@ -217,3 +217,22 @@ Active navigation uses the accent fill (`bg-accent text-accent-foreground`), whi
 Application primary actions use the `default` button (navy). Accent stays on the active nav item and on status that means healthy, so a screen does not fill with competing call-to-action buttons.
 
 Errors use the site’s destructive alert pattern: a surface with an error border, not a red panel behind every card. `0` is a measured value. `Unavailable` means the request failed.
+
+## Command Center information hierarchy (2026-10-27)
+
+Home (`/`) follows status → results → action:
+
+1. **Next Steps** — customer actions (Action Center), always first when a tenant is loaded.
+2. **Page identity** — eyebrow `Command Center`, title `Home`, detail names the organization and reporting window.
+3. **At a glance** — countable outcomes (appointments, leads) before the composite performance score.
+4. **Performance score** — composite score and breakdown; engineering placeholders are not shown on Home.
+5. **Open tasks** — operational work, explicitly labeled as distinct from Next Steps.
+6. **Recent appointments** — outcome activity with a link to the full list.
+
+Sidebar group label is **Lead Capture**, not “RaaS”. Primary destinations for customers are Home, Tasks, Appointments, Results, and Campaigns. **Clients** and **Operations** appear only for staff roles (`platform_admin`, `operator`). Appointment tables hide the provider column for tenant roles.
+
+Header **Next Steps** stays visible when the queue is empty so the drawer remains discoverable; the badge count appears only when pending steps exist.
+
+On **Home**, the performance block uses `detail="home"`: show At a glance, Performance score, Activity chart, and Lead funnel only. Score breakdown, Insights, Attention, and empty score-trend placeholders stay off Home to reduce scroll and duplicate messaging.
+
+When pending Next Steps exist, the dashboard card and drawer lead with **“N things need your attention”** rather than a large **0%** progress figure. Progress percent stays secondary until it is meaningful.

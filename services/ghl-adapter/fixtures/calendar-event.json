@@ -1,0 +1,15 @@
+{
+  "id": "evt_calendar_fixture_001",
+  "calendarId": "cal_fixture_001",
+  "locationId": "loc_tenant_zero_fixture",
+  "contactId": "contact_should_not_copy",
+  "title": "Appointment with Jane Example",
+  "notes": "call jane@example.invalid",
+  "address": "100 Secret St",
+  "email": "jane@example.invalid",
+  "phone": "+15555550100",
+  "appointmentStatus": "confirmed",
+  "startTime": "2026-10-24T15:00:00.000Z",
+  "endTime": "2026-10-24T15:30:00.000Z",
+  "deleted": false
+}

@@ -7,6 +7,7 @@ import { useSession } from "./auth";
 import { Button } from "./components/ui/button";
 import { AppCard } from "./components/ui/card";
 import { Input } from "./components/ui/input";
+import { PageShell } from "./components/layout/page-shell";
 import { EmptyState, ErrorState, LoadingState, SectionHeader } from "./components/ui/states";
 import { useApi } from "./data";
 import { createTask, setTaskStatus } from "./task-store";
@@ -67,11 +68,14 @@ export function OpenTasks({ tenantId }: { tenantId: string }) {
     : [];
   return (
     <section aria-labelledby="open-tasks" className="space-y-3">
-      <div className="flex items-end justify-between gap-3">
-        <h2 id="open-tasks" className="text-sm font-semibold text-foreground-muted">Open tasks</h2>
-        <Link className="text-sm font-medium text-accent underline-offset-4 hover:underline" to="/tasks">All tasks</Link>
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 id="open-tasks" className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Tasks</h2>
+          <p className="text-sm text-foreground-muted">Work your team tracks—not Next Steps.</p>
+        </div>
+        <Link className="shrink-0 text-sm font-medium text-accent underline-offset-4 hover:underline" to="/tasks">All tasks</Link>
       </div>
-      <AppCard className="p-4">
+      <AppCard className="border-l-4 border-l-muted-foreground/30 p-4 shadow-none">
         {tasks.status === "loading" ? <LoadingState label="Loading tasks" compact /> : null}
         {tasks.status === "failed" ? <ErrorState failure={tasks.failure} message={tasks.message} onRetry={tasks.retry} /> : null}
         {tasks.status === "ready" && open.length === 0 ? (
@@ -145,8 +149,12 @@ export function TasksPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6">
-      <SectionHeader title="Tasks" detail="Work that still needs a person. Completing a task does not change leads or appointments." />
+    <PageShell className="flex flex-col gap-6">
+      <SectionHeader
+        eyebrow="Operations"
+        title="Tasks"
+        detail="Work that still needs a person on your team. This is separate from Next Steps, which are items Alamo Tech needs from you."
+      />
       {canWrite ? (
         <AppCard className="p-4 md:p-6">
           <form className="grid gap-3" onSubmit={(event) => void onCreate(event)}>
@@ -204,6 +212,6 @@ export function TasksPage() {
           </AppCard>
         </section>
       ) : null}
-    </div>
+    </PageShell>
   );
 }

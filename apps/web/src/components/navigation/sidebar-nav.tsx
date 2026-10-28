@@ -1,43 +1,94 @@
+import {
+  BarChart3,
+  CalendarDays,
+  Home,
+  ListTodo,
+  Megaphone,
+  Settings2,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { hasPermission, type Permission, type RaasRole } from "../../../../../packages/domain/src/rbac";
+import { hasPermission, isStaffRole, type Permission, type RaasRole } from "../../../../../packages/domain/src/rbac";
 import { cn } from "../../lib/cn";
 
-const NAV: { to: string; label: string; end: boolean; permission: Permission }[] = [
-  { to: "/", label: "Overview", end: true, permission: "tenant.read" },
-  { to: "/tasks", label: "Tasks", end: false, permission: "task.read" },
-  { to: "/clients", label: "Clients", end: false, permission: "tenant.read" },
-  { to: "/campaigns", label: "Campaigns", end: false, permission: "tenant.read" },
-  { to: "/appointments", label: "Appointments", end: false, permission: "appointment.read" },
-  { to: "/results", label: "Results", end: false, permission: "result.read" },
-  { to: "/operations", label: "Operations", end: false, permission: "providerBinding.read" },
+const NAV: {
+  to: string;
+  label: string;
+  end: boolean;
+  permission: Permission;
+  staffOnly?: boolean;
+  icon: LucideIcon;
+  group: "primary" | "staff";
+}[] = [
+  { to: "/", label: "Home", end: true, permission: "tenant.read", icon: Home, group: "primary" },
+  { to: "/tasks", label: "Tasks", end: false, permission: "task.read", icon: ListTodo, group: "primary" },
+  { to: "/appointments", label: "Appointments", end: false, permission: "appointment.read", icon: CalendarDays, group: "primary" },
+  { to: "/results", label: "Results", end: false, permission: "result.read", icon: BarChart3, group: "primary" },
+  { to: "/campaigns", label: "Campaigns", end: false, permission: "tenant.read", icon: Megaphone, group: "primary" },
+  { to: "/clients", label: "Clients", end: false, permission: "tenant.read", staffOnly: true, icon: Users, group: "staff" },
+  { to: "/operations", label: "Operations", end: false, permission: "providerBinding.read", staffOnly: true, icon: Settings2, group: "staff" },
 ];
 
-export function SidebarNav({ role, onNavigate }: { role: RaasRole | null; onNavigate?: () => void }) {
-  const items = NAV.filter((item) => hasPermission(role ?? undefined, item.permission));
+function NavItem({
+  item,
+  onNavigate,
+}: {
+  item: (typeof NAV)[number];
+  onNavigate?: () => void;
+}) {
+  const Icon = item.icon;
   return (
-    <nav aria-label="RaaS" className="mt-6">
-      <p className="px-3 text-xs font-semibold uppercase tracking-wide text-foreground-muted">RaaS</p>
-      <ul className="mt-2 space-y-1">
-        {items.map((item) => (
-          <li key={item.to}>
-            <NavLink
-              to={item.to}
-              end={item.end}
-              onClick={onNavigate}
-              className={({ isActive }) =>
-                cn(
-                  "flex min-h-11 items-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                  isActive
-                    ? "bg-accent text-accent-foreground shadow-sm"
-                    : "text-foreground-muted hover:bg-muted hover:text-primary",
-                )
-              }
-            >
-              {item.label}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
+    <li>
+      <NavLink
+        to={item.to}
+        end={item.end}
+        onClick={onNavigate}
+        className={({ isActive }) =>
+          cn(
+            "flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
+            isActive
+              ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+              : "text-foreground-muted hover:bg-muted/60 hover:text-foreground",
+          )
+        }
+      >
+        <Icon className="h-[1.125rem] w-[1.125rem] shrink-0 opacity-90" aria-hidden="true" />
+        {item.label}
+      </NavLink>
+    </li>
+  );
+}
+
+export function SidebarNav({ role, onNavigate }: { role: RaasRole | null; onNavigate?: () => void }) {
+  const staff = isStaffRole(role ?? undefined);
+  const items = NAV.filter(
+    (item) => hasPermission(role ?? undefined, item.permission) && (!item.staffOnly || staff),
+  );
+  const primary = items.filter((item) => item.group === "primary");
+  const staffItems = items.filter((item) => item.group === "staff");
+
+  return (
+    <nav aria-label="Command Center" className="mt-8 flex flex-1 flex-col">
+      <div>
+        <p className="px-3 text-[0.6875rem] font-semibold uppercase tracking-wider text-foreground-muted">Lead Capture</p>
+        <ul className="mt-2 space-y-0.5">
+          {primary.map((item) => (
+            <NavItem key={item.to} item={item} onNavigate={onNavigate} />
+          ))}
+        </ul>
+      </div>
+      {staffItems.length > 0 ? (
+        <div className="mt-8">
+          <p className="px-3 text-[0.6875rem] font-semibold uppercase tracking-wider text-foreground-muted">Operations</p>
+          <ul className="mt-2 space-y-0.5">
+            {staffItems.map((item) => (
+              <NavItem key={item.to} item={item} onNavigate={onNavigate} />
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </nav>
   );
 }

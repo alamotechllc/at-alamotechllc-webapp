@@ -12,10 +12,10 @@ export function SectionHeader({
   detail?: string;
 }) {
   return (
-    <header className="space-y-1">
-      {eyebrow ? <p className="text-xs font-semibold uppercase tracking-wide text-accent">{eyebrow}</p> : null}
-      <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">{title}</h1>
-      {detail ? <p className="text-sm text-foreground-muted md:text-base">{detail}</p> : null}
+    <header className="space-y-1.5 pb-1">
+      {eyebrow ? <p className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">{eyebrow}</p> : null}
+      <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-[1.75rem]">{title}</h1>
+      {detail ? <p className="max-w-2xl text-sm leading-relaxed text-foreground-muted md:text-base">{detail}</p> : null}
     </header>
   );
 }

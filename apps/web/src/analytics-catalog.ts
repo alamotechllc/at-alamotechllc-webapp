@@ -58,7 +58,7 @@ export function screenForPath(pathname: string): AnalyticsScreen | null {
     return { pagePath: "/sign-in", title: "Login", event: ANALYTICS_EVENTS.loginViewed };
   }
   if (path === "/") {
-    return { pagePath: "/", title: "RaaS Overview", event: ANALYTICS_EVENTS.raasOverviewViewed };
+    return { pagePath: "/", title: "Home", event: ANALYTICS_EVENTS.raasOverviewViewed };
   }
   if (path === "/clients") {
     return { pagePath: "/clients", title: "Clients", event: ANALYTICS_EVENTS.clientsViewed };

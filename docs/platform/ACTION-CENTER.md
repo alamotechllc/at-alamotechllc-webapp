@@ -78,7 +78,9 @@ Role-based assignment is out of scope for the MVP.
 
 ## Tenant Zero seed
 
-`npm run seed:tenant-zero` (emulator only) merges:
+`npm run seed:tenant-zero` (emulator only) merges. For a tenant-admin sign-in on the emulator, also run `npm run seed:tenant-poc-member` (creates `tenant.admin@client.example` / `local-dev-only` for uid `tz_poc_member_admin`).
+
+`npm run seed:tenant-zero` merges:
 
 - Seven POC actions from `tenantZeroCustomerActions()` in `packages/domain/src/tenantZeroActions.ts`
 - Emulator POC member `tz_poc_member_admin` for one user-assigned step

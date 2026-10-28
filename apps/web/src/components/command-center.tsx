@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import {
   trackChartPeriodChanged,
   trackFunnelViewed,
@@ -12,6 +11,8 @@ import type { LeadCapturePicture } from "../lead-capture-score";
 import { formatWhen } from "../format";
 import { StatusBadge, type StatusTone } from "./ui/badge";
 import { AppCard } from "./ui/card";
+import { KpiTile } from "./ui/kpi";
+import { cn } from "../lib/cn";
 
 export type ScorePeriod = 30 | 60 | 90;
 
@@ -21,11 +22,14 @@ export function CommandCenterScore({
   picture,
   days,
   onDays,
+  detail = "full",
 }: {
   picture: LeadCapturePicture;
   days: ScorePeriod;
   onDays: (days: ScorePeriod) => void;
+  detail?: "home" | "full";
 }) {
+  const home = detail === "home";
   const [openComponent, setOpenComponent] = useState<string | null>(null);
   const [openInsight, setOpenInsight] = useState<string | null>(null);
   const [openRecommendation, setOpenRecommendation] = useState<string | null>(null);
@@ -43,15 +47,33 @@ export function CommandCenterScore({
 
   return (
     <div className="flex flex-col gap-8">
-      <AppCard className="p-6 md:p-8" aria-labelledby="result-score-heading">
-        <h2 id="result-score-heading" className="text-sm font-medium text-foreground-muted">Result score</h2>
+      <section aria-labelledby="kpi-heading" className="space-y-3">
+        <h2 id="kpi-heading" className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Results</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {picture.kpis.map((kpi) => (
+            <KpiTile
+              key={kpi.id}
+              label={kpi.label}
+              value={kpi.value}
+              hint={`This period · ${trendText(kpi.trend, kpi.change, kpi.changePercent, kpi.previous)}`}
+              href={kpi.href}
+            />
+          ))}
+        </div>
+      </section>
+
+      <AppCard
+        className={cn(home ? "border-border/60 bg-muted/20 p-5 shadow-none" : "p-6 md:p-8")}
+        aria-labelledby="result-score-heading"
+      >
+        <h2 id="result-score-heading" className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Performance score</h2>
         <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
-            <p className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              {score === null ? "Not scored" : score}
-              {score === null ? null : <span className="text-xl font-semibold text-foreground-muted"> / 100</span>}
+            <p className={cn("font-bold tracking-tight text-foreground", home ? "text-3xl" : "text-4xl sm:text-5xl")}>
+              {score === null ? "Not scored yet" : score}
+              {score === null ? null : <span className="text-lg font-semibold text-foreground-muted"> / 100</span>}
             </p>
-            <p className="mt-2 text-sm text-foreground-muted">{picture.result.explanation}</p>
+            <p className="mt-2 text-sm leading-relaxed text-foreground-muted">{picture.result.explanation}</p>
           </div>
           <div className="flex flex-col items-start gap-2">
             <StatusBadge tone={statusToneFor(status)}>{status}</StatusBadge>
@@ -60,36 +82,14 @@ export function CommandCenterScore({
                 ? `No previous score for the prior ${days} days.`
                 : `${picture.result.scoreChange > 0 ? "+" : ""}${picture.result.scoreChange} over the previous ${days} days.`}
             </p>
-            <p className="text-sm text-foreground-muted">Calculated {formatWhen(picture.result.calculatedAt)}</p>
+            <p className="text-sm text-foreground-muted">Updated {formatWhen(picture.result.calculatedAt)}</p>
           </div>
         </div>
       </AppCard>
 
-      <section aria-labelledby="kpi-heading" className="space-y-3">
-        <h2 id="kpi-heading" className="text-sm font-semibold text-foreground-muted">Primary counts</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {picture.kpis.map((kpi) => {
-            const body = (
-              <>
-                <h3 className="text-xs font-medium text-foreground-muted">{kpi.label}</h3>
-                <p className="mt-2 text-3xl font-bold tracking-tight">{kpi.value}</p>
-                <p className="mt-2 text-sm text-foreground-muted">{trendText(kpi.trend, kpi.change, kpi.changePercent, kpi.previous)}</p>
-              </>
-            );
-            return kpi.href ? (
-              <Link key={kpi.id} to={kpi.href} className="rounded-lg border border-border bg-card p-4 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                {body}
-              </Link>
-            ) : (
-              <article key={kpi.id} className="rounded-lg border border-border bg-card p-4 shadow-sm">{body}</article>
-            );
-          })}
-        </div>
-      </section>
-
       <section aria-labelledby="period-heading" className="space-y-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h2 id="period-heading" className="text-sm font-semibold text-foreground-muted">Trends</h2>
+          <h2 id="period-heading" className="text-sm font-semibold text-foreground-muted">{home ? "Activity" : "Trends"}</h2>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Chart period">
             {PERIODS.map((period) => (
               <button
@@ -108,13 +108,15 @@ export function CommandCenterScore({
             ))}
           </div>
         </div>
-        <div className="grid gap-3 lg:grid-cols-2">
-          <AppCard className="min-w-0 p-4">
-            <h3 className="text-sm font-semibold">Result score trend</h3>
-            <p className="mt-3 text-sm text-foreground-muted">
-              A score line is not drawn. Past result scores are not stored, and the current score stays hidden until every part is measured.
-            </p>
-          </AppCard>
+        <div className={home ? "grid gap-3" : "grid gap-3 lg:grid-cols-2"}>
+          {!home ? (
+            <AppCard className="min-w-0 p-4">
+              <h3 className="text-sm font-semibold">Score over time</h3>
+              <p className="mt-3 text-sm text-foreground-muted">
+                Score history will appear here after more reporting periods are recorded.
+              </p>
+            </AppCard>
+          ) : null}
           <AppCard className="min-w-0 p-4">
             <h3 className="text-sm font-semibold">Leads and appointments</h3>
             <ActivityChart days={picture.days} />
@@ -122,6 +124,7 @@ export function CommandCenterScore({
         </div>
       </section>
 
+      {!home ? (
       <section aria-labelledby="breakdown-heading" className="space-y-3">
         <h2 id="breakdown-heading" className="text-sm font-semibold text-foreground-muted">Score breakdown</h2>
         <AppCard className="p-4">
@@ -155,6 +158,7 @@ export function CommandCenterScore({
           </ul>
         </AppCard>
       </section>
+      ) : null}
 
       {picture.funnel ? (
         <section aria-labelledby="funnel-heading" className="space-y-3">
@@ -180,6 +184,7 @@ export function CommandCenterScore({
         </section>
       )}
 
+      {!home ? (
       <section aria-labelledby="insights-heading" className="space-y-3">
         <h2 id="insights-heading" className="text-sm font-semibold text-foreground-muted">Insights</h2>
         <ul className="space-y-3">
@@ -206,7 +211,9 @@ export function CommandCenterScore({
           })}
         </ul>
       </section>
+      ) : null}
 
+      {!home ? (
       <section aria-labelledby="attention-heading" className="space-y-3">
         <h2 id="attention-heading" className="text-sm font-semibold text-foreground-muted">Attention required</h2>
         <ul className="space-y-3">
@@ -233,6 +240,7 @@ export function CommandCenterScore({
           })}
         </ul>
       </section>
+      ) : null}
     </div>
   );
 }

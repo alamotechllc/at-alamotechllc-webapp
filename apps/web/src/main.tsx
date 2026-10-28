@@ -113,7 +113,7 @@ function SignInPage() {
       <AppCard className="w-full max-w-md p-6 md:p-8">
         <AlamoLogo className="h-24 w-auto" />
         <h1 className="mt-4 text-2xl font-bold tracking-tight text-foreground">Command Center</h1>
-        <p className="mt-1 text-sm text-foreground-muted">Sign in to continue</p>
+        <p className="mt-1 text-sm text-foreground-muted">Sign in to view your business results and next steps.</p>
         <div className="mt-6 space-y-4">
           <Button className="h-11 w-full" type="button" onClick={() => void session.signInWithGoogle()}>Continue with Google</Button>
           {session.authError ? <p role="alert" className="text-sm text-error-foreground">{session.authError}</p> : null}

@@ -20,6 +20,8 @@
     "seed:operator": "tsx scripts/seed-operator.ts",
     "bootstrap:platform-admin": "tsx scripts/bootstrap-platform-admin.ts",
     "seed:tenant-zero": "tsx scripts/seed-tenant-zero.ts",
+    "seed:tenant-poc-member": "tsx scripts/seed-tenant-poc-member.ts",
+    "pull:ghl": "tsx scripts/pull-ghl-appointments.ts",
     "guard:frontend": "tsx scripts/guard-frontend-imports.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit && npm run typecheck -w @raas/web",
     "lint": "eslint .",

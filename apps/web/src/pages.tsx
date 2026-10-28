@@ -1,15 +1,19 @@
 import { Link, useParams } from "react-router-dom";
 import { useMemo, useState, type ReactNode } from "react";
+import { isStaffRole } from "../../../packages/domain/src/rbac";
 import { TENANT_ZERO } from "../../../packages/domain/src/tenantZero.js";
 import { StatusBadge, statusTone } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
-import { AppCard, MetricCard, StatusCard } from "./components/ui/card";
+import { AppCard, MetricCard } from "./components/ui/card";
 import { DataTable, EmptyState, ErrorState, LoadingState, SectionHeader, UnavailableValue } from "./components/ui/states";
 import { useSession } from "./auth";
 import { useApi, type LoadState } from "./data";
 import { formatWhen } from "./format";
-import { CommandCenterScore, type ScorePeriod } from "./components/command-center";
+import { AppointmentList } from "./components/appointments/appointment-list";
 import { NextStepsCard } from "./components/action-center/next-steps-card";
+import { HomeHeader } from "./components/dashboard/home-header";
+import { PageShell } from "./components/layout/page-shell";
+import { CommandCenterScore, type ScorePeriod } from "./components/command-center";
 import { OpenTasks } from "./tasks-page";
 import { campaignHealth, type CampaignVerdictLabel } from "./campaign-health";
 import { leadCapturePicture } from "./lead-capture-score";
@@ -93,6 +97,8 @@ function bookedValue(data: Results): { quiet: boolean; value: string | number; c
 }
 
 export function OverviewPage() {
+  const session = useSession();
+  const showProvider = isStaffRole(session.role ?? undefined);
   const tenantId = useWorkspaceTenantId();
   const base = tenantId ? `/v1/tenants/${tenantId}` : null;
   const [days, setDays] = useState<ScorePeriod>(30);
@@ -106,7 +112,7 @@ export function OverviewPage() {
   const leadCapture = instances.status === "ready"
     ? instances.data.items.find((item) => item.productCode === "lead-capture")
     : undefined;
-  const period = tenant.status === "ready" ? `Last ${days} days · ${tenant.data.legalName}` : `Last ${days} days`;
+  const period = tenant.status === "ready" ? tenant.data.legalName : undefined;
   const picture = useMemo(() => {
     if (!tenantId || !instanceId || leads.status !== "ready" || appointments.status !== "ready") return null;
     return leadCapturePicture({
@@ -122,55 +128,46 @@ export function OverviewPage() {
     ? [...appointments.data.items].sort((a, b) => b.startAt.localeCompare(a.startAt)).slice(0, 5)
     : [];
 
+  const serviceStatus = leadCapture?.status;
+  const metricsLoading = leads.status === "loading" || appointments.status === "loading";
+
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-8">
-      {tenantId ? <NextStepsCard /> : null}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <SectionHeader eyebrow="Command Center" title="Lead Capture" detail={period} />
-        {instances.status === "ready" ? (
-          <StatusBadge tone={leadCapture ? statusTone(leadCapture.status) : "muted"}>
-            {leadCapture ? (leadCapture.status === "active" ? "Service active" : leadCapture.status) : "Not configured"}
-          </StatusBadge>
-        ) : null}
-      </div>
+    <PageShell className="flex flex-col gap-8">
+      <HomeHeader organization={period} serviceStatus={serviceStatus} periodDays={days} />
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
       {!outage && leads.status === "failed" ? <ErrorState failure={leads.failure} message={leads.message} onRetry={leads.retry} /> : null}
       {!outage && appointments.status === "failed" ? <ErrorState failure={appointments.failure} message={appointments.message} onRetry={appointments.retry} /> : null}
-      {picture ? <CommandCenterScore picture={picture} days={days} onDays={setDays} /> : null}
-      {!picture && leads.status !== "failed" && appointments.status !== "failed" ? <LoadingState label="Loading the result score" /> : null}
-      {tenantId ? <OpenTasks tenantId={tenantId} /> : null}
-      <section aria-labelledby="operational-status" className="space-y-3">
-        <h2 id="operational-status" className="text-sm font-semibold text-foreground-muted">Operational status</h2>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <StatusCard label="Service status">
-            <Region state={instances} loading="Loading the service" suppressed={Boolean(outage)}>
-              {() => leadCapture
-                ? <StatusBadge tone={statusTone(leadCapture.status)}>{leadCapture.status}</StatusBadge>
-                : <p>Not configured</p>}
-            </Region>
-          </StatusCard>
-          <StatusCard label="Provider status">
-            <p>Not shown here</p>
-          </StatusCard>
-          <StatusCard label="Last event">
-            <p>Not shown here</p>
-          </StatusCard>
-          <StatusCard label="Last successful ingest">
-            <p>Not shown here</p>
-          </StatusCard>
+
+      <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
+        <div className="order-2 flex min-w-0 flex-col gap-8 xl:order-1">
+          {picture ? <CommandCenterScore picture={picture} days={days} onDays={setDays} detail="home" /> : null}
+          {!picture && !metricsLoading && leads.status !== "failed" && appointments.status !== "failed" ? (
+            <LoadingState label="Loading your results" />
+          ) : null}
+          {!picture && metricsLoading ? <LoadingState label="Loading your results" /> : null}
+          <section aria-labelledby="recent-activity" className="space-y-3">
+            <div className="flex flex-wrap items-end justify-between gap-2">
+              <h2 id="recent-activity" className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+                Recent appointments
+              </h2>
+              <Link className="text-sm font-medium text-accent underline-offset-4 hover:underline" to="/appointments">
+                View all
+              </Link>
+            </div>
+            <AppCard className="p-5">
+              {appointments.status === "loading" ? <LoadingState label="Loading appointments" compact /> : null}
+              {appointments.status === "ready" ? (
+                <AppointmentList items={recent} showProvider={showProvider} />
+              ) : null}
+            </AppCard>
+          </section>
         </div>
-      </section>
-      <section aria-labelledby="recent-activity" className="space-y-3">
-        <h2 id="recent-activity" className="text-sm font-semibold text-foreground-muted">Recent activity</h2>
-        <AppCard className="p-4">
-          {recent.length === 0 ? (
-            <p className="text-sm text-foreground-muted">No appointments are recorded. Provider receipts stay on the server.</p>
-          ) : (
-            <AppointmentTable items={recent} />
-          )}
-        </AppCard>
-      </section>
-    </div>
+        <aside className="order-1 flex flex-col gap-6 xl:order-2 xl:sticky xl:top-20">
+          {tenantId ? <NextStepsCard /> : null}
+          {tenantId ? <OpenTasks tenantId={tenantId} /> : null}
+        </aside>
+      </div>
+    </PageShell>
   );
 }
 
@@ -184,8 +181,8 @@ export function ClientsPage() {
   const states = [tenant, results];
   const outage = sharedFailure(states);
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6">
-      <SectionHeader title="Clients" detail="Organizations with a Lead Capture service." />
+    <PageShell className="flex flex-col gap-6">
+      <SectionHeader eyebrow="Operations" title="Clients" detail="Organizations with Lead Capture enabled." />
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
       <Region state={tenant} loading="Loading clients" suppressed={Boolean(outage)}>
         {(data) => (
@@ -211,11 +208,13 @@ export function ClientsPage() {
           </>
         )}
       </Region>
-    </div>
+    </PageShell>
   );
 }
 
 export function ClientPage() {
+  const session = useSession();
+  const showProvider = isStaffRole(session.role ?? undefined);
   const params = useParams();
   const tenantId = /^ten_[A-Za-z0-9]+$/.test(params.tenantId ?? "") ? params.tenantId ?? "" : "";
   const base = tenantId ? `/v1/tenants/${tenantId}` : null;
@@ -242,8 +241,8 @@ export function ClientPage() {
       : null;
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6">
-      <SectionHeader title={legalName} detail={timezone} />
+    <PageShell className="flex flex-col gap-6">
+      <SectionHeader eyebrow="Client" title={legalName} detail={timezone} />
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
         <AppCard className="p-6">
@@ -256,7 +255,9 @@ export function ClientPage() {
                 return (
                   <div className="space-y-2">
                     <p className="font-semibold">Lead Capture</p>
-                    <p className="break-all text-sm text-foreground-muted">{service.instanceId}</p>
+                    {showProvider ? (
+                      <p className="break-all text-sm text-foreground-muted">{service.instanceId}</p>
+                    ) : null}
                     <StatusBadge tone={statusTone(service.status)}>{service.status}</StatusBadge>
                   </div>
                 );
@@ -300,11 +301,11 @@ export function ClientPage() {
         <h2 className="text-base font-semibold">Recent activity</h2>
         <div className="mt-4">
           <Region state={appointments} loading="Loading appointments" suppressed={Boolean(outage)} empty={{ when: (list) => list.items.length === 0, title: "No appointments", detail: "Booked appointments will appear here." }}>
-            {(list) => <AppointmentTable items={list.items.slice(0, 5)} />}
+            {(list) => <AppointmentList items={list.items.slice(0, 5)} showProvider={showProvider} />}
           </Region>
         </div>
       </AppCard>
-    </div>
+    </PageShell>
   );
 }
 
@@ -325,8 +326,8 @@ export function CampaignsPage() {
     ? campaignHealth(campaigns.data.items, appointments.data.items, window)
     : null;
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6">
-      <SectionHeader title="Campaigns" detail={`Bookings tied to each campaign · ${window.label}`} />
+    <PageShell className="flex flex-col gap-6">
+      <SectionHeader title="Campaigns" detail={`Which campaigns are producing bookings · ${window.label}`} />
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
       {!outage && campaigns.status === "failed" ? <ErrorState failure={campaigns.failure} message={campaigns.message} onRetry={campaigns.retry} /> : null}
       {!outage && appointments.status === "failed" ? <ErrorState failure={appointments.failure} message={appointments.message} onRetry={appointments.retry} /> : null}
@@ -337,28 +338,45 @@ export function CampaignsPage() {
         </AppCard>
       ) : null}
       {health && health.campaigns.length > 0 ? (
-        <AppCard className="p-6">
-          <DataTable headers={["Campaign", "Channel", "Status", "Bookings", "Latest booking", "Verdict"]}>
+        <>
+          <ul className="space-y-3 md:hidden">
             {health.campaigns.map((item) => (
-              <tr key={item.campaignId}>
-                <td>{item.name || item.campaignId}</td>
-                <td>{item.channel}</td>
-                <td><StatusBadge tone={statusTone(item.status)}>{item.status}</StatusBadge></td>
-                <td>{item.bookings}</td>
-                <td>{item.latestBookingAt ? formatWhen(item.latestBookingAt) : "None"}</td>
-                <td><StatusBadge tone={verdictTone(item.verdict)}>{item.verdict}</StatusBadge></td>
-              </tr>
+              <li key={item.campaignId} className="rounded-xl border border-border bg-card p-4 shadow-sm">
+                <p className="font-semibold text-foreground">{item.name || item.campaignId}</p>
+                <p className="mt-1 text-sm text-foreground-muted">{item.channel}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <StatusBadge tone={statusTone(item.status)}>{item.status}</StatusBadge>
+                  <StatusBadge tone={verdictTone(item.verdict)}>{item.verdict}</StatusBadge>
+                </div>
+                <p className="mt-3 text-sm text-foreground-muted">
+                  {item.bookings} bookings · {item.latestBookingAt ? formatWhen(item.latestBookingAt) : "No bookings yet"}
+                </p>
+              </li>
             ))}
-            <tr>
-              <td>Not tied to a campaign</td>
-              <td />
-              <td />
-              <td>{health.unattributedBookings}</td>
-              <td>{health.unattributedLatestBookingAt ? formatWhen(health.unattributedLatestBookingAt) : "None"}</td>
-              <td />
-            </tr>
-          </DataTable>
-        </AppCard>
+          </ul>
+          <AppCard className="hidden p-6 md:block">
+            <DataTable headers={["Campaign", "Channel", "Status", "Bookings", "Latest booking", "Verdict"]}>
+              {health.campaigns.map((item) => (
+                <tr key={item.campaignId}>
+                  <td>{item.name || item.campaignId}</td>
+                  <td>{item.channel}</td>
+                  <td><StatusBadge tone={statusTone(item.status)}>{item.status}</StatusBadge></td>
+                  <td>{item.bookings}</td>
+                  <td>{item.latestBookingAt ? formatWhen(item.latestBookingAt) : "None"}</td>
+                  <td><StatusBadge tone={verdictTone(item.verdict)}>{item.verdict}</StatusBadge></td>
+                </tr>
+              ))}
+              <tr>
+                <td>Not tied to a campaign</td>
+                <td />
+                <td />
+                <td>{health.unattributedBookings}</td>
+                <td>{health.unattributedLatestBookingAt ? formatWhen(health.unattributedLatestBookingAt) : "None"}</td>
+                <td />
+              </tr>
+            </DataTable>
+          </AppCard>
+        </>
       ) : null}
       {health && health.campaigns.length === 0 && health.unattributedBookings > 0 ? (
         <AppCard className="p-6">
@@ -368,11 +386,13 @@ export function CampaignsPage() {
           </p>
         </AppCard>
       ) : null}
-    </div>
+    </PageShell>
   );
 }
 
 export function AppointmentsPage() {
+  const session = useSession();
+  const showProvider = isStaffRole(session.role ?? undefined);
   const tenantId = useWorkspaceTenantId();
   const base = tenantId ? `/v1/tenants/${tenantId}` : null;
   const tenant = useApi<Tenant>(base);
@@ -380,19 +400,24 @@ export function AppointmentsPage() {
   const states = [tenant, appointments];
   const outage = sharedFailure(states);
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6">
+    <PageShell className="flex flex-col gap-6">
       <SectionHeader
         title="Appointments"
-        detail={tenant.status === "ready" ? `Booked appointments for ${tenant.data.legalName}.` : "Booked appointments."}
+        detail={tenant.status === "ready" ? `Booked meetings for ${tenant.data.legalName}.` : "Booked meetings from Lead Capture."}
       />
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
       {tenant.status === "failed" && !outage ? <ErrorState failure={tenant.failure} message={tenant.message} onRetry={tenant.retry} /> : null}
-      <AppCard className="p-6">
-        <Region state={appointments} loading="Loading appointments" suppressed={Boolean(outage)} empty={{ when: (list) => list.items.length === 0, title: "No appointments", detail: "A booked appointment has not been recorded." }}>
-          {(list) => <AppointmentTable items={[...list.items].sort((a, b) => b.startAt.localeCompare(a.startAt))} />}
+      <AppCard className="p-5 md:p-6">
+        <Region state={appointments} loading="Loading appointments" suppressed={Boolean(outage)} empty={{ when: (list) => list.items.length === 0, title: "No appointments booked yet", detail: "Booked meetings will appear here once Lead Capture records them." }}>
+          {(list) => (
+            <AppointmentList
+              items={[...list.items].sort((a, b) => b.startAt.localeCompare(a.startAt))}
+              showProvider={showProvider}
+            />
+          )}
         </Region>
       </AppCard>
-    </div>
+    </PageShell>
   );
 }
 
@@ -403,8 +428,8 @@ export function ResultsPage() {
   const instanceId = leadInstanceId(tenantId, instances.status === "ready" ? instances.data.items : undefined);
   const results = useApi<Results>(tenantId && instanceId ? resultsQuery(tenantId, instanceId) : undefined);
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6">
-      <SectionHeader title="Results" detail={`Lead Capture · ${window.label}`} />
+    <PageShell className="flex flex-col gap-6">
+      <SectionHeader title="Results" detail={`What Lead Capture produced for your business · ${window.label}`} />
       <Region state={results} loading="Loading results" suppressed={false}>
         {(data) => {
           const slots = presentMetrics(data.metrics);
@@ -417,22 +442,24 @@ export function ResultsPage() {
                   <MetricCard key={item.key} label={item.label} dominant value={item.value} context={window.label} />
                 ))}
               </div>
-              <AppCard className="p-6">
-                <h2 className="text-base font-semibold">Not configured</h2>
-                <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                  {waiting.map((item) => (
-                    <li key={item.key} className="flex items-center justify-between gap-3 text-sm">
-                      <span>{item.label}</span>
-                      <StatusBadge tone="muted">Not configured</StatusBadge>
-                    </li>
-                  ))}
-                </ul>
-              </AppCard>
+              {waiting.length > 0 ? (
+                <details className="rounded-xl border border-border bg-muted/20 p-5">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground">Additional metrics (coming soon)</summary>
+                  <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+                    {waiting.map((item) => (
+                      <li key={item.key} className="flex items-center justify-between gap-3 text-sm text-foreground-muted">
+                        <span>{item.label}</span>
+                        <StatusBadge tone="muted">Soon</StatusBadge>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ) : null}
             </>
           );
         }}
       </Region>
-    </div>
+    </PageShell>
   );
 }
 
@@ -444,8 +471,8 @@ export function OperationsPage() {
   const states = [events, bindings];
   const outage = sharedFailure(states);
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6">
-      <SectionHeader title="Operations" detail="Provider and ingest state. This is separate from client results." />
+    <PageShell className="flex flex-col gap-6">
+      <SectionHeader eyebrow="Operations" title="Operations" detail="Provider connections and ingest activity—separate from customer-facing results." />
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
       <AppCard className="p-6">
         <h2 className="text-base font-semibold">Provider bindings</h2>
@@ -494,20 +521,7 @@ export function OperationsPage() {
           <div className="mt-3"><StatusBadge tone="muted">Not configured</StatusBadge></div>
         </AppCard>
       </div>
-    </div>
+    </PageShell>
   );
 }
 
-function AppointmentTable({ items }: { items: Appointment[] }) {
-  return (
-    <DataTable headers={["When", "Status", "Provider"]}>
-      {items.map((item) => (
-        <tr key={item.appointmentId}>
-          <td>{formatWhen(item.startAt)}</td>
-          <td><StatusBadge tone={statusTone(item.status)}>{item.status}</StatusBadge></td>
-          <td>{item.provider}</td>
-        </tr>
-      ))}
-    </DataTable>
-  );
-}

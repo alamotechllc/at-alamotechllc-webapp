@@ -29,7 +29,7 @@ describe("analytics collection gate", () => {
 describe("analytics screens", () => {
   it("maps command-center routes and strips record ids", () => {
     expect(screenForPath("/sign-in")?.event).toBe("login_viewed");
-    expect(screenForPath("/")?.title).toBe("RaaS Overview");
+    expect(screenForPath("/")?.title).toBe("Home");
     expect(screenForPath("/raas")?.pagePath).toBe("/");
     expect(screenForPath("/clients")?.event).toBe("clients_viewed");
     expect(screenForPath("/clients/ten_01ARZ3NDEKTSV4RRFFQ69G5FAV")).toEqual({

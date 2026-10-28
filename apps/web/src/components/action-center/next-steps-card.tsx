@@ -1,27 +1,25 @@
-import type { KeyboardEvent } from "react";
+import { ChevronRight } from "lucide-react";
 import { useActionCenter } from "../../action-center-context";
 import { AppCard } from "../ui/card";
 
 export function NextStepsCard() {
   const { view, loading, error, setOpen } = useActionCenter();
 
-  function openFromCard(event: KeyboardEvent<HTMLElement>) {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      setOpen(true);
-    }
-  }
   if (loading && !view) {
     return (
-      <AppCard className="p-6 md:p-8" aria-busy="true">
-        <p className="text-sm text-foreground-muted">Loading your progress…</p>
+      <AppCard className="p-5" aria-busy="true" role="status">
+        <div className="space-y-3">
+          <div className="h-3 w-24 animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
+          <div className="h-8 w-full animate-pulse rounded-md bg-muted motion-reduce:animate-none" />
+          <div className="h-8 w-4/5 animate-pulse rounded-md bg-muted motion-reduce:animate-none" />
+        </div>
       </AppCard>
     );
   }
   if (error && !view) {
     return (
-      <AppCard className="p-6 md:p-8" role="alert">
-        <h2 className="text-sm font-medium text-foreground-muted">Your progress</h2>
+      <AppCard className="p-5" role="alert">
+        <p className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Next Steps</p>
         <p className="mt-3 text-sm text-destructive">{error}</p>
       </AppCard>
     );
@@ -29,43 +27,46 @@ export function NextStepsCard() {
 
   if (!view) return null;
 
-  const { progress, selection, pending } = view;
-  const attention = selection.visibleCount;
-  const preview = selection.visible[0];
+  const { progress, selection } = view;
+  const pending = selection.visible;
+  const caughtUp = progress.caughtUp && selection.visibleCount === 0;
 
   return (
-    <AppCard
-      className="cursor-pointer p-6 transition-shadow hover:shadow-md md:p-8"
-      aria-labelledby="next-steps-progress"
-      role="button"
-      tabIndex={0}
-      onClick={() => setOpen(true)}
-      onKeyDown={openFromCard}
-    >
-      <h2 id="next-steps-progress" className="text-sm font-medium text-foreground-muted">
-        Your progress
-      </h2>
-      {progress.caughtUp && progress.totalCount === 0 ? (
-        <p className="mt-3 text-2xl font-bold tracking-tight">{progress.label}</p>
-      ) : (
-        <>
-          <p className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">{progress.label}</p>
-          <div className="mt-4 h-2 w-full max-w-md rounded-full bg-muted" aria-hidden="true">
-            <div className="h-2 rounded-full bg-primary" style={{ width: `${progress.percent ?? 0}%` }} />
+    <AppCard className="overflow-hidden border-accent/20 bg-card p-0 shadow-sm">
+      <button
+        type="button"
+        className="w-full p-5 text-left transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+        onClick={() => setOpen(true)}
+      >
+        <p className="text-xs font-semibold uppercase tracking-wide text-accent">Next Steps</p>
+        {caughtUp ? (
+          <div className="mt-3 space-y-1">
+            <p className="text-lg font-semibold text-foreground">You&apos;re all caught up</p>
+            <p className="text-sm text-foreground-muted">Nothing needs your attention right now.</p>
           </div>
-          <p className="mt-2 text-sm text-foreground-muted">{progress.detail}</p>
-        </>
-      )}
-      {attention > 0 ? (
-        <p className="mt-4 text-sm font-medium text-foreground">
-          {attention} {attention === 1 ? "thing needs" : "things need"} your attention
+        ) : (
+          <div className="mt-3 space-y-3">
+            <p className="text-xl font-bold tracking-tight text-foreground">
+              {selection.visibleCount} {selection.visibleCount === 1 ? "thing needs" : "things need"} your attention
+            </p>
+            <ul className="space-y-2">
+              {pending.slice(0, 3).map((action) => (
+                <li key={action.id} className="flex items-start gap-2 text-sm text-foreground-muted">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                  <span className="line-clamp-2">{action.title}</span>
+                </li>
+              ))}
+            </ul>
+            {progress.percent !== null && progress.percent > 0 ? (
+              <p className="text-xs text-foreground-muted">{progress.detail}</p>
+            ) : null}
+          </div>
+        )}
+        <p className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
+          View all next steps
+          <ChevronRight className="h-4 w-4" aria-hidden="true" />
         </p>
-      ) : null}
-      {preview ? <p className="mt-2 break-words text-sm text-foreground-muted">{preview.title}</p> : null}
-      {pending.length === 0 && progress.totalCount > 0 ? (
-        <p className="mt-2 text-sm text-foreground-muted">You&apos;re all caught up.</p>
-      ) : null}
-      <p className="mt-5 text-sm font-medium text-accent">View Next Steps →</p>
+      </button>
     </AppCard>
   );
 }
