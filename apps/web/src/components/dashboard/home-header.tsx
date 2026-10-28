@@ -19,7 +19,7 @@ export function HomeHeader({
         <div className="min-w-0 space-y-1">
           <p className="text-xs font-medium text-foreground-muted">Command Center</p>
           <p className="text-sm font-medium text-foreground-muted">{greeting}</p>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Home</h1>
+          <h1 className="text-2xl text-foreground md:text-3xl">Home</h1>
           <p className="text-sm text-foreground-muted md:text-base">
             {organization
               ? `${organization}. Lead Capture, last ${periodDays} days.`

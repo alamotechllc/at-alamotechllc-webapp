@@ -1,11 +1,11 @@
-/* Hallmark · checked: 2026-10-28 · genre: modern-minimal · scope: app
- * redesign: full · brand: locked (design.md) · built: Alamo Tech design system
+/* Hallmark · theme: midnight (by request) · genre: atmospheric · scope: app
+ * brand: Alamo semantics · v2.0.0 · contrast: pending sweep
  */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Values copied from at-alamotechllc-website/src/index.css. See docs/design/ALAMO-TECH-DESIGN-SYSTEM.md. */
+/* Midnight material mapped to app semantic tokens. See docs/design/ALAMO-TECH-DESIGN-SYSTEM.md for structure. */
 
 @layer base {
   html,
@@ -13,116 +13,91 @@
     overflow-x: clip;
   }
 
-  :root {
-    --dur-micro: 120ms;
-    --dur-short: 200ms;
-    --background: 210 40% 98%;
-    --foreground: 215 28% 17%;
-    --foreground-muted: 215 16% 40%;
-
-    --surface: 0 0% 100%;
-    --surface-muted: 214 32% 91%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 215 28% 17%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 28% 17%;
-
-    --primary: 210 65% 15%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 210 65% 22%;
-
-    --secondary: 210 10% 50%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 214 32% 91%;
-    --muted-foreground: 215 16% 40%;
-
-    --accent: 205 60% 45%;
-    --accent-foreground: 0 0% 100%;
-    --accent-hover: 205 55% 38%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --success: 205 60% 45%;
-    --success-foreground: 205 55% 28%;
-    --warning: 207 15% 29%;
-    --warning-foreground: 207 15% 24%;
-    --error: 0 84% 60%;
-    --error-foreground: 0 55% 32%;
-
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 205 60% 45%;
-
-    --radius: 0.75rem;
-
-    --shadow-card: 0 4px 6px -1px hsl(var(--primary) / 0.1), 0 2px 4px -1px hsl(var(--primary) / 0.06);
-    --shadow-hero: 0 20px 25px -5px hsl(var(--primary) / 0.1), 0 10px 10px -5px hsl(var(--primary) / 0.04);
-    --shadow-button: 0 10px 15px -3px hsl(var(--accent) / 0.2), 0 4px 6px -2px hsl(var(--accent) / 0.1);
-
-    --sidebar-background: 210 40% 98%;
-    --sidebar-foreground: 215 28% 25%;
-    --sidebar-primary: 210 65% 15%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 214 32% 91%;
-    --sidebar-accent-foreground: 215 28% 17%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 205 60% 45%;
+  html {
+    color-scheme: dark;
   }
 
+  :root,
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
-    --foreground-muted: 215 20% 65%;
+    --dur-micro: 120ms;
+    --dur-short: 200ms;
+    --dur-long: 480ms;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
-    --surface: 222 47% 10%;
-    --surface-muted: 217 33% 17%;
+    --background: 264 35% 12%;
+    --foreground: 250 25% 96%;
+    --foreground-muted: 256 30% 70%;
 
-    --card: 222 47% 10%;
-    --card-foreground: 210 40% 98%;
+    --surface: 264 38% 16%;
+    --surface-muted: 264 40% 20%;
 
-    --popover: 222 47% 10%;
-    --popover-foreground: 210 40% 98%;
+    --card: 264 38% 16%;
+    --card-foreground: 250 25% 96%;
 
-    --primary: 210 65% 25%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 210 65% 32%;
+    --popover: 264 38% 16%;
+    --popover-foreground: 250 25% 96%;
 
-    --secondary: 210 10% 60%;
-    --secondary-foreground: 0 0% 100%;
+    --primary: 230 75% 72%;
+    --primary-foreground: 264 35% 12%;
+    --primary-hover: 236 60% 65%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --secondary: 264 40% 22%;
+    --secondary-foreground: 250 25% 96%;
 
-    --accent: 205 70% 55%;
-    --accent-foreground: 0 0% 100%;
-    --accent-hover: 205 65% 48%;
+    --muted: 264 40% 20%;
+    --muted-foreground: 256 30% 70%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --accent: 230 75% 72%;
+    --accent-foreground: 264 35% 12%;
+    --accent-hover: 236 60% 65%;
 
-    --success: 205 70% 55%;
-    --success-foreground: 210 40% 98%;
-    --warning: 210 10% 60%;
-    --warning-foreground: 0 0% 100%;
-    --error: 0 62.8% 30.6%;
-    --error-foreground: 210 40% 98%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 250 25% 96%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 205 70% 55%;
+    --success: 230 70% 68%;
+    --success-foreground: 264 35% 12%;
+    --warning: 256 25% 75%;
+    --warning-foreground: 264 35% 12%;
+    --error: 0 62% 45%;
+    --error-foreground: 250 25% 96%;
 
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 40% 96%;
-    --sidebar-primary: 205 70% 55%;
-    --sidebar-primary-foreground: 222 47% 6%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 205 70% 55%;
+    --border: 264 45% 28%;
+    --input: 264 45% 28%;
+    --ring: 228 80% 74%;
+
+    --radius: 0;
+
+    --font-display: "Mona Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-body: var(--font-display);
+    --shadow-depth: 264 35% 6%;
+    --shadow-glow: 230 75% 72%;
+
+    --shadow-card: 0 24px 48px -24px hsl(var(--shadow-depth) / 0.7);
+    --shadow-hero: 0 24px 48px -24px hsl(var(--shadow-depth) / 0.55);
+    --shadow-button: 0 12px 24px -12px hsl(var(--shadow-glow) / 0.35);
+
+    --sidebar-background: 264 35% 12%;
+    --sidebar-foreground: 250 22% 92%;
+    --sidebar-primary: 230 75% 72%;
+    --sidebar-primary-foreground: 264 35% 12%;
+    --sidebar-accent: 264 38% 18%;
+    --sidebar-accent-foreground: 250 25% 96%;
+    --sidebar-border: 264 45% 28%;
+    --sidebar-ring: 228 80% 74%;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-stretch: 125%;
+    letter-spacing: -0.015em;
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-weight: 500;
   }
 
   * {
@@ -131,6 +106,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
   }
 
   a:active {

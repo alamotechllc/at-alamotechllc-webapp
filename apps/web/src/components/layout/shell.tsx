@@ -44,7 +44,7 @@ export function Shell() {
         {open ? (
           <button
             type="button"
-            className="fixed inset-0 z-30 bg-primary/50 backdrop-blur-[2px] lg:hidden"
+            className="fixed inset-0 z-30 bg-background/80 lg:hidden"
             aria-label="Close navigation"
             onClick={() => setOpen(false)}
           />

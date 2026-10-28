@@ -41,7 +41,7 @@ export function ActionCenterDrawer() {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <button type="button" className="absolute inset-0 bg-primary/50 backdrop-blur-[2px]" aria-label="Close Next Steps" onClick={() => setOpen(false)} />
+      <button type="button" className="absolute inset-0 bg-background/80" aria-label="Close Next Steps" onClick={() => setOpen(false)} />
       <aside
         ref={panelRef}
         tabIndex={-1}

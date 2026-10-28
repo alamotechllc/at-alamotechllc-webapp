@@ -186,11 +186,16 @@ function deployDevChannel(): string {
 
 async function smokePreview(url: string, sha: string, channel = "dev"): Promise<Stop | null> {
   const smokeUrl = new URL(url);
-  smokeUrl.searchParams.set("raas-smoke", sha);
+  // Neutral cache buster: `raas-smoke=<sha>` was served stale HTML on Firebase preview channels.
+  smokeUrl.searchParams.set("_cb", sha.slice(0, 12));
   let status: number;
   let html: string;
   try {
-    const response = await fetch(smokeUrl, { redirect: "follow", cache: "no-store" });
+    const response = await fetch(smokeUrl, {
+      redirect: "follow",
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+    });
     status = response.status;
     html = await response.text();
   } catch {

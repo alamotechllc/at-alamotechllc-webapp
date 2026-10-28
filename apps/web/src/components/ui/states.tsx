@@ -11,7 +11,7 @@ export function SectionHeader({
 }) {
   return (
     <header className="space-y-1.5 pb-1">
-      <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-[1.75rem]">{title}</h1>
+      <h1 className="text-2xl text-foreground md:text-[1.75rem]">{title}</h1>
       {detail ? <p className="max-w-2xl text-sm leading-relaxed text-foreground-muted md:text-base">{detail}</p> : null}
     </header>
   );

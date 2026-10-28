@@ -38,7 +38,7 @@ function AccessCard({ access }: { access: Exclude<Access, "loading" | "anonymous
     <div className="grid min-h-screen place-items-center bg-background px-4 py-10">
       <AppCard className="w-full max-w-md p-6 md:p-8">
         <AlamoLogo className="h-24 w-auto" />
-        <h1 className="mt-4 text-2xl font-bold tracking-tight text-foreground">{copy.title}</h1>
+        <h1 className="mt-4 text-2xl text-foreground">{copy.title}</h1>
         <p className="mt-3 text-sm text-foreground-muted" role="alert">{copy.detail}</p>
         <div className="mt-6 flex gap-3">
           {access === "unavailable" ? <Button variant="outline" onClick={session.retryAccess}>Retry</Button> : null}
@@ -90,7 +90,7 @@ function SignInPage() {
       <div className="grid min-h-screen place-items-center bg-background px-4 py-10">
         <AppCard className="w-full max-w-md p-6 md:p-8">
           <AlamoLogo className="h-24 w-auto" />
-          <h1 className="mt-4 text-2xl font-bold tracking-tight text-foreground">Command Center</h1>
+          <h1 className="mt-4 text-2xl text-foreground">Command Center</h1>
           <p className="mt-3 text-sm text-foreground-muted" role="alert">{authConfigError}</p>
         </AppCard>
       </div>
@@ -112,7 +112,7 @@ function SignInPage() {
     <div className="grid min-h-screen place-items-center bg-background px-4 py-10">
       <AppCard className="w-full max-w-md p-6 md:p-8">
         <AlamoLogo className="h-24 w-auto" />
-        <h1 className="mt-4 text-2xl font-bold tracking-tight text-foreground">Command Center</h1>
+        <h1 className="mt-4 text-2xl text-foreground">Command Center</h1>
         <p className="mt-1 text-sm text-foreground-muted">Sign in to view your business results and next steps.</p>
         <div className="mt-6 space-y-4">
           <Button className="h-11 w-full" type="button" onClick={() => void session.signInWithGoogle()}>Continue with Google</Button>
