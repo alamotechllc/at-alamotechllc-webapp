@@ -184,24 +184,43 @@ function deployDevChannel(): string {
   return url;
 }
 
-async function smokePreview(url: string, sha: string, channel = "dev"): Promise<Stop | null> {
+async function fetchPreviewHtml(url: string, sha: string): Promise<{ status: number; html: string } | null> {
   const smokeUrl = new URL(url);
-  // Neutral cache buster: `raas-smoke=<sha>` was served stale HTML on Firebase preview channels.
-  smokeUrl.searchParams.set("_cb", sha.slice(0, 12));
-  let status: number;
-  let html: string;
+  // Full SHA + time: short `_cb` and `raas-smoke=` still returned stale HTML on preview channels.
+  smokeUrl.searchParams.set("_cb", sha);
+  smokeUrl.searchParams.set("_t", String(Date.now()));
   try {
     const response = await fetch(smokeUrl, {
       redirect: "follow",
       cache: "no-store",
       headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
     });
-    status = response.status;
-    html = await response.text();
+    return { status: response.status, html: await response.text() };
   } catch {
-    return { stage: "smoke", message: "Preview URL did not respond." };
+    return null;
   }
-  const page = previewSmokeFailure({ status, html, sha, channel });
+}
+
+async function smokePreview(url: string, sha: string, channel = "dev"): Promise<Stop | null> {
+  let status = 0;
+  let html = "";
+  let page: Stop | null = { stage: "smoke", message: "Preview git SHA does not match this commit." };
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    if (attempt > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+    const fetched = await fetchPreviewHtml(url, sha);
+    if (!fetched) {
+      return { stage: "smoke", message: "Preview URL did not respond." };
+    }
+    status = fetched.status;
+    html = fetched.html;
+    page = previewSmokeFailure({ status, html, sha, channel });
+    if (!page) break;
+    if (page.message !== "Preview git SHA does not match this commit.") {
+      return page;
+    }
+  }
   if (page) return page;
   for (const asset of previewAssetPaths(html)) {
     try {
