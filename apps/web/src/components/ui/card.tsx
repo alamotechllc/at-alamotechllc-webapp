@@ -5,7 +5,7 @@ import { Button } from "./button";
 export function AppCard({ className, ...props }: HTMLAttributes<HTMLElement>) {
   return (
     <section
-      className={cn("rounded-lg border border-border bg-card text-card-foreground shadow-sm", className)}
+      className={cn("cut-panel border border-border bg-card text-card-foreground shadow-card", className)}
       {...props}
     />
   );

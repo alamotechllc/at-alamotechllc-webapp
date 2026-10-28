@@ -7,9 +7,12 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 active:bg-primary/80",
-        outline: "border border-border bg-background hover:bg-muted hover:text-foreground active:bg-muted/80",
-        accent: "bg-accent text-accent-foreground shadow-sm hover:bg-accent/90 active:bg-accent/80",
+        default:
+          "btn-keycap border border-primary/80 bg-primary text-primary-foreground shadow-button hover:bg-primary-hover active:bg-primary-hover",
+        outline:
+          "btn-keycap border border-border bg-background shadow-[var(--shadow-key)] hover:bg-muted hover:text-foreground active:bg-muted/80",
+        accent:
+          "btn-keycap border border-primary/80 bg-accent text-accent-foreground shadow-button hover:bg-accent-hover active:bg-accent-hover",
         ghost: "hover:bg-muted hover:text-foreground active:bg-muted/80",
       },
       size: {

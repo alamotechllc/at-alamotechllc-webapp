@@ -1,11 +1,11 @@
-/* Hallmark · theme: midnight (by request) · genre: atmospheric · scope: app
+/* Hallmark · theme: cobalt (by request) · genre: modern-minimal · scope: app
  * brand: Alamo semantics · v2.0.0 · contrast: pending sweep
  */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Midnight material mapped to app semantic tokens. See docs/design/ALAMO-TECH-DESIGN-SYSTEM.md for structure. */
+/* Cobalt material mapped to app semantic tokens. See docs/design/ALAMO-TECH-DESIGN-SYSTEM.md for structure. */
 
 @layer base {
   html,
@@ -14,86 +14,99 @@
   }
 
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
-  :root,
-  .dark {
+  :root {
     --dur-micro: 120ms;
     --dur-short: 200ms;
     --dur-long: 480ms;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
-    --background: 264 35% 12%;
-    --foreground: 250 25% 96%;
-    --foreground-muted: 256 30% 70%;
+    --tracking-display: -0.028em;
 
-    --surface: 264 38% 16%;
-    --surface-muted: 264 40% 20%;
+    --background: 250 25% 98.6%;
+    --foreground: 262 28% 21%;
+    --foreground-muted: 258 12% 50%;
 
-    --card: 264 38% 16%;
-    --card-foreground: 250 25% 96%;
+    --surface: 250 22% 99.4%;
+    --surface-muted: 252 18% 96%;
 
-    --popover: 264 38% 16%;
-    --popover-foreground: 250 25% 96%;
+    --card: 250 22% 99.4%;
+    --card-foreground: 262 28% 21%;
 
-    --primary: 230 75% 72%;
-    --primary-foreground: 264 35% 12%;
-    --primary-hover: 236 60% 65%;
+    --popover: 250 22% 99.4%;
+    --popover-foreground: 262 28% 21%;
 
-    --secondary: 264 40% 22%;
-    --secondary-foreground: 250 25% 96%;
+    --primary: 258 70% 52%;
+    --primary-foreground: 250 25% 99%;
+    --primary-hover: 262 72% 46%;
+    --primary-edge: 260 16% 39%;
 
-    --muted: 264 40% 20%;
-    --muted-foreground: 256 30% 70%;
+    --secondary: 252 15% 93%;
+    --secondary-foreground: 262 28% 21%;
 
-    --accent: 230 75% 72%;
-    --accent-foreground: 264 35% 12%;
-    --accent-hover: 236 60% 65%;
+    --muted: 252 18% 96%;
+    --muted-foreground: 258 12% 50%;
+
+    --accent: 258 70% 52%;
+    --accent-foreground: 250 25% 99%;
+    --accent-hover: 262 72% 46%;
 
     --destructive: 0 62% 45%;
-    --destructive-foreground: 250 25% 96%;
+    --destructive-foreground: 250 25% 99%;
 
-    --success: 230 70% 68%;
-    --success-foreground: 264 35% 12%;
-    --warning: 256 25% 75%;
-    --warning-foreground: 264 35% 12%;
+    --success: 254 55% 42%;
+    --success-foreground: 250 25% 99%;
+    --warning: 260 18% 36%;
+    --warning-foreground: 250 25% 99%;
     --error: 0 62% 45%;
-    --error-foreground: 250 25% 96%;
+    --error-foreground: 250 25% 99%;
 
-    --border: 264 45% 28%;
-    --input: 264 45% 28%;
-    --ring: 228 80% 74%;
+    --border: 252 10% 90%;
+    --input: 252 12% 83%;
+    --ring: 258 70% 52%;
 
-    --radius: 0;
+    --radius: 0.5rem;
+    --radius-input: 0.375rem;
+    --cut: 0.5rem;
+    --cut-l: 1rem;
 
-    --font-display: "Mona Sans", ui-sans-serif, system-ui, sans-serif;
-    --font-body: var(--font-display);
-    --shadow-depth: 264 35% 6%;
-    --shadow-glow: 230 75% 72%;
+    --font-display: "Familjen Grotesk", system-ui, sans-serif;
+    --font-body: "IBM Plex Sans", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-    --shadow-card: 0 24px 48px -24px hsl(var(--shadow-depth) / 0.7);
-    --shadow-hero: 0 24px 48px -24px hsl(var(--shadow-depth) / 0.55);
-    --shadow-button: 0 12px 24px -12px hsl(var(--shadow-glow) / 0.35);
+    --shadow-ink: 262 28% 21%;
+    --shadow-key-edge: 254 16% 80%;
+    --shadow-key-highlight: 250 25% 100%;
+    --shadow-card: 0 1px 2px hsl(var(--shadow-ink) / 0.06);
+    --shadow-hero: 0 8px 24px -12px hsl(var(--shadow-ink) / 0.08);
+    --shadow-key: 0 3px 0 0 hsl(var(--shadow-key-edge)), 0 6px 8px -4px hsl(var(--shadow-ink) / 0.28),
+      inset 0 1px 0 hsl(var(--shadow-key-highlight) / 0.9);
+    --shadow-key-accent: 0 3px 0 0 hsl(var(--primary-edge)), 0 6px 8px -4px hsl(var(--shadow-ink) / 0.45),
+      inset 0 1px 0 hsl(var(--shadow-key-highlight) / 0.22);
+    --shadow-key-press: inset 0 1px 2px hsl(var(--shadow-ink) / 0.14);
+    --shadow-button: var(--shadow-key-accent);
 
-    --sidebar-background: 264 35% 12%;
-    --sidebar-foreground: 250 22% 92%;
-    --sidebar-primary: 230 75% 72%;
-    --sidebar-primary-foreground: 264 35% 12%;
-    --sidebar-accent: 264 38% 18%;
-    --sidebar-accent-foreground: 250 25% 96%;
-    --sidebar-border: 264 45% 28%;
-    --sidebar-ring: 228 80% 74%;
+    --sidebar-background: 250 25% 98.6%;
+    --sidebar-foreground: 260 15% 36%;
+    --sidebar-primary: 258 70% 52%;
+    --sidebar-primary-foreground: 250 25% 99%;
+    --sidebar-accent: 252 18% 96%;
+    --sidebar-accent-foreground: 262 28% 21%;
+    --sidebar-border: 252 10% 90%;
+    --sidebar-ring: 258 70% 52%;
   }
 
   h1,
-  h2 {
+  h2,
+  h3 {
     font-family: var(--font-display);
-    font-weight: 300;
-    font-stretch: 125%;
-    letter-spacing: -0.015em;
-    line-height: 1.04;
+    font-weight: 600;
+    letter-spacing: var(--tracking-display);
+    line-height: 1.02;
     text-wrap: balance;
+    color: hsl(var(--foreground));
   }
 
   h3 {
@@ -109,17 +122,56 @@
     font-family: var(--font-body);
   }
 
+  a {
+    text-decoration-color: hsl(var(--input));
+    text-underline-offset: 0.2em;
+  }
+
+  a:hover {
+    text-decoration-color: hsl(var(--primary));
+  }
+
   a:active {
     opacity: 0.88;
   }
 
   button:not(:disabled):active {
-    filter: brightness(0.96);
+    filter: none;
   }
 
   button:disabled,
   [aria-disabled="true"] {
     cursor: not-allowed;
+  }
+}
+
+@layer components {
+  .cut-panel {
+    border-radius: var(--radius);
+  }
+
+  @supports (corner-shape: bevel) {
+    .cut-panel {
+      border-radius: var(--cut-l) 4px var(--cut-l) 4px;
+      corner-shape: bevel round bevel round;
+    }
+  }
+
+  .btn-keycap {
+    font-family: var(--font-display);
+    font-weight: 500;
+    transition:
+      transform var(--dur-micro) var(--ease-out),
+      box-shadow var(--dur-micro) var(--ease-out);
+  }
+
+  .btn-keycap:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .btn-keycap:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow: var(--shadow-key-press);
   }
 }
 
@@ -131,5 +183,10 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .btn-keycap:hover:not(:disabled),
+  .btn-keycap:active:not(:disabled) {
+    transform: none;
   }
 }
