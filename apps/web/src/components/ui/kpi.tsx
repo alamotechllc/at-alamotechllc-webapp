@@ -18,7 +18,7 @@ export function KpiTile({
 }) {
   const body = (
     <>
-      <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">{label}</p>
+      <p className="text-xs font-medium text-foreground-muted">{label}</p>
       {loading ? (
         <div className="mt-3 h-10 w-20 animate-pulse rounded-md bg-muted motion-reduce:animate-none" aria-hidden="true" />
       ) : (
@@ -30,7 +30,7 @@ export function KpiTile({
 
   const classes = cn(
     "rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow",
-    href && "hover:border-accent/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+    href && "hover:border-accent/40 hover:shadow-md active:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
     className,
   );
 

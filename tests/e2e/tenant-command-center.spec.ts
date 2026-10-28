@@ -28,7 +28,7 @@ test.describe("tenant Command Center", () => {
   });
 
   test("next steps drawer opens and lists pending items", async ({ page }) => {
-    await page.getByRole("button", { name: /Next Steps/i }).first().click();
+    await page.getByRole("button", { name: /View all next steps/i }).click();
     await expect(page.getByRole("heading", { name: "Next Steps", level: 2 })).toBeVisible();
     await expect(page.getByRole("button", { name: "Mark Complete" }).first()).toBeVisible();
   });

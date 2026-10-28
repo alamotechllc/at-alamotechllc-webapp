@@ -48,7 +48,7 @@ export function CommandCenterScore({
   return (
     <div className="flex flex-col gap-8">
       <section aria-labelledby="kpi-heading" className="space-y-3">
-        <h2 id="kpi-heading" className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Results</h2>
+        <h2 id="kpi-heading" className="text-xs font-medium text-foreground-muted">Results</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {picture.kpis.map((kpi) => (
             <KpiTile
@@ -66,7 +66,7 @@ export function CommandCenterScore({
         className={cn(home ? "border-border/60 bg-muted/20 p-5 shadow-none" : "p-6 md:p-8")}
         aria-labelledby="result-score-heading"
       >
-        <h2 id="result-score-heading" className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Performance score</h2>
+        <h2 id="result-score-heading" className="text-xs font-medium text-foreground-muted">Performance score</h2>
         <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <p className={cn("font-bold tracking-tight text-foreground", home ? "text-3xl" : "text-4xl sm:text-5xl")}>

@@ -147,7 +147,7 @@ export function OverviewPage() {
           {!picture && metricsLoading ? <LoadingState label="Loading your results" /> : null}
           <section aria-labelledby="recent-activity" className="space-y-3">
             <div className="flex flex-wrap items-end justify-between gap-2">
-              <h2 id="recent-activity" className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+              <h2 id="recent-activity" className="text-xs font-medium text-foreground-muted">
                 Recent appointments
               </h2>
               <Link className="text-sm font-medium text-accent underline-offset-4 hover:underline" to="/appointments">
@@ -182,13 +182,13 @@ export function ClientsPage() {
   const outage = sharedFailure(states);
   return (
     <PageShell className="flex flex-col gap-6">
-      <SectionHeader eyebrow="Operations" title="Clients" detail="Organizations with Lead Capture enabled." />
+      <SectionHeader title="Clients" detail="Organizations with Lead Capture enabled." />
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
       <Region state={tenant} loading="Loading clients" suppressed={Boolean(outage)}>
         {(data) => (
           <>
           <Link
-            className="block rounded-lg border border-border bg-card p-6 text-card-foreground shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="block rounded-lg border border-border bg-card p-6 text-card-foreground shadow-sm transition-shadow hover:shadow-md active:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             to={`/clients/${data.tenantId}`}
           >
             <h2 className="text-xl font-semibold">{data.legalName}</h2>
@@ -242,7 +242,7 @@ export function ClientPage() {
 
   return (
     <PageShell className="flex flex-col gap-6">
-      <SectionHeader eyebrow="Client" title={legalName} detail={timezone} />
+      <SectionHeader title={legalName} detail={timezone} />
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
         <AppCard className="p-6">
@@ -472,7 +472,7 @@ export function OperationsPage() {
   const outage = sharedFailure(states);
   return (
     <PageShell className="flex flex-col gap-6">
-      <SectionHeader eyebrow="Operations" title="Operations" detail="Provider connections and ingest activity—separate from customer-facing results." />
+      <SectionHeader title="Operations" detail="Provider connections and ingest activity, separate from customer-facing results." />
       {outage ? <ErrorState failure={outage.failure} message={outage.message} onRetry={() => retryAll(states)} /> : null}
       <AppCard className="p-6">
         <h2 className="text-base font-semibold">Provider bindings</h2>

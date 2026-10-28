@@ -84,10 +84,10 @@ export function ActionCenterDrawer() {
               ) : null}
               {progress.totalCount > 0 ? (
                 <>
-                  <div className="h-2 w-full rounded-full bg-muted" aria-hidden="true">
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-muted" aria-hidden="true">
                     <div
-                      className="h-2 rounded-full bg-primary transition-[width]"
-                      style={{ width: `${progress.percent ?? 0}%` }}
+                      className="h-full w-full origin-left rounded-full bg-primary transition-transform duration-200 motion-reduce:transition-none"
+                      style={{ transform: `scaleX(${(progress.percent ?? 0) / 100})` }}
                     />
                   </div>
                   <p className="text-sm text-foreground-muted">{progress.detail}</p>
@@ -136,7 +136,7 @@ export function ActionCenterDrawer() {
                 aria-expanded={completedOpen}
                 onClick={() => setCompletedOpen((value) => !value)}
               >
-                <span>Completed · {completed.length}</span>
+                <span>Completed ({completed.length})</span>
                 <ChevronDown className={cn("h-4 w-4 transition-transform", completedOpen ? "rotate-180" : "")} aria-hidden="true" />
               </button>
               {completedOpen ? (

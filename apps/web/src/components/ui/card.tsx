@@ -70,7 +70,7 @@ export function StatusCard({
 }) {
   return (
     <article className="rounded-lg border border-border bg-surface p-4 shadow-sm">
-      <h3 className="text-xs font-medium uppercase tracking-wide text-foreground-muted">{label}</h3>
+      <h3 className="text-xs font-medium text-foreground-muted">{label}</h3>
       <div className="mt-2 text-sm text-foreground">{children}</div>
     </article>
   );

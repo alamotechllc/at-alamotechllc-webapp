@@ -70,8 +70,8 @@ export function OpenTasks({ tenantId }: { tenantId: string }) {
     <section aria-labelledby="open-tasks" className="space-y-3">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 id="open-tasks" className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Tasks</h2>
-          <p className="text-sm text-foreground-muted">Work your team tracks—not Next Steps.</p>
+          <h2 id="open-tasks" className="text-xs font-medium text-foreground-muted">Tasks</h2>
+          <p className="text-sm text-foreground-muted">Work your team tracks, not Next Steps.</p>
         </div>
         <Link className="shrink-0 text-sm font-medium text-accent underline-offset-4 hover:underline" to="/tasks">All tasks</Link>
       </div>
@@ -151,7 +151,6 @@ export function TasksPage() {
   return (
     <PageShell className="flex flex-col gap-6">
       <SectionHeader
-        eyebrow="Operations"
         title="Tasks"
         detail="Work that still needs a person on your team. This is separate from Next Steps, which are items Alamo Tech needs from you."
       />

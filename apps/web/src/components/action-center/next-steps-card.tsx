@@ -19,7 +19,7 @@ export function NextStepsCard() {
   if (error && !view) {
     return (
       <AppCard className="p-5" role="alert">
-        <p className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Next Steps</p>
+        <p className="text-xs font-medium text-foreground-muted">Next Steps</p>
         <p className="mt-3 text-sm text-destructive">{error}</p>
       </AppCard>
     );
@@ -33,12 +33,8 @@ export function NextStepsCard() {
 
   return (
     <AppCard className="overflow-hidden border-accent/20 bg-card p-0 shadow-sm">
-      <button
-        type="button"
-        className="w-full p-5 text-left transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-        onClick={() => setOpen(true)}
-      >
-        <p className="text-xs font-semibold uppercase tracking-wide text-accent">Next Steps</p>
+      <div className="p-5">
+        <p className="text-xs font-medium text-accent">Next Steps</p>
         {caughtUp ? (
           <div className="mt-3 space-y-1">
             <p className="text-lg font-semibold text-foreground">You&apos;re all caught up</p>
@@ -62,10 +58,14 @@ export function NextStepsCard() {
             ) : null}
           </div>
         )}
-        <p className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
-          View all next steps
-          <ChevronRight className="h-4 w-4" aria-hidden="true" />
-        </p>
+      </div>
+      <button
+        type="button"
+        className="flex w-full items-center justify-between gap-2 border-t border-border px-5 py-3 text-left text-sm font-medium text-accent transition-colors hover:bg-muted/30 active:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+        onClick={() => setOpen(true)}
+      >
+        <span className="whitespace-nowrap">View all next steps</span>
+        <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />
       </button>
     </AppCard>
   );

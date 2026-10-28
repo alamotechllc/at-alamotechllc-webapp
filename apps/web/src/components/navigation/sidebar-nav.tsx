@@ -50,7 +50,7 @@ function NavItem({
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
             isActive
               ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
-              : "text-foreground-muted hover:bg-muted/60 hover:text-foreground",
+              : "text-foreground-muted hover:bg-muted/60 hover:text-foreground active:bg-muted/80",
           )
         }
       >
@@ -72,7 +72,7 @@ export function SidebarNav({ role, onNavigate }: { role: RaasRole | null; onNavi
   return (
     <nav aria-label="Command Center" className="mt-8 flex flex-1 flex-col">
       <div>
-        <p className="px-3 text-[0.6875rem] font-semibold uppercase tracking-wider text-foreground-muted">Lead Capture</p>
+        <p className="px-3 text-xs font-medium text-foreground-muted">Lead capture</p>
         <ul className="mt-2 space-y-0.5">
           {primary.map((item) => (
             <NavItem key={item.to} item={item} onNavigate={onNavigate} />
@@ -81,7 +81,7 @@ export function SidebarNav({ role, onNavigate }: { role: RaasRole | null; onNavi
       </div>
       {staffItems.length > 0 ? (
         <div className="mt-8">
-          <p className="px-3 text-[0.6875rem] font-semibold uppercase tracking-wider text-foreground-muted">Operations</p>
+          <p className="px-3 text-xs font-medium text-foreground-muted">Operations</p>
           <ul className="mt-2 space-y-0.5">
             {staffItems.map((item) => (
               <NavItem key={item.to} item={item} onNavigate={onNavigate} />
