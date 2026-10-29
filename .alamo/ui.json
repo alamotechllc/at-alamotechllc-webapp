@@ -9,11 +9,12 @@
     "cwd": "."
   },
   "hallmark": {
+    "theme": "alamoos-base",
     "genre": "modern-minimal",
     "scope": "app",
     "lint_targets": ["apps/web/src"],
     "routes": ["/", "/tasks", "/appointments", "/results", "/campaigns"],
-    "public_routes": ["/login"],
+    "public_routes": ["/sign-in"],
     "authenticated_routes": ["/", "/tasks", "/appointments", "/results", "/campaigns"],
     "mobile_critical_routes": ["/"],
     "dashboard_routes": ["/"]

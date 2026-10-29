@@ -1,11 +1,11 @@
-/* Hallmark · theme: coral · genre: modern-minimal · scope: app
- * brand: Alamo semantic colors (locked) · signal: navy + accent blue, not warm coral ink
+/* Hallmark · theme: alamoos-base (locked design.md) · genre: modern-minimal · scope: app
+ * brand: Alamo semantic colors (locked) · signal: navy + accent blue
  */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Coral material (B2B dashboard) on Alamo Tech tokens. See docs/design/ALAMO-TECH-DESIGN-SYSTEM.md. */
+/* AlamoOS base theme on Alamo Tech tokens. See docs/design/ALAMO-TECH-DESIGN-SYSTEM.md. */
 
 @layer base {
   html,
@@ -65,8 +65,8 @@
     --radius: 1rem;
     --radius-card-lg: 1.25rem;
 
-    --font-display: "General Sans", ui-sans-serif, system-ui, sans-serif;
-    --font-body: var(--font-display);
+    --font-display: ui-sans-serif, system-ui, sans-serif;
+    --font-body: ui-sans-serif, system-ui, sans-serif;
     --font-mono: "Geist Mono", ui-monospace, monospace;
 
     --shadow-ink: 215 28% 17%;

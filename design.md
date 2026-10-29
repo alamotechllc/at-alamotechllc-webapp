@@ -1,6 +1,6 @@
 # Design system (locked)
 
-This application uses the AlamoOS design system for structure and semantics, with Alamo Tech brand values locked in the project doc below. **Hallmark Coral** (B2B dashboard material) maps type, radius, and controls in `apps/web/src/index.css`; **Alamo navy and accent blue remain the signal colors**. Do not add a third token system.
+This application uses the **AlamoOS base theme** (factory [`../../design-system/ALAMOOS-BASE-THEME.md`](../../design-system/ALAMOOS-BASE-THEME.md)) for structure and semantics, with Alamo Tech brand values locked in the project doc below. Tokens and surfaces live in `apps/web/src/index.css`; **Alamo navy and accent blue remain the signal colors**. Do not add a third token system or apply a Hallmark theme deal (e.g. Coral) without an explicit redesign authorization and an update to this file.
 
 **AlamoOS factory standards:** [../../design-system/README.md](../../design-system/README.md)  
 **Brand / token values:** [docs/design/ALAMO-TECH-DESIGN-SYSTEM.md](docs/design/ALAMO-TECH-DESIGN-SYSTEM.md)  
