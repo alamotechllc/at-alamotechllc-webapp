@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from "framer-motion";
 import {
   BarChart3,
   CalendarDays,
@@ -38,6 +39,7 @@ function NavItem({
   onNavigate?: () => void;
 }) {
   const Icon = item.icon;
+  const reduce = useReducedMotion();
   return (
     <li>
       <NavLink
@@ -46,16 +48,26 @@ function NavItem({
         onClick={onNavigate}
         className={({ isActive }) =>
           cn(
-            "flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors",
+            "relative flex min-h-11 items-center gap-3 rounded-full px-3 text-sm font-medium transition-colors",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
-            isActive
-              ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
-              : "text-foreground-muted hover:bg-muted/60 hover:text-foreground active:bg-muted/80",
+            isActive ? "text-primary-foreground" : "text-foreground-muted hover:text-foreground",
           )
         }
       >
-        <Icon className="h-[1.125rem] w-[1.125rem] shrink-0 opacity-90" aria-hidden="true" />
-        {item.label}
+        {({ isActive }) => (
+          <>
+            {isActive && !reduce ? (
+              <motion.span
+                layoutId="sidebar-active-pill"
+                className="absolute inset-0 rounded-full bg-primary shadow-sm"
+                transition={{ type: "spring", stiffness: 420, damping: 34 }}
+              />
+            ) : null}
+            {isActive && reduce ? <span className="absolute inset-0 rounded-full bg-primary" aria-hidden="true" /> : null}
+            <Icon className="relative z-[1] h-[1.125rem] w-[1.125rem] shrink-0 opacity-90" aria-hidden="true" />
+            <span className="relative z-[1]">{item.label}</span>
+          </>
+        )}
       </NavLink>
     </li>
   );

@@ -1,0 +1,22 @@
+# UI review (Hallmark sloplint)
+
+| Field | Value |
+|-------|-------|
+| Generated | 2026-10-29T01:13:30.482Z |
+| Project | /Users/mike.turner/AlamoOS/App_Projects/at-alamotechllc-webapp |
+| Target | /Users/mike.turner/AlamoOS/App_Projects/at-alamotechllc-webapp/apps/web/src |
+| Render tier | not run: no puppeteer-core found locally, globally or via HALLMARK_PUPPETEER |
+| FAIL | 0 |
+| REFLEX | 0 |
+| WARN | 1 |
+| Advisory score | 99 — Derived from sloplint counts only; not a Hallmark product score. |
+| JSON | ui-review-2026-10-29T0113Z.json |
+
+## Findings
+
+- **WARN** gate 70 (floor) `App_Projects/at-alamotechllc-webapp/apps/web/src/tasks-page.tsx:1` — a script prints success ("Mark done") with no request behind it
+  - Fix: No success state until the form posts somewhere; an empty data-endpoint and a handoff note
+
+## Remediation
+
+Consult factory `design-system/` and project `design.md`. Re-run `./scripts/alamo-ui-review` after fixes.

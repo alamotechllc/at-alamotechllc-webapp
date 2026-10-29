@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import { Inbox } from "lucide-react";
 import { noticeCopy, unavailableLabel } from "../../view-state";
+import { SkeletonCard } from "../alamo/skeleton";
 import { Button } from "./button";
 
 export function SectionHeader({
@@ -18,20 +20,48 @@ export function SectionHeader({
 }
 
 export function LoadingState({ label, compact = false }: { label: string; compact?: boolean }) {
+  if (compact) {
+    return (
+      <div className="space-y-2" role="status" aria-live="polite">
+        <div className="h-3 max-w-[12rem] animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
+        <p className="sr-only">{label}</p>
+      </div>
+    );
+  }
   return (
-    <div className={compact ? "space-y-2" : "space-y-3 rounded-lg border border-border bg-card p-4 shadow-card"} role="status">
-      <div className="h-3 max-w-[12rem] animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
-      <div className="h-3 max-w-[8rem] animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
-      <p className="text-sm text-foreground-muted">{label}</p>
+    <div role="status" aria-live="polite">
+      <SkeletonCard />
+      <p className="sr-only">{label}</p>
     </div>
   );
 }
 
-export function EmptyState({ title, detail }: { title: string; detail: string }) {
+export function EmptyState({
+  title,
+  detail,
+  action,
+  secondaryAction,
+}: {
+  title: string;
+  detail: string;
+  action?: ReactNode;
+  secondaryAction?: ReactNode;
+}) {
   return (
-    <div className="space-y-1">
-      <h2 className="text-base font-semibold text-foreground">{title}</h2>
-      <p className="text-sm text-foreground-muted">{detail}</p>
+    <div className="flex flex-col items-start gap-3 py-2 sm:flex-row sm:gap-4">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40 text-foreground-muted">
+        <Inbox className="h-5 w-5" aria-hidden="true" />
+      </div>
+      <div className="min-w-0 flex-1 space-y-1">
+        <h2 className="text-base font-semibold text-foreground">{title}</h2>
+        <p className="text-sm text-foreground-muted">{detail}</p>
+        {action || secondaryAction ? (
+          <div className="flex flex-wrap gap-2 pt-2">
+            {action}
+            {secondaryAction}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

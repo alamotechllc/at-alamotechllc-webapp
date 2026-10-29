@@ -2,10 +2,26 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../lib/cn";
 import { Button } from "./button";
 
-export function AppCard({ className, ...props }: HTMLAttributes<HTMLElement>) {
+export function AppCard({
+  className,
+  tier = "secondary",
+  interactive = false,
+  ...props
+}: HTMLAttributes<HTMLElement> & {
+  tier?: "primary" | "secondary" | "tertiary";
+  interactive?: boolean;
+}) {
   return (
     <section
-      className={cn("rounded-lg border border-border bg-card text-card-foreground shadow-card", className)}
+      className={cn(
+        "border border-border bg-card text-card-foreground",
+        tier === "primary" && "rounded-2xl shadow-card",
+        tier === "secondary" && "rounded-xl shadow-card",
+        tier === "tertiary" && "rounded-lg bg-muted/25 shadow-none",
+        interactive &&
+          "transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md motion-reduce:transform-none motion-reduce:transition-none",
+        className,
+      )}
       {...props}
     />
   );

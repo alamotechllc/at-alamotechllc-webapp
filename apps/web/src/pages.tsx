@@ -138,12 +138,17 @@ export function OverviewPage() {
       {!outage && leads.status === "failed" ? <ErrorState failure={leads.failure} message={leads.message} onRetry={leads.retry} /> : null}
       {!outage && appointments.status === "failed" ? <ErrorState failure={appointments.failure} message={appointments.message} onRetry={appointments.retry} /> : null}
 
-      <div className="grid gap-8 xl:grid-cols-[minmax(18rem,20rem)_minmax(0,1fr)] xl:items-start">
-        <aside className="flex flex-col gap-6 xl:sticky xl:top-20">
-          {tenantId ? <NextStepsCard /> : null}
+      <div className="flex flex-col gap-8 xl:grid xl:grid-cols-[minmax(18rem,20rem)_minmax(0,1fr)] xl:items-start">
+        <aside className="order-1 flex flex-col gap-6 xl:sticky xl:top-20 xl:order-none">
+          {tenantId ? (
+            <section aria-labelledby="action-heading" className="space-y-3">
+              <h2 id="action-heading" className="sr-only">Action</h2>
+              <NextStepsCard />
+            </section>
+          ) : null}
           {tenantId ? <OpenTasks tenantId={tenantId} /> : null}
         </aside>
-        <div className="flex min-w-0 flex-col gap-8">
+        <div className="order-2 flex min-w-0 flex-col gap-8 xl:order-none">
           {picture ? <CommandCenterScore picture={picture} days={days} onDays={setDays} detail="home" /> : null}
           {!picture && !metricsLoading && leads.status !== "failed" && appointments.status !== "failed" ? (
             <LoadingState label="Loading your results" />
@@ -158,7 +163,7 @@ export function OverviewPage() {
                 View all
               </Link>
             </div>
-            <AppCard className="overflow-hidden p-0">
+            <AppCard tier="secondary" className="overflow-hidden p-0">
               <div className="border-b border-border bg-muted/30 px-5 py-3">
                 <p className="text-sm text-foreground-muted">Latest booked meetings from Lead Capture.</p>
               </div>

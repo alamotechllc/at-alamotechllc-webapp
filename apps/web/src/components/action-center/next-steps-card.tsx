@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { useActionCenter } from "../../action-center-context";
+import { SkeletonCard } from "../alamo/skeleton";
 import { AppCard } from "../ui/card";
 
 export function NextStepsCard() {
@@ -7,13 +8,9 @@ export function NextStepsCard() {
 
   if (loading && !view) {
     return (
-      <AppCard className="p-5" aria-busy="true" role="status">
-        <div className="space-y-3">
-          <div className="h-3 w-24 animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
-          <div className="h-8 w-full animate-pulse rounded-md bg-muted motion-reduce:animate-none" />
-          <div className="h-8 w-4/5 animate-pulse rounded-md bg-muted motion-reduce:animate-none" />
-        </div>
-      </AppCard>
+      <div role="status" aria-busy="true" aria-label="Loading next steps">
+        <SkeletonCard lines={4} />
+      </div>
     );
   }
   if (error && !view) {
@@ -32,7 +29,7 @@ export function NextStepsCard() {
   const caughtUp = progress.caughtUp && selection.visibleCount === 0;
 
   return (
-    <AppCard className="overflow-hidden border-accent/20 bg-card p-0 shadow-sm">
+    <AppCard tier="primary" interactive className="overflow-hidden border-accent/25 bg-card p-0">
       <div className="p-5">
         <p className="text-xs font-medium text-accent">Next Steps</p>
         {caughtUp ? (

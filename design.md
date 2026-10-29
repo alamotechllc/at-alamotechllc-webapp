@@ -9,3 +9,5 @@ This application uses the AlamoOS design system for structure and semantics, wit
 **Implementation:** [apps/web/src/index.css](apps/web/src/index.css), [apps/web/tailwind.config.ts](apps/web/tailwind.config.ts), shared UI under [apps/web/src/components/ui/](apps/web/src/components/ui/).
 
 **Command Center hierarchy:** Next Steps and operational tasks lead; measurable results and the performance score follow; recent appointments close the home screen.
+
+**Reference implementation (Phase 2):** [`docs/design/REFERENCE-IMPLEMENTATION-PHASE2-REPORT.md`](docs/design/REFERENCE-IMPLEMENTATION-PHASE2-REPORT.md) · patterns [`docs/design/REFERENCE-IMPLEMENTATION-PATTERNS.md`](docs/design/REFERENCE-IMPLEMENTATION-PATTERNS.md)

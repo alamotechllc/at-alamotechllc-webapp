@@ -1,6 +1,8 @@
+import { AnimatePresence } from "framer-motion";
 import { Menu } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { PageTransition } from "../alamo/motion";
 import { useSession } from "../../auth";
 import type { RaasRole } from "../../../../../packages/domain/src/rbac";
 import { releaseLabel } from "../../release";
@@ -86,7 +88,11 @@ export function Shell() {
             </div>
           </header>
           <main className="flex-1 bg-muted/30 px-4 py-6 md:px-6 md:py-8 lg:px-8">
-            <Outlet />
+            <AnimatePresence mode="wait">
+              <PageTransition key={location.pathname}>
+                <Outlet />
+              </PageTransition>
+            </AnimatePresence>
           </main>
         </div>
       </div>

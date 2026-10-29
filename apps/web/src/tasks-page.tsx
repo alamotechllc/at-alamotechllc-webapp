@@ -53,7 +53,7 @@ function TaskRow({
           disabled={pending}
           onClick={() => onStatus(task, open ? "done" : "open")}
         >
-          {open ? "Mark done" : "Reopen"}
+          {pending ? "Saving…" : open ? "Mark done" : "Reopen"}
         </Button>
       ) : null}
     </li>
