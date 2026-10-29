@@ -1,6 +1,8 @@
 # Alamo Tech design system
 
-Source of truth: the public website implementation.
+**AlamoOS semantic standards:** [`../../../../design-system/README.md`](../../../../design-system/README.md) (factory). This document is the **brand and shadcn token** layer for Alamo Tech products.
+
+Source of truth for palette: the public website implementation.
 
 | | |
 | --- | --- |

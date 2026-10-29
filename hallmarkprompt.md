@@ -3,9 +3,9 @@
 **Project:** Lead Capture RaaS MVP (`at-alamotechllc-webapp` / manifest `at-customer-webapp`)  
 **Primary UI:** `apps/web/` (tenant command center, action center, shell navigation)
 
-UI/UX design audit and improvement uses the factory prompt [`../../designprompt.md`](../../designprompt.md).
+UI/UX design audit and improvement uses the factory prompt [`../../designprompt.md`](../../designprompt.md) and standards [`../../design-system/README.md`](../../design-system/README.md).
 
-Read that file and follow it. Use this project in the fill-in. Default ambiguous UI language to **AUDIT**. This pointer is not a second copy of the workflow.
+Read those files and follow them. Use this project in the fill-in. Default ambiguous UI language to **AUDIT**. Advisory lint: [`../../scripts/alamo-ui-review`](../../scripts/alamo-ui-review) `--project at-customer-webapp`.
 
 **Hallmark skill:** Host-installed [Hallmark](https://github.com/Nutlope/hallmark) — read `~/.agents/skills/hallmark/SKILL.md`; do not vendor Hallmark into this repo.
 

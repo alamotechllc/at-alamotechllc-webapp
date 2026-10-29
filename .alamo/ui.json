@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1",
+  "framework": "react-vite",
+  "ui_root": "apps/web",
+  "design_doc": "design.md",
+  "dev": {
+    "command": "npm run dev:web",
+    "url": "http://127.0.0.1:5173",
+    "cwd": "."
+  },
+  "hallmark": {
+    "genre": "modern-minimal",
+    "scope": "app",
+    "lint_targets": ["apps/web/src"],
+    "routes": ["/", "/tasks", "/appointments", "/results", "/campaigns"],
+    "public_routes": ["/login"],
+    "authenticated_routes": ["/", "/tasks", "/appointments", "/results", "/campaigns"],
+    "mobile_critical_routes": ["/"],
+    "dashboard_routes": ["/"]
+  }
+}
