@@ -4,17 +4,18 @@
 **Date:** 2026-10-28  
 **Status:** Recommendation only — do not auto-promote to factory `design-system/` without review.
 
-| Pattern | Location | Why it worked | Promotion candidate |
-|---------|----------|---------------|---------------------|
-| **PageHeader / DashboardSection** | `components/alamo/page-header.tsx` | Consistent command-center context + STATUS/CHANGE/ACTION labels | Yes — factory component spec |
-| **PillNav** | `components/alamo/pill-nav.tsx` | Period toggles with shared `layoutId` motion | Yes — when Framer Motion is adopted |
-| **AppCard tiers** | `components/ui/card.tsx` (`primary` / `secondary` / `tertiary`) | Whitespace and radius encode hierarchy without color noise | Yes — document tier API in COMPONENT-STANDARD |
-| **PageTransition + StaggerGrid** | `components/alamo/motion.tsx` | Restrained 180–300ms motion; respects reduced motion | Yes — motion primitives |
-| **SkeletonCard** | `components/alamo/skeleton.tsx` | Layout-aware loading vs spinners | Yes |
-| **EmptyState (icon + actions)** | `components/ui/states.tsx` | Professional empty UX | Yes |
-| **Home STATUS/CHANGE/ACTION layout** | `command-center.tsx` (`detail="home"`) + `pages.tsx` aside | Answers executive questions in order; action column on mobile first | Yes — extend DASHBOARD-STANDARD with layout sketch |
-| **Sidebar pill nav** | `sidebar-nav.tsx` | “Operating a system” wayfinding | Yes — AppShell / PillNav spec |
-| **Token-only chart strokes** | `command-center.tsx` `ActivityChart` | Removed literal hex; semantic accent/secondary | Yes — document in DESIGN-STANDARD |
+| Pattern | Location | Phase 3 classification | Notes |
+|---------|----------|------------------------|-------|
+| **PageHeader / DashboardSection** | `components/alamo/page-header.tsx` | **NEEDS ANOTHER IMPLEMENTATION** | Visually approved here; validate on a second app before factory API |
+| **PillNav** | `components/alamo/pill-nav.tsx` | **NEEDS ANOTHER IMPLEMENTATION** | Depends on Framer Motion |
+| **AppCard tiers** | `components/ui/card.tsx` | **PROVEN** (reference only) | Document tier names in factory; extract package later |
+| **PageTransition + StaggerGrid** | `components/alamo/motion.tsx` | **NEEDS ANOTHER IMPLEMENTATION** | |
+| **SkeletonCard** | `components/alamo/skeleton.tsx` | **PROVEN** (reference only) | |
+| **EmptyState (icon + actions)** | `components/ui/states.tsx` | **PROVEN** (reference only) | |
+| **Home STATUS/CHANGE/ACTION layout** | `command-center.tsx` + `pages.tsx` | **PROJECT-SPECIFIC** | Lead Capture IA; reuse principles not exact layout |
+| **Sidebar pill nav** | `sidebar-nav.tsx` | **NEEDS ANOTHER IMPLEMENTATION** | |
+| **Token-only chart strokes** | `ActivityChart` | **PROVEN** (reference only) | Reusable rule, not a component |
+| **Playwright reference capture** | `scripts/capture-reference-screens.sh` | **PROVEN** (workflow) | Standard for authenticated SPA visual archive |
 
 ## Not promoted yet
 

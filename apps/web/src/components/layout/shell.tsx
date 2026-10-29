@@ -112,9 +112,10 @@ function AccountMenu({
 }) {
   return (
     <details className="relative">
-      <summary className="flex min-h-11 max-w-[12rem] cursor-pointer list-none items-center rounded-lg border border-transparent px-2 hover:border-border hover:bg-card sm:max-w-[14rem] sm:px-3 [&::-webkit-details-marker]:hidden">
+      <summary className="flex min-h-11 max-w-[9rem] cursor-pointer list-none items-center rounded-lg border border-transparent px-2 hover:border-border hover:bg-card sm:max-w-[14rem] sm:px-3 [&::-webkit-details-marker]:hidden">
         <span className="min-w-0 text-right">
-          <span className="block truncate text-sm font-medium text-foreground">{email}</span>
+          <span className="block truncate text-sm font-medium text-foreground sm:hidden">Account</span>
+          <span className="hidden truncate text-sm font-medium text-foreground sm:block">{email}</span>
           <span className="block truncate text-xs text-foreground-muted">{role}</span>
         </span>
       </summary>

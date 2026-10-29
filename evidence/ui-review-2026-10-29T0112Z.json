@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1",
+  "generated_at": "2026-10-29T01:12:12.317Z",
+  "project_root": "/Users/mike.turner/AlamoOS/App_Projects/at-alamotechllc-webapp",
+  "target": "/Users/mike.turner/AlamoOS/App_Projects/at-alamotechllc-webapp/apps/web/src",
+  "hallmark_skill": "/Users/mike.turner/.agents/skills/hallmark",
+  "design_system": "design-system/README.md",
+  "advisory_score": {
+    "value": 99,
+    "note": "Derived from sloplint counts only; not a Hallmark product score."
+  },
+  "sloplint": {
+    "summary": {
+      "fails": 0,
+      "reflex": 0,
+      "warns": 1,
+      "waived": 0,
+      "rejected": 0,
+      "answered": 0,
+      "dismissed": 0,
+      "notes": 0,
+      "files": 24,
+      "render": "not run: no puppeteer-core found locally, globally or via HALLMARK_PUPPETEER"
+    },
+    "findings": [
+      {
+        "gate": "70",
+        "grade": "WARN",
+        "tier": "floor",
+        "file": "App_Projects/at-alamotechllc-webapp/apps/web/src/tasks-page.tsx",
+        "line": 1,
+        "evidence": "a script prints success (\"Mark done\") with no request behind it",
+        "fix": "No success state until the form posts somewhere; an empty data-endpoint and a handoff note"
+      }
+    ]
+  }
+}

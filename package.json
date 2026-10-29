@@ -30,6 +30,7 @@
     "test:emulators": "firebase emulators:exec --only auth,firestore,storage --project demo-raas-cp \"vitest run --config vitest.emulator.config.ts\"",
     "test": "npm run test:unit && npm run test:emulators",
     "test:e2e": "bash scripts/e2e.sh",
+    "capture:reference-screens": "bash scripts/capture-reference-screens.sh",
     "validate": "npm run typecheck && npm run lint && npm run guard:frontend && npm run test:unit",
     "validate:release": "npm run validate && npm run test:emulators && npm run scan:secrets",
     "scan:secrets": "tsx scripts/deploy.ts scan",

@@ -10,7 +10,7 @@ test.describe("tenant Command Center", () => {
   test("home loads results and next steps without unauthorized states", async ({ page }) => {
     await expectNoUnauthorized(page);
     await expect(page.getByText(/things need your attention|all caught up/i)).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Results", level: 2 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Status", level: 2 })).toBeVisible();
   });
 
   test("primary navigation pages load", async ({ page }) => {
